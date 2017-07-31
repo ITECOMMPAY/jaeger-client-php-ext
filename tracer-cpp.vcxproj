@@ -82,6 +82,9 @@
     <RemotePostBuildEvent>
       <Command>cd $(RemoteProjectDir) &amp;&amp; echo -e "nooblol0\n" | sudo -S make install &amp;&amp; sudo make restart</Command>
     </RemotePostBuildEvent>
+    <PreBuildEvent>
+      <Command>mkdir bin\x64\Debug\</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
