@@ -80,7 +80,7 @@
       <UnresolvedSymbolReferences />
     </Link>
     <RemotePostBuildEvent>
-      <Command>cd $(RemoteDebuggerWorkingDirectory) &amp;&amp; echo -e "nooblol0\n" | sudo -S make install &amp;&amp; sudo make restart</Command>
+      <Command>cd $(RemoteProjectDir) &amp;&amp; echo -e "nooblol0\n" | sudo -S make install &amp;&amp; sudo make restart</Command>
     </RemotePostBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
