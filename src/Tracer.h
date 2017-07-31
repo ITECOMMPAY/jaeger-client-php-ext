@@ -24,7 +24,7 @@ public:
     /*Pass startSpan call to the tracer*/
     static Php::Value startSpan(Php::Parameters &params);
     /*Pass getCurrentSpan call to the tracer*/
-    static void getCurrentSpan();
+    static Php::Value getCurrentSpan();
     /*Pass finishSpan call to the tracer*/
     static void finishSpan();
     /*Pass inject call to the tracer*/

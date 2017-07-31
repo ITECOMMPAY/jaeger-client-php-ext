@@ -2,24 +2,31 @@
 
 NoopTracer::~NoopTracer()
 {
+#ifdef TRACER_DEBUG
     Php::out << "NoopTracer::~NoopTracer addr: " << this << std::endl;
+#endif
 }
 
 NoopTracer::NoopTracer()
 {
-    Php::out << "NoopTracer constructor" << std::endl;
+#ifdef TRACER_DEBUG
+    Php::out << "NoopTracer::NoopTracer" << std::endl;
+#endif
 }
 
 void NoopTracer::init(const std::string & serviceName) const
 {
+#ifdef TRACER_DEBUG
+    Php::out << "NoopTracer::init" << std::endl;
+#endif
 }
 
 ISpan * NoopTracer::startSpan(const std::string & operationName, const Php::Value & options) const
 {
+#ifdef TRACER_DEBUG
     if (options.isNull())
     {
         Php::out << "options is null" << std::endl;
-
     }
     else
     {
@@ -27,6 +34,7 @@ ISpan * NoopTracer::startSpan(const std::string & operationName, const Php::Valu
 
     }
     Php::out << "NoopTracer::startSpan, operationName = " << operationName << std::endl;
+#endif
     return new NoopSpan();
 }
 

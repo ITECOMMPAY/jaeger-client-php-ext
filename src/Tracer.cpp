@@ -153,19 +153,17 @@ Php::Value Tracer::startSpan(Php::Parameters& params)
     return Php::Object(span->_name(), span);
 }
 
-void Tracer::getCurrentSpan()
+Php::Value Tracer::getCurrentSpan()
 {
-    global_tracer->getCurrentSpan();
-    //try {
-    //    return self::getTracer()->getCurrentSpan();
-    //}
-    //catch (\Throwable $e) {
-    //    return false;
-    //}
+    ISpan* span = global_tracer->getCurrentSpan();
+
+    return Php::Object(span->_name(), span);
 }
 
 void Tracer::finishSpan()
 {
+    //pass the implementation back
+
     //public static function finishSpan($span)
     //{
     //    try {

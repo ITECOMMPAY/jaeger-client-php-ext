@@ -25,7 +25,7 @@ public:
         _reporter{ reporter },
         _sampler{ sampler }
     {
-        Php::out << "JaegerTracer constructor" << std::endl;
+        Php::out << "JaegerTracer::JaegerTracer" << std::endl;
     };
 
     void init(const std::string& serviceName) const;
