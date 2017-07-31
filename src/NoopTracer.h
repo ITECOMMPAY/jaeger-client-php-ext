@@ -9,47 +9,17 @@
 class NoopTracer : public ITracer
 {
 public:
-    ~NoopTracer()
-    {
-        Php::out << "NoopTracer::~NoopTracer addr: " << this << std::endl;
-    }
+    ~NoopTracer();
+    NoopTracer();
+    void init(const std::string& serviceName) const;
+    ISpan* startSpan(const std::string& operationName, const Php::Value& options = nullptr) const;
+    ISpan* getCurrentSpan() const;
+    void finishSpan() const;
+    void inject() const;
+    void extract() const;
+    void flush() const;
 
-    NoopTracer()
-    {
-        Php::out << "NoopTracer constructor" << std::endl;
-    };
-
-    void init(std::string serviceName) const
-    {
-        this->print();
-    }
-
-    //NoopTracer(const NoopTracer& in)
-    //{
-    //    Php::out<< "NoopTracer copy constructor" << std::endl;
-    //}
-
-    ISpan* startSpan(const std::string& operationName) const
-    {
-        Php::out << "NoopTracer::startSpan, operationName = " << operationName << std::endl;
-
-        return new NoopSpan();
-    }
-
-    void print() const
-    {
-        Php::out << "NoopTracer::print" << std::endl;
-    };
-
-    const char* __toString() const
-    {
-        return "NoopTracer::__toString";
-    }
-
-    const char* _name() const
-    {
-        return "NoopTracer";
-    }
+    const char* _name() const;
 };
 
 

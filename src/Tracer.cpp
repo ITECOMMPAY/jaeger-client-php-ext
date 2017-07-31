@@ -15,7 +15,9 @@ void GlobalInit()
 
 Tracer::~Tracer()
 {
+#ifdef TRACER_DEBUG
     Php::out << "Tracer::~Tracer" << std::endl;
+#endif
 }
 
 IReporter* Tracer::buildReporter(const Php::Value& settings)
@@ -57,25 +59,29 @@ ISampler* Tracer::buildSampler(const Php::Value& settings)
     return buildSampler(defaults["sampler"]);
 }
 
-void Tracer::init(Php::Parameters &params)
+void Tracer::init(Php::Parameters& params)
 {
-    /*
-    private static $defaults = [
-        'enabled' => false,
-        'reporter' => [
-            'type' => 'udp',
-            'options' => [
-                'addr' => 'localhost',
-                'port' => 6831,
-            ],
-        ],
-        'sampler' => [
-            'type' => 'percentage',
-            'options' => [
-                'percents' => 1
-            ]
-        ]
-    ];*/
+    //config defaults
+
+    //private static $defaults = [
+    //    'enabled' => false,
+    //    'reporter' => [
+    //        'type' => 'udp',
+    //        'options' => [
+    //            'addr' => 'localhost',
+    //            'port' => 6831,
+    //        ],
+    //    ],
+    //    'sampler' => [
+    //        'type' => 'percentage',
+    //        'options' => [
+    //            'percents' => 1
+    //        ]
+    //    ]
+    //];
+
+#ifdef TRACER_DEBUG
+#endif   
 
     Php::Value defaults;
     defaults["enabled"] = false;
@@ -99,7 +105,6 @@ void Tracer::init(Php::Parameters &params)
     }
 
     delete global_tracer;
-
     if (!settings["enabled"])
     {
         global_tracer = new NoopTracer();
@@ -109,78 +114,133 @@ void Tracer::init(Php::Parameters &params)
         IReporter* reporter = buildReporter(settings["reporter"]);
         ISampler* sampler = buildSampler(settings["sampler"]);
         global_tracer = new JaegerTracer(reporter, sampler);
-        //Php::out << std::boolalpha << sampler->isSampled() << std::endl;
     }
 
     global_tracer->init(serviceName);
-
-#ifdef TRACER_DEBUG
-
-    //Php::out<< "Tracer::init" << std::endl;
-    //if (!params.empty())
-    //{
-        /*if (nullptr == global_tracer)
-        {
-            delete global_tracer;
-        }*/
-        //bool type{params[0]};
-        //if(type)
-        //{
-            //global_tracer = new JaegerTracer();
-            //return;
-        //}
-    //}
-    //global_tracer = new NoopTracer();
-#endif   
 }
 
 Php::Value Tracer::getTracer()
 {
-
-    /*
-    if (self::$tracer === null) {
-        self::$tracer = new OpenTracing\TracerNoop();
-    }
-
-    return self::$tracer;
-     */
-
 #ifdef TRACER_DEBUG
     Php::out << "Tracer::getTracer addr: " << global_tracer << std::endl;
-    //global_tracer->print();
 #endif
-
     return Php::Object(global_tracer->_name(), global_tracer);
 }
 
-Php::Value Tracer::startSpan(Php::Parameters &params)
+Php::Value Tracer::startSpan(Php::Parameters& params)
 {
-    /*try {
-        return self::getTracer()->startSpan($operationName, $options);
-    } catch (\Throwable $e) {
-        return new OpenTracing\SpanNoop();
-    }*/
-
     Php::out << "Tracer::startSpan" << std::endl;
 
     std::string operationName = params[0];
-    Php::Value options;
+    Php::Value options = nullptr;
 
     if (params.size() == 1)
     {
-        options = "";//[]
-//#ifdef TRACER_DEBUG
+#ifdef TRACER_DEBUG
         Php::out << "1 parameter" << std::endl;
-        //#endif
+#endif
     }
     else
     {
         options = params[1];
+#ifdef TRACER_DEBUG
         Php::out << "2 parameters" << std::endl;
+#endif
     }
 
-    ISpan* span = global_tracer->startSpan(operationName);
-
+    ISpan* span = global_tracer->startSpan(operationName, options);
 
     return Php::Object(span->_name(), span);
+}
+
+void Tracer::getCurrentSpan()
+{
+    global_tracer->getCurrentSpan();
+    //try {
+    //    return self::getTracer()->getCurrentSpan();
+    //}
+    //catch (\Throwable $e) {
+    //    return false;
+    //}
+}
+
+void Tracer::finishSpan()
+{
+    //public static function finishSpan($span)
+    //{
+    //    try {
+    //        self::getTracer()->finishSpan($span);
+    //    }
+    //    catch (\Throwable $e) {
+    //        // Noop
+    //    }
+    //}
+}
+
+void Tracer::inject()
+{
+    //public static function inject($context, $format, &$carrier)
+    //{
+    //    try {
+    //        self::getTracer()->inject($context, $format, $carrier);
+    //    }
+    //    catch (\Throwable $e) {
+    //        // Noop
+    //    }
+    //}
+}
+
+void Tracer::extract()
+{
+    //public static function extract($format, $carrier)
+    //{
+    //    try {
+    //        return self::getTracer()->extract($format, $carrier);
+    //    }
+    //    catch (\Throwable $e) {
+    //        return false;
+    //    }
+    //}
+}
+
+void Tracer::flush()
+{
+    //public static function flush()
+    //{
+    //    try {
+    //        self::getTracer()->flush();
+    //    }
+    //    catch (\Throwable $e) {
+    //        // Noop
+    //    }
+    //}
+}
+
+void Tracer::addTags()
+{
+    //try {
+    //    $currentSpan = self::getTracer()->getCurrentSpan();
+    //    if ($currentSpan) {
+    //        $currentSpan->addTags($tags);
+    //    }
+    //}
+    //catch (\Throwable $e) {
+    //    // Noop
+    //}
+}
+
+void Tracer::addLogs()
+{
+    //public static function addLogs(array $logs)
+    //{
+    //    try {
+    //        $currentSpan = self::getTracer()->getCurrentSpan();
+    //        if ($currentSpan) {
+    //            $currentSpan->addLogs($logs);
+    //        }
+    //    }
+    //    catch (\Throwable $e) {
+    //        // Noop
+    //    }
+    //}
 }

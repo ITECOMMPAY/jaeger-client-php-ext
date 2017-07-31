@@ -86,7 +86,8 @@ LINKER				=	g++
 #	with a list of all flags that should be passed to the linker.
 #
 
-COMPILER_FLAGS		=	-Wall -c -O2 -std=c++11 -fpic -o
+#DEFS = -DTRACER_DEBUG
+COMPILER_FLAGS		=	-Wall -c -O2 $(DEFS) -std=c++11 -fpic -o
 LINKER_FLAGS		=	-shared
 LINKER_DEPENDENCIES	=	-lphpcpp
 
@@ -117,8 +118,11 @@ SOURCES				=	\
 						src/main.cpp \
 						src/ISpan.cpp \
 						src/ITracer.cpp \
+						src/JaegerSpan.cpp \
 						src/JaegerTracer.cpp \
+						src/NoopSpan.cpp \
 						src/NoopTracer.cpp \
+						src/PercentageSampler.cpp \
 						src/Tracer.cpp
 OBJECTS				=	$(SOURCES:%.cpp=%.o)
 

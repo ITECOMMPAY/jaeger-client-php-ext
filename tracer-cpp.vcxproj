@@ -51,8 +51,10 @@
   <ItemGroup>
     <ClCompile Include="src\ISpan.cpp" />
     <ClCompile Include="src\ITracer.cpp" />
+    <ClCompile Include="src\JaegerSpan.cpp" />
     <ClCompile Include="src\JaegerTracer.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\NoopSpan.cpp" />
     <ClCompile Include="src\NoopTracer.cpp" />
     <ClCompile Include="src\PercentageSampler.cpp" />
     <ClCompile Include="src\Tracer.cpp" />
@@ -74,6 +76,7 @@
       <ThreadSafeStatics />
       <ExceptionHandling />
       <RuntimeTypeInfo />
+      <PreprocessorDefinitions>TRACER_DEBUG</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <LibraryDependencies>phpcpp</LibraryDependencies>

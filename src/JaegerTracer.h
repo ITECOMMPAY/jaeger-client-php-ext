@@ -17,6 +17,7 @@ public:
     ~JaegerTracer()
     {
         delete _reporter;
+        delete _sampler;
         Php::out << "JaegerTracer::~JaegerTracer" << std::endl;
     }
 
@@ -27,35 +28,15 @@ public:
         Php::out << "JaegerTracer constructor" << std::endl;
     };
 
-    void init(std::string serviceName) const
-    {
-        this->print();
-    }
-    //JaegerTracer();
-    //JaegerTracer(const ITracer& in)
-    //{
-    //    Php::out<< "ITracer copy constructor" << std::endl;
-    //}
-    ISpan* startSpan(const std::string& operationName) const
-    {
-        Php::out << "JaegerTracer::startSpan, operationName = " << operationName << std::endl;
-        return new JaegerSpan();
-    }
+    void init(const std::string& serviceName) const;
+    ISpan* startSpan(const std::string& operationName, const Php::Value& options = nullptr) const;
+    ISpan* getCurrentSpan() const;
+    void finishSpan() const;
+    void inject() const;
+    void extract() const;
+    void flush() const;
 
-    void print() const
-    {
-        Php::out << "JaegerTracer::print" << std::endl;
-    };
-
-    const char* __toString() const
-    {
-        return "JaegerTracer::__toString";
-    }
-
-    const char* _name() const
-    {
-        return "JaegerTracer";
-    }
+    const char* _name() const;
 };
 
 

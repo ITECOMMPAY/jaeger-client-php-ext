@@ -10,13 +10,8 @@ class PercentageSampler : public ISampler
 private:
     int _value;
 public:
-    ~PercentageSampler()
-    {
-        Php::out << "PercentageSampler::~PercentageSampler" << std::endl;
-    }
-
-    PercentageSampler(const Php::Value &params = nullptr);
-
+    ~PercentageSampler();
+    PercentageSampler(const Php::Value& params = nullptr);
     bool isSampled();
 };
 

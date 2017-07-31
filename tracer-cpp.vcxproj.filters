@@ -4,18 +4,12 @@
     <Filter Include="src">
       <UniqueIdentifier>{f2480c69-950d-4520-81dd-d12696557d85}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\interface">
+      <UniqueIdentifier>{77a565e0-61c1-4d75-ae23-c765c4fcde27}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\FileReporter.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="src\IReporter.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="src\ISpan.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="src\ITracer.h">
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="src\JaegerSpan.h">
@@ -30,26 +24,29 @@
     <ClInclude Include="src\NoopTracer.h">
       <Filter>src</Filter>
     </ClInclude>
+    <ClInclude Include="src\PercentageSampler.h">
+      <Filter>src</Filter>
+    </ClInclude>
     <ClInclude Include="src\Tracer.h">
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="src\UdpReporter.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\ISampler.h">
-      <Filter>src</Filter>
+    <ClInclude Include="src\IReporter.h">
+      <Filter>src\interface</Filter>
     </ClInclude>
-    <ClInclude Include="src\PercentageSampler.h">
-      <Filter>src</Filter>
+    <ClInclude Include="src\ISampler.h">
+      <Filter>src\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ISpan.h">
+      <Filter>src\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ITracer.h">
+      <Filter>src\interface</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\ISpan.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ITracer.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="src\JaegerTracer.cpp">
       <Filter>src</Filter>
     </ClCompile>
@@ -64,6 +61,18 @@
     </ClCompile>
     <ClCompile Include="src\PercentageSampler.cpp">
       <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\NoopSpan.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\JaegerSpan.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ISpan.cpp">
+      <Filter>src\interface</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ITracer.cpp">
+      <Filter>src\interface</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

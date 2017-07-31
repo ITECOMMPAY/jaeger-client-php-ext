@@ -9,24 +9,14 @@ public:
     virtual ~ISpan();
 
     /*Add tags*/
-    //public function addTags(array $tags);
-
-    //template <typename T>
-    //ISpan * setTag(const std::string & key, const T & value);
-
-    //virtual ISpan * setTag(const std::string & key, const std::string & value) = 0;
-
-
-    virtual void addTag(Php::Parameters &params) = 0;
-    virtual void addTags(const std::string &key) = 0;
-
-
+    virtual void addTags(Php::Parameters& tags) = 0;
+    //virtual void addTags(const std::string& key) = 0;
 
     /*Add logs*/
-    //public function addLogs(array $logs);
+    virtual void addLogs(Php::Parameters& logs) = 0;
 
+    /*Name of a class to pass in Php::Object*/
     virtual const char* _name() const = 0;
-
 };
 
 #endif /* ISPAN_H */

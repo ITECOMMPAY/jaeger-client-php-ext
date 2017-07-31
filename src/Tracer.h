@@ -8,10 +8,6 @@
 #include "IReporter.h"
 #include "ISampler.h"
 
-#ifndef TRACER_DEBUG
-#  define TRACER_DEBUG /*for debug output*/
-#endif
-
 extern ITracer* global_tracer;
 void GlobalInit();
 
@@ -21,34 +17,33 @@ public:
     Tracer() {};
     virtual ~Tracer();
 
-    static Php::Value getTracer();
-
     /*Create tracer instance and call its init method*/
     static void init(Php::Parameters &params);
+    /*Get global tracer*/
+    static Php::Value getTracer();
     /*Pass startSpan call to the tracer*/
     static Php::Value startSpan(Php::Parameters &params);
+    /*Pass getCurrentSpan call to the tracer*/
+    static void getCurrentSpan();
+    /*Pass finishSpan call to the tracer*/
+    static void finishSpan();
+    /*Pass inject call to the tracer*/
+    static void inject();
+    /*Pass extract call to the tracer*/
+    static void extract();
+    /*Pass flush call to the tracer*/
+    static void flush();
+    /*Add tags to current span*/
+    static void addTags();
+    /*Add logs to current span*/
+    static void addLogs();
 
+    /*Build reporter*/
     static IReporter* buildReporter(const Php::Value& settings);
-
+    /*Build sampler*/
     static ISampler* buildSampler(const Php::Value& settings);
 
-    static Php::Value return_array(Php::Parameters &params);
 };
-
-/*class _tracer
-{
-public:
-    _tracer()=delete;
-    _tracer(const _tracer&)=delete;
-    _tracer(const _tracer&&)=delete;
-    void operator = (const _tracer&)=delete;
-    void operator = (const _tracer&&)=delete;
-
-    ITracer* getTracer() const
-    {
-        return global_tracer;
-    }
-};*/
 
 #endif /* TRACER_H */
 

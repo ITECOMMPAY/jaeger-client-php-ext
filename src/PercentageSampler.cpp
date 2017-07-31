@@ -1,5 +1,10 @@
 #include "PercentageSampler.h"
 
+PercentageSampler::~PercentageSampler()
+{
+    Php::out << "PercentageSampler::~PercentageSampler" << std::endl;
+}
+
 PercentageSampler::PercentageSampler(const Php::Value & params) :
     _value{ 50 }
 {
@@ -9,7 +14,9 @@ PercentageSampler::PercentageSampler(const Php::Value & params) :
     if (!params.isNull())
     {
         _value = params["percents"];
+#ifdef TRACER_DEBUG
         Php::out << "_value " << _value << std::endl;
+#endif
     }
 }
 
