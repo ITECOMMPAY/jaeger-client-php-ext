@@ -6,9 +6,10 @@
 #include "JaegerTracer.h"
 
 #include "IReporter.h"
+#include "ISampler.h"
 
 #ifndef TRACER_DEBUG
-#  define TRACER_DEBUG
+#  define TRACER_DEBUG /*for debug output*/
 #endif
 
 extern ITracer* global_tracer;
@@ -17,18 +18,20 @@ void GlobalInit();
 class Tracer : public Php::Base
 {
 public:
-    Tracer(){};
+    Tracer() {};
     virtual ~Tracer();
-    
+
     static Php::Value getTracer();
-    
+
     /*Create tracer instance and call its init method*/
     static void init(Php::Parameters &params);
     /*Pass startSpan call to the tracer*/
     static Php::Value startSpan(Php::Parameters &params);
-    
+
     static IReporter* buildReporter(const Php::Value& settings);
-    
+
+    static ISampler* buildSampler(const Php::Value& settings);
+
     static Php::Value return_array(Php::Parameters &params);
 };
 
@@ -38,7 +41,7 @@ public:
     _tracer()=delete;
     _tracer(const _tracer&)=delete;
     _tracer(const _tracer&&)=delete;
-    void operator = (const _tracer&)=delete;    
+    void operator = (const _tracer&)=delete;
     void operator = (const _tracer&&)=delete;
 
     ITracer* getTracer() const

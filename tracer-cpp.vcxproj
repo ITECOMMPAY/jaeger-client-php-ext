@@ -35,6 +35,7 @@
     <RemoteLinkLocalCopyOutput>false</RemoteLinkLocalCopyOutput>
   </PropertyGroup>
   <ItemGroup>
+    <ClInclude Include="src\ISampler.h" />
     <ClInclude Include="src\FileReporter.h" />
     <ClInclude Include="src\IReporter.h" />
     <ClInclude Include="src\ISpan.h" />
@@ -43,6 +44,7 @@
     <ClInclude Include="src\JaegerTracer.h" />
     <ClInclude Include="src\NoopSpan.h" />
     <ClInclude Include="src\NoopTracer.h" />
+    <ClInclude Include="src\PercentageSampler.h" />
     <ClInclude Include="src\Tracer.h" />
     <ClInclude Include="src\UdpReporter.h" />
   </ItemGroup>
@@ -52,6 +54,7 @@
     <ClCompile Include="src\JaegerTracer.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\NoopTracer.cpp" />
+    <ClCompile Include="src\PercentageSampler.cpp" />
     <ClCompile Include="src\Tracer.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -83,7 +86,7 @@
       <Command>cd $(RemoteProjectDir) &amp;&amp; echo -e "nooblol0\n" | sudo -S make install &amp;&amp; sudo make restart</Command>
     </RemotePostBuildEvent>
     <PreBuildEvent>
-      <Command>mkdir bin\x64\Debug\</Command>
+      <Command>if not exist bin\x64\Debug\ mkdir bin\x64\Debug\</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

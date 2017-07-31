@@ -6,24 +6,27 @@
 #include "ITracer.h"
 #include "JaegerSpan.h"
 #include "IReporter.h"
+#include "ISampler.h"
 
 class JaegerTracer : public ITracer
 {
 private:
     IReporter* _reporter;
-    //IReader*
+    ISampler* _sampler;
 public:
     ~JaegerTracer()
     {
         delete _reporter;
-        Php::out<<"JaegerTracer::~JaegerTracer" << std::endl;
+        Php::out << "JaegerTracer::~JaegerTracer" << std::endl;
     }
-    
-    JaegerTracer(IReporter* reporter):_reporter{reporter}
+
+    JaegerTracer(IReporter* reporter, ISampler* sampler) :
+        _reporter{ reporter },
+        _sampler{ sampler }
     {
-        Php::out<< "JaegerTracer constructor" << std::endl;
+        Php::out << "JaegerTracer constructor" << std::endl;
     };
-    
+
     void init(std::string serviceName) const
     {
         this->print();
@@ -38,12 +41,12 @@ public:
         Php::out << "JaegerTracer::startSpan, operationName = " << operationName << std::endl;
         return new JaegerSpan();
     }
-    
+
     void print() const
     {
         Php::out << "JaegerTracer::print" << std::endl;
     };
-    
+
     const char* __toString() const
     {
         return "JaegerTracer::__toString";
@@ -52,7 +55,7 @@ public:
     const char* _name() const
     {
         return "JaegerTracer";
-    }    
+    }
 };
 
 

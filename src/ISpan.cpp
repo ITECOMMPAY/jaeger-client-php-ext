@@ -1,6 +1,6 @@
 #include "ISpan.h"
 ISpan::~ISpan()
 {
-    Php::out<<"    ISpan::~ISpan" << std::endl;
+    Php::out << "    ISpan::~ISpan" << std::endl;
 }
 

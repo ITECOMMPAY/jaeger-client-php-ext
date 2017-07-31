@@ -36,6 +36,12 @@
     <ClInclude Include="src\UdpReporter.h">
       <Filter>src</Filter>
     </ClInclude>
+    <ClInclude Include="src\ISampler.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\PercentageSampler.h">
+      <Filter>src</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\ISpan.cpp">
@@ -54,6 +60,9 @@
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="src\Tracer.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\PercentageSampler.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>

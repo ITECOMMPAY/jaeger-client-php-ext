@@ -30,7 +30,7 @@ extern "C" {
     {
         /* Some globals init */
         GlobalInit();
-        
+
         // static(!) Php::Extension object that should stay in memory
         // for the entire duration of the process (that's why it's static)
         static Php::Extension extension("tracer-cpp", "1.0");
@@ -46,7 +46,7 @@ extern "C" {
             Php::ByVal("options",Php::Type::Array,false)
         });
         TracerClass.method<&Tracer::return_array>("return_array", Php::Static, {});
-        
+
         extension.add(std::move(TracerClass));
 
         /*todo - try to leave only abstract interface*/
@@ -60,7 +60,7 @@ extern "C" {
             //extension.add(NoopTracerClass);
         //}
         //Php::Interface ITracerInterface("ITracer");
-        
+
         Php::Class<NoopTracer> NoopTracerClass("NoopTracer");
         NoopTracerClass.method<&NoopTracer::print>("print", {});
         //NoopTracerClass.method<&NoopTracer::init>("init",{});
@@ -72,27 +72,27 @@ extern "C" {
         extension.add(std::move(JaegerTracerClass));
 
         //extension.add(std::move(ITracerInterface));
-            
+
         Php::Interface ISpanInterface("ISpan");
-        ISpanInterface.method("addTag",{});      
-        
+        ISpanInterface.method("addTag", {});
+
         Php::Class<NoopSpan> NoopSpanClass("NoopSpan");
         NoopSpanClass.implements(ISpanInterface);
-        NoopSpanClass.method<&NoopSpan::addTag>("addTag",{});
-        
+        NoopSpanClass.method<&NoopSpan::addTag>("addTag", {});
+
         Php::Class<JaegerSpan> JaegerSpanClass("JaegerSpan");
         JaegerSpanClass.implements(ISpanInterface);
-        JaegerSpanClass.method<&JaegerSpan::addTag>("addTag",{});
-        
+        JaegerSpanClass.method<&JaegerSpan::addTag>("addTag", {});
+
         extension.add(std::move(ISpanInterface));
         extension.add(std::move(JaegerSpanClass));
         extension.add(std::move(NoopSpanClass));
 
- 
-        
-        
-        
-        
+
+
+
+
+
         //Php::Class<Master> master("master");
         //Php::Class<Child> child("child");
         //master.method<&Master::child>("child");
@@ -100,7 +100,7 @@ extern "C" {
         //extension.add(std::move(child));
 
 
-         
+
 
         // add the bubblesort function to the extension, we also tell the 
         // extension that the function receives one parameter by value, and

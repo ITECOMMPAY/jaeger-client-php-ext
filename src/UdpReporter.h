@@ -6,28 +6,28 @@
 
 class UdpReporter : public IReporter
 {
-//private:
-//    Php::Value options;
-//    Php::Parameters params;
-//    int r[50];
+    //private:
+    //    Php::Value options;
+    //    Php::Parameters params;
+    //    int r[50];
 public:
     //UdpReporter() = delete;
     //UdpReporter(const UdpReporter&) = delete;
     //UdpReporter(const UdpReporter&&) = delete;
     //UdpReporter& operator=(const UdpReporter&) = delete;
     //UdpReporter& operator=(const UdpReporter&&) = delete;
-//    ~UdpReporter()
-//    {
-//        Php::out<<"UdpReporter::~UdpReporter" << std::endl;
-//    }
-    
+    ~UdpReporter()
+    {
+        Php::out << "UdpReporter::~UdpReporter" << std::endl;
+    }
+
     UdpReporter(const Php::Value &params)
     {
-        Php::out<<"UdpReporter::UdpReporter" << std::endl;
+        Php::out << "UdpReporter::UdpReporter" << std::endl;
         //Php::Value defaults;
         //defaults["addr"] = "localhost";;
         //defaults["port"] = 6831;
-        
+
         /*if (params.empty())
         {
             options = defaults;
@@ -39,10 +39,10 @@ public:
         }*/
     }
 
-    
+
     void flush() const
     {
-        Php::out<<"    UdpReporter::flush" << std::endl;
+        Php::out << "    UdpReporter::flush" << std::endl;
         /*$socket = socket_create(AF_INET, SOCK_DGRAM, SOL_UDP);
         if ($socket) {
             socket_sendto($socket, $data, strlen($data), 0, $this->options['addr'], $this->options['port']);

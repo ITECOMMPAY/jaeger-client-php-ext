@@ -1,7 +1,7 @@
-#ifndef IREPORTER_H
-#define IREPORTER_H
+#ifndef ISAMPLER_H
+#define ISAMPLER_H
 
-class IReporter
+class ISampler
 {
 public:
     //IReporter() = delete;
@@ -12,13 +12,12 @@ public:
 
     //IReporter(const Php::Value &params){};
 
-    virtual ~IReporter()
+    virtual ~ISampler()
     {
-        Php::out << "    IReporter::~IReporter addr: " << this << std::endl;
+        Php::out << "    ISampler::~ISampler addr: " << this << std::endl;
     }
 
-    virtual void flush() const = 0;
-
+    virtual bool isSampled() = 0;
 
     /*Add logs*/
     //public function addLogs(array $logs);
@@ -26,5 +25,5 @@ public:
 };
 
 
-#endif /* IREPORTER_H */
+#endif /* ISAMPLER_H */
 

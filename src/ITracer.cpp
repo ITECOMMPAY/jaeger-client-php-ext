@@ -2,5 +2,5 @@
 
 ITracer::~ITracer()
 {
-    Php::out<<"    ITracer::~ITracer addr: " << this << std::endl;
+    Php::out << "    ITracer::~ITracer addr: " << this << std::endl;
 }
