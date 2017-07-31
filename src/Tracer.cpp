@@ -16,7 +16,7 @@ void GlobalInit()
 Tracer::~Tracer()
 {
 #ifdef TRACER_DEBUG
-    Php::out << "Tracer::~Tracer" << std::endl;
+    Php::out << "~Tracer" << std::endl;
 #endif
 }
 

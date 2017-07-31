@@ -2,6 +2,11 @@
 
 void JaegerTracer::init(const std::string & serviceName) const
 {
+    if (!_spans.empty())
+    {
+        flush();
+    }
+
     //this->print();
 }
 

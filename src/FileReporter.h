@@ -9,7 +9,7 @@ class FileReporter : public IReporter
 public:
     ~FileReporter()
     {
-        Php::out << "FileReporter::~FileReporter" << std::endl;
+        Php::out << "~FileReporter" << std::endl;
     }
 
     FileReporter(const Php::Value &params)

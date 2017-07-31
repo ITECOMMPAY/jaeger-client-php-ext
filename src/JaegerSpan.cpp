@@ -7,7 +7,7 @@ JaegerSpan::JaegerSpan()
 
 JaegerSpan::~JaegerSpan()
 {
-    Php::out << "JaegerSpan::~JaegerSpan addr: " << this << std::endl;
+    Php::out << "~JaegerSpan addr: " << this << std::endl;
 }
 
 void JaegerSpan::addTags(Php::Parameters & params)

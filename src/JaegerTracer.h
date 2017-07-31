@@ -13,17 +13,29 @@ class JaegerTracer : public ITracer
 private:
     IReporter* _reporter;
     ISampler* _sampler;
+    //public $process;
+    std::vector<ISpan*> _spans;//Span[]
+    std::vector<ISpan*> _activeSpans;//int[]
+    bool _isSampled;
 public:
     ~JaegerTracer()
     {
         delete _reporter;
         delete _sampler;
-        Php::out << "JaegerTracer::~JaegerTracer" << std::endl;
+        for (auto iter : _spans)
+            delete iter;
+        _spans.clear();
+        for (auto iter : _activeSpans)
+            delete iter;
+        _activeSpans.clear();
+
+        Php::out << "~JaegerTracer" << std::endl;
     }
 
     JaegerTracer(IReporter* reporter, ISampler* sampler) :
         _reporter{ reporter },
-        _sampler{ sampler }
+        _sampler{ sampler },
+        _isSampled{ false }
     {
         Php::out << "JaegerTracer::JaegerTracer" << std::endl;
     };

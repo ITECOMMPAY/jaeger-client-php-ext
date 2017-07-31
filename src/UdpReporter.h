@@ -18,7 +18,7 @@ public:
     //UdpReporter& operator=(const UdpReporter&&) = delete;
     ~UdpReporter()
     {
-        Php::out << "UdpReporter::~UdpReporter" << std::endl;
+        Php::out << "~UdpReporter" << std::endl;
     }
 
     UdpReporter(const Php::Value &params)

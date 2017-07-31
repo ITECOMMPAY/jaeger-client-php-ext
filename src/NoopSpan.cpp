@@ -10,7 +10,7 @@ NoopSpan::NoopSpan()
 NoopSpan::~NoopSpan()
 {
 #ifdef TRACER_DEBUG
-    Php::out << "NoopSpan::~NoopSpan addr: " << this << std::endl;
+    Php::out << "~NoopSpan addr: " << this << std::endl;
 #endif
 }
 

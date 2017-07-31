@@ -6,7 +6,7 @@ class IReporter
 public:
     virtual ~IReporter()
     {
-        Php::out << "    IReporter::~IReporter addr: " << this << std::endl;
+        Php::out << "    ~IReporter addr: " << this << std::endl;
     }
 
     virtual void flush() const = 0;
