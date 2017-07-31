@@ -51,6 +51,9 @@
     <ClInclude Include="src\Process.h">
       <Filter>src</Filter>
     </ClInclude>
+    <ClInclude Include="src\Helper.h">
+      <Filter>src</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\JaegerTracer.cpp">
@@ -84,6 +87,9 @@
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="src\Process.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Helper.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>

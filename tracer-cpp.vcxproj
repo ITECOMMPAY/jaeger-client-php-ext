@@ -35,6 +35,7 @@
     <RemoteLinkLocalCopyOutput>false</RemoteLinkLocalCopyOutput>
   </PropertyGroup>
   <ItemGroup>
+    <ClInclude Include="src\Helper.h" />
     <ClInclude Include="src\ISampler.h" />
     <ClInclude Include="src\FileReporter.h" />
     <ClInclude Include="src\IReporter.h" />
@@ -51,6 +52,7 @@
     <ClInclude Include="src\UdpReporter.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Helper.cpp" />
     <ClCompile Include="src\ISpan.cpp" />
     <ClCompile Include="src\ITracer.cpp" />
     <ClCompile Include="src\JaegerSpan.cpp" />
