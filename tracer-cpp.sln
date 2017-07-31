@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.26724.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "tracer-cpp", "tracer-cpp.vcxproj", "{67DE862E-0BAD-45F8-925E-51963C896C26}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{67DE862E-0BAD-45F8-925E-51963C896C26}.Debug|x64.ActiveCfg = Debug|x64
+		{67DE862E-0BAD-45F8-925E-51963C896C26}.Debug|x64.Build.0 = Debug|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {73873445-A876-4661-9BBC-2A1304445DD2}
+	EndGlobalSection
+EndGlobal

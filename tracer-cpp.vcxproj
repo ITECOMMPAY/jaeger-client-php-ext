@@ -1,0 +1,88 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{67de862e-0bad-45f8-925e-51963c896c26}</ProjectGuid>
+    <Keyword>Linux</Keyword>
+    <RootNamespace>tracer_cpp</RootNamespace>
+    <MinimumVisualStudioVersion>15.0</MinimumVisualStudioVersion>
+    <ApplicationType>Linux</ApplicationType>
+    <ApplicationTypeRevision>1.0</ApplicationTypeRevision>
+    <TargetLinuxPlatform>Generic</TargetLinuxPlatform>
+    <LinuxProjectType>{2238F9CD-F817-4ECC-BD14-2524D2669B35}</LinuxProjectType>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <RemoteRootDir>~/_work</RemoteRootDir>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings" />
+  <ImportGroup Label="Shared" />
+  <ImportGroup Label="PropertySheets" />
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>$(ProjectDir)</OutDir>
+    <TargetName>$(ProjectName)</TargetName>
+    <TargetExt>.so</TargetExt>
+    <IntDir>$(ProjectDir)src\</IntDir>
+    <RemoteLinkLocalCopyOutput>false</RemoteLinkLocalCopyOutput>
+  </PropertyGroup>
+  <ItemGroup>
+    <ClInclude Include="src\FileReporter.h" />
+    <ClInclude Include="src\IReporter.h" />
+    <ClInclude Include="src\ISpan.h" />
+    <ClInclude Include="src\ITracer.h" />
+    <ClInclude Include="src\JaegerSpan.h" />
+    <ClInclude Include="src\JaegerTracer.h" />
+    <ClInclude Include="src\NoopSpan.h" />
+    <ClInclude Include="src\NoopTracer.h" />
+    <ClInclude Include="src\Tracer.h" />
+    <ClInclude Include="src\UdpReporter.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\ISpan.cpp" />
+    <ClCompile Include="src\ITracer.cpp" />
+    <ClCompile Include="src\JaegerTracer.cpp" />
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\NoopTracer.cpp" />
+    <ClCompile Include="src\Tracer.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Makefile" />
+    <None Include="tracer-cpp.ini" />
+  </ItemGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(UBUNTU_INCLUDE);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>-fPIC</AdditionalOptions>
+      <DebugInformationFormat />
+      <CAdditionalWarning />
+      <CppAdditionalWarning />
+      <Optimization>MaxSpeed</Optimization>
+      <StrictAliasing />
+      <OmitFramePointers />
+      <ThreadSafeStatics />
+      <ExceptionHandling />
+      <RuntimeTypeInfo />
+    </ClCompile>
+    <Link>
+      <LibraryDependencies>phpcpp</LibraryDependencies>
+      <Relocation />
+      <FunctionBinding />
+      <NoExecStackRequired />
+      <UnresolvedSymbolReferences />
+    </Link>
+    <RemotePostBuildEvent>
+      <Command>cd $(RemoteDebuggerWorkingDirectory) &amp;&amp; echo -e "nooblol0\n" | sudo -S make install &amp;&amp; sudo make restart</Command>
+    </RemotePostBuildEvent>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets" />
+</Project>
