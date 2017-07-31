@@ -14,7 +14,7 @@ public:
     virtual ~ITracer();
 
     /*Init tracing*/
-    virtual void init(const std::string& serviceName) const = 0;
+    virtual void init(const std::string& serviceName) = 0;
     /*Start span*/
     virtual ISpan* startSpan(const std::string& operationName, const Php::Value& options = nullptr) const = 0;
     /*Get current OPENED span*/

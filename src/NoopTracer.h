@@ -11,7 +11,7 @@ class NoopTracer : public ITracer
 public:
     ~NoopTracer();
     NoopTracer();
-    void init(const std::string& serviceName) const;
+    void init(const std::string& serviceName);
     ISpan* startSpan(const std::string& operationName, const Php::Value& options = nullptr) const;
     ISpan* getCurrentSpan() const;
     void finishSpan() const;

@@ -7,21 +7,23 @@
 #include "JaegerSpan.h"
 #include "IReporter.h"
 #include "ISampler.h"
+#include "Process.h"
 
 class JaegerTracer : public ITracer
 {
 private:
     IReporter* _reporter;
     ISampler* _sampler;
-    //public $process;
-    std::vector<ISpan*> _spans;//Span[]
-    std::vector<ISpan*> _activeSpans;//int[]
+    Process* _process;
+    std::vector<ISpan*> _spans;
+    std::vector<ISpan*> _activeSpans;
     bool _isSampled;
 public:
     ~JaegerTracer()
     {
         delete _reporter;
         delete _sampler;
+        delete _process;
         for (auto iter : _spans)
             delete iter;
         _spans.clear();
@@ -40,7 +42,7 @@ public:
         Php::out << "JaegerTracer::JaegerTracer" << std::endl;
     };
 
-    void init(const std::string& serviceName) const;
+    void init(const std::string& serviceName);
     ISpan* startSpan(const std::string& operationName, const Php::Value& options = nullptr) const;
     ISpan* getCurrentSpan() const;
     void finishSpan() const;

@@ -14,7 +14,7 @@ NoopTracer::NoopTracer()
 #endif
 }
 
-void NoopTracer::init(const std::string & serviceName) const
+void NoopTracer::init(const std::string & serviceName)
 {
 #ifdef TRACER_DEBUG
     Php::out << "NoopTracer::init" << std::endl;

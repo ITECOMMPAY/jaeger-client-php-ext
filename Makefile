@@ -123,6 +123,8 @@ SOURCES				=	\
 						src/NoopSpan.cpp \
 						src/NoopTracer.cpp \
 						src/PercentageSampler.cpp \
+						src/Process.cpp \
+						src/Tag.cpp \
 						src/Tracer.cpp
 OBJECTS				=	$(SOURCES:%.cpp=%.o)
 

@@ -1,13 +1,12 @@
 #include "JaegerTracer.h"
 
-void JaegerTracer::init(const std::string & serviceName) const
+void JaegerTracer::init(const std::string & serviceName)
 {
     if (!_spans.empty())
     {
         flush();
     }
-
-    //this->print();
+    this->_process = new Process(serviceName);
 }
 
 ISpan * JaegerTracer::startSpan(const std::string & operationName, const Php::Value & options) const

@@ -45,6 +45,12 @@
     <ClInclude Include="src\ITracer.h">
       <Filter>src\interface</Filter>
     </ClInclude>
+    <ClInclude Include="src\Tag.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Process.h">
+      <Filter>src</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\JaegerTracer.cpp">
@@ -73,6 +79,12 @@
     </ClCompile>
     <ClCompile Include="src\ITracer.cpp">
       <Filter>src\interface</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Tag.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Process.cpp">
+      <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

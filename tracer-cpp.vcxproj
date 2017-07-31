@@ -45,6 +45,8 @@
     <ClInclude Include="src\NoopSpan.h" />
     <ClInclude Include="src\NoopTracer.h" />
     <ClInclude Include="src\PercentageSampler.h" />
+    <ClInclude Include="src\Process.h" />
+    <ClInclude Include="src\Tag.h" />
     <ClInclude Include="src\Tracer.h" />
     <ClInclude Include="src\UdpReporter.h" />
   </ItemGroup>
@@ -57,6 +59,8 @@
     <ClCompile Include="src\NoopSpan.cpp" />
     <ClCompile Include="src\NoopTracer.cpp" />
     <ClCompile Include="src\PercentageSampler.cpp" />
+    <ClCompile Include="src\Process.cpp" />
+    <ClCompile Include="src\Tag.cpp" />
     <ClCompile Include="src\Tracer.cpp" />
   </ItemGroup>
   <ItemGroup>
