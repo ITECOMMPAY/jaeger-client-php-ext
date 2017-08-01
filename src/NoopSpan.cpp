@@ -23,6 +23,9 @@ void NoopSpan::addTags(Php::Parameters & params)
 
 void NoopSpan::addLogs(Php::Parameters & logs)
 {
+#ifdef TRACER_DEBUG
+    Php::out << "NoopSpan::addLogs addr: " << this << std::endl;
+#endif
 }
 
 const char * NoopSpan::_name() const

@@ -1,15 +1,5 @@
 #include "JaegerSpan.h"
 
-JaegerSpan::JaegerSpan()
-{
-    Php::out << "JaegerSpan::JaegerSpan addr: " << this << std::endl;
-}
-
-JaegerSpan::~JaegerSpan()
-{
-    Php::out << "~JaegerSpan addr: " << this << std::endl;
-}
-
 void JaegerSpan::addTags(Php::Parameters & params)
 {
     Php::out << "JaegerSpan::addTags addr: " << this << std::endl;

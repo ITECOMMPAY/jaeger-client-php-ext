@@ -43,10 +43,12 @@
     <ClInclude Include="src\ITracer.h" />
     <ClInclude Include="src\JaegerSpan.h" />
     <ClInclude Include="src\JaegerTracer.h" />
+    <ClInclude Include="src\Log.h" />
     <ClInclude Include="src\NoopSpan.h" />
     <ClInclude Include="src\NoopTracer.h" />
     <ClInclude Include="src\PercentageSampler.h" />
     <ClInclude Include="src\Process.h" />
+    <ClInclude Include="src\SpanContext.h" />
     <ClInclude Include="src\Tag.h" />
     <ClInclude Include="src\Tracer.h" />
     <ClInclude Include="src\UdpReporter.h" />
@@ -57,6 +59,7 @@
     <ClCompile Include="src\ITracer.cpp" />
     <ClCompile Include="src\JaegerSpan.cpp" />
     <ClCompile Include="src\JaegerTracer.cpp" />
+    <ClCompile Include="src\Log.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\NoopSpan.cpp" />
     <ClCompile Include="src\NoopTracer.cpp" />

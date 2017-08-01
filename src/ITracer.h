@@ -20,7 +20,7 @@ public:
     /*Get current OPENED span*/
     virtual ISpan* getCurrentSpan() const = 0;
     /*Finish span*/
-    virtual void finishSpan() const = 0;//($span, $endTime = null);
+    virtual void finishSpan(ISpan* span, const Php::Value& endTime = nullptr) const = 0;
     /*Inject context into carrier*/
     virtual void inject() const = 0;//($context, $format, &$carrier);
     /*Extract context from the carrier*/

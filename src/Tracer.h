@@ -26,7 +26,7 @@ public:
     /*Pass getCurrentSpan call to the tracer*/
     static Php::Value getCurrentSpan();
     /*Pass finishSpan call to the tracer*/
-    static void finishSpan();
+    static void finishSpan(Php::Parameters &params);
     /*Pass inject call to the tracer*/
     static void inject();
     /*Pass extract call to the tracer*/

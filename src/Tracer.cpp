@@ -4,6 +4,7 @@
 #include "PercentageSampler.h"
 
 ITracer* global_tracer;
+//Php::Value ref_global_tracer; //increase ref count so PHP GC will not delete it
 
 void GlobalInit()
 {
@@ -123,7 +124,9 @@ Php::Value Tracer::getTracer()
 {
 #ifdef TRACER_DEBUG
     Php::out << "Tracer::getTracer addr: " << global_tracer << std::endl;
+    //Php::out << "Tracer::getTracer addr: " << global_tracer << " ref addr: " << &ref_global_tracer << std::endl;
 #endif
+    //ref_global_tracer = Php::Object(global_tracer->_name(), global_tracer);
     return Php::Object(global_tracer->_name(), global_tracer);
 }
 
@@ -160,19 +163,13 @@ Php::Value Tracer::getCurrentSpan()
     return Php::Object(span->_name(), span);
 }
 
-void Tracer::finishSpan()
+void Tracer::finishSpan(Php::Parameters &params)
 {
-    //pass the implementation back
-
-    //public static function finishSpan($span)
-    //{
-    //    try {
-    //        self::getTracer()->finishSpan($span);
-    //    }
-    //    catch (\Throwable $e) {
-    //        // Noop
-    //    }
-    //}
+    Php::Value param = params[0];
+    if (!param.instanceOf("ISpan"))
+        throw Php::Exception("Wrong parameter passed");
+    ISpan* span = (ISpan*)param.implementation();
+    global_tracer->finishSpan(span);
 }
 
 void Tracer::inject()

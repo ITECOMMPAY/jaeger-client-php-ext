@@ -1,4 +1,13 @@
 #include "Helper.h"
+#include <sys/time.h>
+
+const int64_t Helper::now()
+{
+    struct timeval time;
+    gettimeofday(&time, NULL);
+    int64_t microsec = ((unsigned long long)time.tv_sec * 1000 * 1000) + time.tv_usec;
+    return microsec;
+}
 
 const std::string Helper::getHostName()
 {
@@ -20,4 +29,5 @@ const std::string Helper::getCurrentIp()
 
     return std::string{ buf };
 }
+
 

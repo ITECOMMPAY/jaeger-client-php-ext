@@ -118,6 +118,7 @@ SOURCES				=	\
 						src/main.cpp \
 						src/ISpan.cpp \
 						src/ITracer.cpp \
+						src/Helper.cpp \
 						src/JaegerSpan.cpp \
 						src/JaegerTracer.cpp \
 						src/NoopSpan.cpp \

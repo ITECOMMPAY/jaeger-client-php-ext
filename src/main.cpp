@@ -13,6 +13,7 @@
 
 #include "IReporter.h"
 #include "UdpReporter.h"
+#include "SpanContext.h"
 
 /**
 *  tell the compiler that the get_module is a pure C function
@@ -44,6 +45,9 @@ extern "C" {
         TracerClass.method<&Tracer::startSpan>("startSpan", Php::Static, {
             Php::ByVal("operationName",Php::Type::String,true),
             Php::ByVal("options",Php::Type::Array,false)
+        });
+        TracerClass.method<&Tracer::finishSpan>("finishSpan", Php::Static, {
+            Php::ByVal("span",Php::Type::Object,true),
         });
         //TracerClass.method<&Tracer::return_array>("return_array", Php::Static, {});
 

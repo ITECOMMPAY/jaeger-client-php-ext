@@ -16,9 +16,9 @@ private:
     ISampler* _sampler;
     Process* _process;
     std::vector<ISpan*> _spans;
-    std::vector<ISpan*> _activeSpans;
     bool _isSampled;
 public:
+    std::vector<ISpan*> _activeSpans;
     ~JaegerTracer()
     {
         delete _reporter;
@@ -45,7 +45,7 @@ public:
     void init(const std::string& serviceName);
     ISpan* startSpan(const std::string& operationName, const Php::Value& options = nullptr) const;
     ISpan* getCurrentSpan() const;
-    void finishSpan() const;
+    void finishSpan(ISpan* span, const Php::Value& endTime = nullptr) const;
     void inject() const;
     void extract() const;
     void flush() const;
