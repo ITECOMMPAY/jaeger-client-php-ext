@@ -1,7 +1,7 @@
 #ifndef SPANCONTEXT_H
 #define SPANCONTEXT_H
 #include <phpcpp.h>
-//#include <iostream>
+#include <iostream>
 
 class SpanContext
 {

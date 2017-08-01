@@ -17,7 +17,8 @@ public:
     int64_t _endTime;
 
     static const int SAMPLED_FLAG = 0x01;
-    JaegerSpan()
+    JaegerSpan() :
+        _context{ nullptr }
     {
         Php::out << "JaegerSpan::JaegerSpan addr: " << this << std::endl;
 
