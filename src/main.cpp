@@ -37,20 +37,24 @@ extern "C" {
         static Php::Extension extension("tracer-cpp", "1.0");
 
         Php::Class<Tracer> TracerClass("Tracer");
-        TracerClass.method<&Tracer::getTracer>("getTracer", Php::Static, {});
         TracerClass.method<&Tracer::init>("init", Php::Static, {
             Php::ByVal("serviceName",Php::Type::String,true),
             Php::ByVal("settings",Php::Type::Array,false)
         });
+        TracerClass.method<&Tracer::getTracer>("getTracer", Php::Static, {});
         TracerClass.method<&Tracer::startSpan>("startSpan", Php::Static, {
             Php::ByVal("operationName",Php::Type::String,true),
             Php::ByVal("options",Php::Type::Array,false)
         });
+        TracerClass.method<&Tracer::getCurrentSpan>("getCurrentSpan", Php::Static, {});
         TracerClass.method<&Tracer::finishSpan>("finishSpan", Php::Static, {
             Php::ByVal("span",Php::Type::Object,true),
         });
-        //TracerClass.method<&Tracer::return_array>("return_array", Php::Static, {});
-
+        TracerClass.method<&Tracer::inject>("inject", Php::Static, {});
+        TracerClass.method<&Tracer::extract>("extract", Php::Static, {});
+        TracerClass.method<&Tracer::flush>("flush", Php::Static, {});
+        TracerClass.method<&Tracer::addTags>("addTags", Php::Static, {});
+        TracerClass.method<&Tracer::addLogs>("addLogs", Php::Static, {});
         extension.add(std::move(TracerClass));
 
         /*todo - try to leave only abstract interface*/

@@ -3,6 +3,9 @@
 
 #include <phpcpp.h>
 #include <iostream>
+#include <unordered_map>
+#include <unordered_set>
+
 #include "ITracer.h"
 #include "JaegerSpan.h"
 #include "IReporter.h"
@@ -15,20 +18,18 @@ private:
     IReporter* _reporter;
     ISampler* _sampler;
     Process* _process;
-    std::vector<ISpan*> _spans;
     bool _isSampled;
 public:
-    std::vector<ISpan*> _activeSpans;
+    std::unordered_map<int, ISpan*> _spans;
+    std::vector<int> _activeSpans;
     ~JaegerTracer()
     {
         delete _reporter;
         delete _sampler;
         delete _process;
-        for (auto iter : _spans)
-            delete iter;
+        for (auto& iter : _spans)
+            delete iter.second;
         _spans.clear();
-        for (auto iter : _activeSpans)
-            delete iter;
         _activeSpans.clear();
 
         Php::out << "~JaegerTracer" << std::endl;
@@ -43,9 +44,9 @@ public:
     };
 
     void init(const std::string& serviceName);
-    ISpan* startSpan(const std::string& operationName, const Php::Value& options = nullptr) const;
-    ISpan* getCurrentSpan() const;
-    void finishSpan(ISpan* span, const Php::Value& endTime = nullptr) const;
+    ISpan* startSpan(const std::string& operationName, const Php::Value& options = nullptr);
+    ISpan* getCurrentSpan();
+    void finishSpan(ISpan* span, const Php::Value& endTime = nullptr);
     void inject() const;
     void extract() const;
     void flush() const;

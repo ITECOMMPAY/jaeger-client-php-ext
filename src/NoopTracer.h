@@ -12,9 +12,9 @@ public:
     ~NoopTracer();
     NoopTracer();
     void init(const std::string& serviceName);
-    ISpan* startSpan(const std::string& operationName, const Php::Value& options = nullptr) const;
-    ISpan* getCurrentSpan() const;
-    void finishSpan(ISpan* span, const Php::Value& endTime = nullptr) const;
+    ISpan* startSpan(const std::string& operationName, const Php::Value& options = nullptr);
+    ISpan* getCurrentSpan();
+    void finishSpan(ISpan* span, const Php::Value& endTime = nullptr);
     void inject() const;
     void extract() const;
     void flush() const;

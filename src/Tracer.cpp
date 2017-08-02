@@ -127,7 +127,7 @@ Php::Value Tracer::getTracer()
     //Php::out << "Tracer::getTracer addr: " << global_tracer << " ref addr: " << &ref_global_tracer << std::endl;
 #endif
     //ref_global_tracer = Php::Object(global_tracer->_name(), global_tracer);
-    return Php::Object(global_tracer->_name(), global_tracer);
+    return global_tracer == nullptr ? static_cast<Php::Value>(nullptr) : Php::Object(global_tracer->_name(), global_tracer);
 }
 
 Php::Value Tracer::startSpan(Php::Parameters& params)
@@ -153,14 +153,14 @@ Php::Value Tracer::startSpan(Php::Parameters& params)
 
     ISpan* span = global_tracer->startSpan(operationName, options);
 
-    return Php::Object(span->_name(), span);
+    return span == nullptr ? static_cast<Php::Value>(nullptr) : Php::Object(span->_name(), span);
 }
 
 Php::Value Tracer::getCurrentSpan()
 {
     ISpan* span = global_tracer->getCurrentSpan();
 
-    return Php::Object(span->_name(), span);
+    return span == nullptr ? static_cast<Php::Value>(nullptr) : Php::Object(span->_name(), span);
 }
 
 void Tracer::finishSpan(Php::Parameters &params)

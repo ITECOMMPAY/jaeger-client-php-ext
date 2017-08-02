@@ -21,7 +21,7 @@ void NoopTracer::init(const std::string & serviceName)
 #endif
 }
 
-ISpan * NoopTracer::startSpan(const std::string & operationName, const Php::Value & options) const
+ISpan * NoopTracer::startSpan(const std::string & operationName, const Php::Value & options)
 {
 #ifdef TRACER_DEBUG
     if (options.isNull())
@@ -38,11 +38,11 @@ ISpan * NoopTracer::startSpan(const std::string & operationName, const Php::Valu
     return new NoopSpan();
 }
 
-ISpan * NoopTracer::getCurrentSpan() const
+ISpan * NoopTracer::getCurrentSpan()
 {
     return new NoopSpan();
 }
-void NoopTracer::finishSpan(ISpan* span, const Php::Value& endTime) const
+void NoopTracer::finishSpan(ISpan* span, const Php::Value& endTime)
 {
     Php::out << "NoopTracer::finishSpan " << span->_name() << std::endl;
 }

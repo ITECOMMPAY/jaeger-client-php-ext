@@ -16,11 +16,11 @@ public:
     /*Init tracing*/
     virtual void init(const std::string& serviceName) = 0;
     /*Start span*/
-    virtual ISpan* startSpan(const std::string& operationName, const Php::Value& options = nullptr) const = 0;
+    virtual ISpan* startSpan(const std::string& operationName, const Php::Value& options = nullptr) = 0;
     /*Get current OPENED span*/
-    virtual ISpan* getCurrentSpan() const = 0;
+    virtual ISpan* getCurrentSpan() = 0;
     /*Finish span*/
-    virtual void finishSpan(ISpan* span, const Php::Value& endTime = nullptr) const = 0;
+    virtual void finishSpan(ISpan* span, const Php::Value& endTime = nullptr) = 0;
     /*Inject context into carrier*/
     virtual void inject() const = 0;//($context, $format, &$carrier);
     /*Extract context from the carrier*/

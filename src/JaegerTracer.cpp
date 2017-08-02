@@ -1,6 +1,9 @@
 #include "JaegerTracer.h"
 #include "Helper.h"
 
+#include <algorithm>
+
+
 void JaegerTracer::init(const std::string & serviceName)
 {
     if (!_spans.empty())
@@ -10,7 +13,7 @@ void JaegerTracer::init(const std::string & serviceName)
     this->_process = new Process(serviceName);
 }
 
-ISpan * JaegerTracer::startSpan(const std::string & operationName, const Php::Value & options) const
+ISpan * JaegerTracer::startSpan(const std::string & operationName, const Php::Value & options)
 {
     if (options.isNull())
     {
@@ -26,38 +29,41 @@ ISpan * JaegerTracer::startSpan(const std::string & operationName, const Php::Va
     return new JaegerSpan();
 }
 
-ISpan * JaegerTracer::getCurrentSpan() const
+ISpan * JaegerTracer::getCurrentSpan()
 {
-    //$spanKey = end($this->activeSpans);
-    //if ($spanKey) {
-    //    return $this->spans[$spanKey];
-    //}
-    //return false;
-
+    if (!_activeSpans.empty())
+    {
+        return _spans[_activeSpans.back()];
+    }
     return nullptr;
 }
 
-void JaegerTracer::finishSpan(ISpan* span, const Php::Value& endTime) const
+void JaegerTracer::finishSpan(ISpan* span, const Php::Value& endTime)
 {
+#ifdef TRACER_DEBUG
     Php::out << "JaegerTracer::finishSpan " << span->_name() << std::endl;
+#endif
     //if ($span instanceof SpanContext) {
     //    $span = $this->spans[(string)$span->spanId] ? ? null;
     //}
-    //if ($span instanceof Span) {
-    //    $span->endTime = $endTime ? ? Helper::now();
-    //    if (($key = array_search((string)$span->context->spanId, $this->activeSpans)) != = false) {
-    //        unset($this->activeSpans[$key]);
-    //    }
-    //}
     JaegerSpan* jaegerSpan = dynamic_cast<JaegerSpan*>(span);
-    //jaegerSpan->_endTime = !endTime.isNull() ? static_cast<int64_t>(endTime) : Helper::now();
-    
-    //Php::out << "time: " << jaegerSpan->_endTime << std::endl;
-  
-    //jaegerSpan->_context->_spanId;
-    //this->_activeSpans
+    if (jaegerSpan != nullptr)
+    {
+        jaegerSpan->_endTime = !endTime.isNull() ? static_cast<int64_t>(endTime) : Helper::now();
+
+        if (!_activeSpans.empty())
+        {
+            auto findSpanId = std::find(_activeSpans.begin(), _activeSpans.end(), jaegerSpan->_context->_spanId);
+            if (findSpanId != _activeSpans.end())
+                _activeSpans.erase(findSpanId);
+        }
 
 
+#ifdef TRACER_DEBUG
+        Php::out << "time: " << jaegerSpan->_endTime << std::endl;
+        //Php::out << "spanid: " << jaegerSpan->_context->_spanId << std::endl;
+#endif
+    }
 }
 
 void JaegerTracer::inject() const
