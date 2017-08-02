@@ -7,7 +7,7 @@ class NoopSpan : public ISpan
 public:
     NoopSpan();
     ~NoopSpan();
-    void addTags(Php::Parameters &params);
+    void addTags(Php::Parameters& params);
     void addLogs(Php::Parameters& logs);
     const char* _name() const;
 };

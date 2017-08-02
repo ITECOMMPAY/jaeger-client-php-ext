@@ -3,7 +3,7 @@
 const std::string Tag::TAG_TYPE_HOST{ "host" };
 const std::string Tag::TAG_TYPE_IP{ "ip" };
 
-Tag::Tag(const std::string & key, const std::string & value) :
+Tag::Tag(const std::string& key, const std::string& value) :
     _key{ key },
     _value{ value }
 {

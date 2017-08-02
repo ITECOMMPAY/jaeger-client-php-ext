@@ -12,7 +12,7 @@ public:
         Php::out << "~FileReporter" << std::endl;
     }
 
-    FileReporter(const Php::Value &params)
+    FileReporter(const Php::Value& params)
     {
         Php::out << "FileReporter::FileReporter" << std::endl;
         /*$defaults = [

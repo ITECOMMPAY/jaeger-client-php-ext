@@ -4,7 +4,7 @@
 #include <algorithm>
 
 
-void JaegerTracer::init(const std::string & serviceName)
+void JaegerTracer::init(const std::string& serviceName)
 {
     if (!_spans.empty())
     {
@@ -13,7 +13,7 @@ void JaegerTracer::init(const std::string & serviceName)
     this->_process = new Process(serviceName);
 }
 
-ISpan * JaegerTracer::startSpan(const std::string & operationName, const Php::Value & options)
+ISpan * JaegerTracer::startSpan(const std::string& operationName, const Php::Value& options)
 {
     Php::Value refType = nullptr;
     Php::Value parent = nullptr;

@@ -163,7 +163,7 @@ Php::Value Tracer::getCurrentSpan()
     return span == nullptr ? static_cast<Php::Value>(nullptr) : Php::Object(span->_name(), span);
 }
 
-void Tracer::finishSpan(Php::Parameters &params)
+void Tracer::finishSpan(Php::Parameters& params)
 {
     Php::Value param = params[0];
     if (!param.isNull())
@@ -203,42 +203,23 @@ void Tracer::extract()
 
 void Tracer::flush()
 {
-    //public static function flush()
-    //{
-    //    try {
-    //        self::getTracer()->flush();
-    //    }
-    //    catch (\Throwable $e) {
-    //        // Noop
-    //    }
-    //}
+    global_tracer->flush();
 }
 
-void Tracer::addTags()
+void Tracer::addTags(Php::Parameters& params)
 {
-    //try {
-    //    $currentSpan = self::getTracer()->getCurrentSpan();
-    //    if ($currentSpan) {
-    //        $currentSpan->addTags($tags);
-    //    }
-    //}
-    //catch (\Throwable $e) {
-    //    // Noop
-    //}
+    ISpan* span = global_tracer->getCurrentSpan();
+    if (span)
+    {
+        span->addTags(params);
+    }
 }
 
-void Tracer::addLogs()
+void Tracer::addLogs(Php::Parameters& params)
 {
-    //public static function addLogs(array $logs)
-    //{
-    //    try {
-    //        $currentSpan = self::getTracer()->getCurrentSpan();
-    //        if ($currentSpan) {
-    //            $currentSpan->addLogs($logs);
-    //        }
-    //    }
-    //    catch (\Throwable $e) {
-    //        // Noop
-    //    }
-    //}
+    ISpan* span = global_tracer->getCurrentSpan();
+    if (span)
+    {
+        span->addLogs(params);
+    }
 }

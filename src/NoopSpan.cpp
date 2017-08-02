@@ -14,14 +14,14 @@ NoopSpan::~NoopSpan()
 #endif
 }
 
-void NoopSpan::addTags(Php::Parameters & params)
+void NoopSpan::addTags(Php::Parameters& params)
 {
 #ifdef TRACER_DEBUG
     Php::out << "NoopSpan::addTags addr: " << this << std::endl;
 #endif
 }
 
-void NoopSpan::addLogs(Php::Parameters & logs)
+void NoopSpan::addLogs(Php::Parameters& logs)
 {
 #ifdef TRACER_DEBUG
     Php::out << "NoopSpan::addLogs addr: " << this << std::endl;

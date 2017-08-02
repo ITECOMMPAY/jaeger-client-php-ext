@@ -14,14 +14,14 @@ NoopTracer::NoopTracer()
 #endif
 }
 
-void NoopTracer::init(const std::string & serviceName)
+void NoopTracer::init(const std::string& serviceName)
 {
 #ifdef TRACER_DEBUG
     Php::out << "NoopTracer::init" << std::endl;
 #endif
 }
 
-ISpan * NoopTracer::startSpan(const std::string & operationName, const Php::Value & options)
+ISpan * NoopTracer::startSpan(const std::string& operationName, const Php::Value& options)
 {
 #ifdef TRACER_DEBUG
     if (options.isNull())

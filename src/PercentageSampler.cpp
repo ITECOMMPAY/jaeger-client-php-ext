@@ -6,7 +6,7 @@ PercentageSampler::~PercentageSampler()
     Php::out << "~PercentageSampler" << std::endl;
 }
 
-PercentageSampler::PercentageSampler(const Php::Value & params) :
+PercentageSampler::PercentageSampler(const Php::Value& params) :
     _value{ 50 }
 {
     Php::out << "PercentageSampler::PercentageSampler" << std::endl;

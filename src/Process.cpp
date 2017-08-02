@@ -3,7 +3,7 @@
 
 const std::string Process::DEFAULT_SERVICE_NAME{ "unknown" };
 
-Process::Process(const std::string & serviceName) :
+Process::Process(const std::string& serviceName) :
     _serviceName{ serviceName }
 {
     Php::out << "    Process::Process addr: " << this << std::endl;

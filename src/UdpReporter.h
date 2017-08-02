@@ -21,7 +21,7 @@ public:
         Php::out << "~UdpReporter" << std::endl;
     }
 
-    UdpReporter(const Php::Value &params)
+    UdpReporter(const Php::Value& params)
     {
         Php::out << "UdpReporter::UdpReporter" << std::endl;
         //Php::Value defaults;
