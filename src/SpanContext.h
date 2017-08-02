@@ -5,21 +5,21 @@
 
 class SpanContext
 {
-private:
-    int _traceId;
-    int _parentId;
+public:
+    unsigned int _traceId;
+    unsigned int _spanId;
+    unsigned int _parentId;
     int _flags;
     Php::Value _refType;
-public:
-    int _spanId;
-    SpanContext(const int& traceId, const int& spanId, const int& parentId, const int& flags, const Php::Value& refType = nullptr) :
+
+    SpanContext(const unsigned int& traceId, const unsigned int& spanId, const unsigned int& parentId, const int& flags, const Php::Value& refType = nullptr) :
         _traceId{ traceId },
+        _spanId{ spanId },
         _parentId{ parentId },
         _flags{ flags },
-        _refType{ refType },
-        _spanId{ spanId }
+        _refType{ refType }
     {
-        Php::out << _traceId << " " << _spanId << " " << _parentId << " " << _flags << " " << std::endl;
+        Php::out << "SpanContext: " << _traceId << " " << _spanId << " " << _parentId << " " << _flags << " " << std::endl;
     }
     SpanContext(const SpanContext&) = delete;
 

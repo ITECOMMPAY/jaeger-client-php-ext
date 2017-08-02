@@ -1,4 +1,5 @@
 #include "PercentageSampler.h"
+#include "Helper.h"
 
 PercentageSampler::~PercentageSampler()
 {
@@ -8,8 +9,6 @@ PercentageSampler::~PercentageSampler()
 PercentageSampler::PercentageSampler(const Php::Value & params) :
     _value{ 50 }
 {
-    srand(time(NULL));
-
     Php::out << "PercentageSampler::PercentageSampler" << std::endl;
     if (!params.isNull())
     {
@@ -23,5 +22,5 @@ PercentageSampler::PercentageSampler(const Php::Value & params) :
 bool PercentageSampler::isSampled()
 {
     Php::out << "PercentageSampler::isSampled" << std::endl;
-    return rand() % 100 < this->_value;
+    return dist(re) < this->_value;
 }

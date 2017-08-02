@@ -3,7 +3,7 @@
 
 Log::Log(const std::vector<Tag*>& logs, const Php::Value& timestamp)
 {
-    _timestamp = (!timestamp.isNull()) ? static_cast<int64_t>(timestamp) : Helper::now();
+    _timestamp = !timestamp.isNull() ? static_cast<int64_t>(timestamp) : Helper::now();
     Php::out << "    Log::time " << _timestamp << std::endl;
     //foreach($logs as $logKey = > $logValue) {
     //    $this->fields[] = new Tag($logKey, $logValue);

@@ -48,7 +48,7 @@ extern "C" {
         });
         TracerClass.method<&Tracer::getCurrentSpan>("getCurrentSpan", Php::Static, {});
         TracerClass.method<&Tracer::finishSpan>("finishSpan", Php::Static, {
-            Php::ByVal("span",Php::Type::Object,true),
+            //Php::ByVal("span",Php::Type::Object,true),
         });
         TracerClass.method<&Tracer::inject>("inject", Php::Static, {});
         TracerClass.method<&Tracer::extract>("extract", Php::Static, {});

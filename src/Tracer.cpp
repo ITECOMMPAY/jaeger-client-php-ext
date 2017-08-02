@@ -166,10 +166,13 @@ Php::Value Tracer::getCurrentSpan()
 void Tracer::finishSpan(Php::Parameters &params)
 {
     Php::Value param = params[0];
-    if (!param.instanceOf("ISpan"))
-        throw Php::Exception("Wrong parameter passed");
-    ISpan* span = (ISpan*)param.implementation();
-    global_tracer->finishSpan(span);
+    if (!param.isNull())
+    {
+        if (!param.instanceOf("ISpan"))
+            throw Php::Exception("Wrong parameter passed");
+        ISpan* span = (ISpan*)param.implementation();
+        global_tracer->finishSpan(span);
+    }
 }
 
 void Tracer::inject()

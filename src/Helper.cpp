@@ -1,12 +1,22 @@
 #include "Helper.h"
 #include <sys/time.h>
 
+std::random_device rd;
+std::default_random_engine re{ rd() };
+std::uniform_int_distribution<int> dist{ 0, 99 };
+std::uniform_int_distribution<unsigned int> dist_32bit{ 0x00000000, 0xFFFFFFFF };
+
 const int64_t Helper::now()
 {
     struct timeval time;
     gettimeofday(&time, NULL);
     int64_t microsec = ((unsigned long long)time.tv_sec * 1000 * 1000) + time.tv_usec;
     return microsec;
+}
+
+const unsigned int Helper::generateId()
+{
+    return dist_32bit(re);
 }
 
 const std::string Helper::getHostName()
