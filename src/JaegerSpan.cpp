@@ -25,13 +25,20 @@ JaegerSpan::~JaegerSpan()
 
 void JaegerSpan::addTags(Php::Parameters& params)
 {
+    //public function addTags(array $tags)
+    //{
+    //    foreach($tags as $tagKey = > $tagValue) {
+    //        $this->tags[$tagKey] = new Tag($tagKey, $tagValue);
+    //    }
+    //}
+
     Php::out << "   ::addTags addr: " << this << std::endl;
 
     if (!params.empty() > 0)
     {
         //std::map<std::string, std::string> tags = params[0];
         //std::unordered_map<std::string, std::string> tags_unordered;
-        std::vector<std::pair<std::string, std::string>> tags_order; //appears how PHP shows an array using var_dump etc.
+        //std::vector<std::pair<std::string, std::string>> tags_order; //appears how PHP shows an array using var_dump etc.
 
         /*hack to keep the order of tags*/
         /*could be expensive*/
@@ -46,8 +53,14 @@ void JaegerSpan::addTags(Php::Parameters& params)
                 //std::string value = values[i];
                 //Php::out << key << "-" << value << std::endl;
                 //tags_order.push_back(std::make_pair(key, value));
-
-                this->_tags.push_back(new Tag(keys[i], values[i]));
+                try
+                {
+                    this->_tags.push_back(new Tag(keys[i], values[i]));
+                }
+                catch (...)
+                {
+                    throw Php::Exception("  ::addTags - wring parameters, check to be a [string=>string,]");
+                }
             }
         }
 
@@ -71,24 +84,66 @@ void JaegerSpan::addTags(Php::Parameters& params)
         //for (auto& iter : this->_tags)
         //    Php::out << iter->_key << " " << iter->_value << std::endl;
 
-        //Php::out << std::endl;
 
     }
 
 
-    /*
-    public function addTags(array $tags)
-    {
-    foreach ($tags as $tagKey => $tagValue) {
-        $this->tags[$tagKey] = new Tag($tagKey, $tagValue);
-    }
-    }
-    */
+
 }
 
 void JaegerSpan::addLogs(Php::Parameters& logs)
 {
     //$this->logs[] = new Log($logs);
+
+    //foreach($logs as $logKey = > $logValue) {
+    //    $this->fields[] = new Tag($logKey, $logValue);
+
+    Php::out << "   JaegerSpan::addLogs" << std::endl;
+
+    if (!logs.empty() > 0)
+    {
+        std::vector<Tag*> tags;
+
+        /*hack to keep the order of tags*/
+        /*could be expensive*/
+        {
+            Php::Value keys = Php::array_keys(logs[0]);
+            Php::Value values = Php::array_values(logs[0]);
+
+            for (int i = 0; i < keys.size(); i++)
+            {
+                //std::string key = keys[i];
+                //std::string value = values[i];
+                //Php::out << key << "-" << value << std::endl;
+                //tags_order.push_back(std::make_pair(key, value));
+                try
+                {
+                    tags.push_back(new Tag(keys[i], values[i]));
+                }
+                catch (...)
+                {
+                    throw Php::Exception("  ::addTags - wring parameters, check to be a [string=>string,]");
+                }
+
+            }
+            //Php::out << "     size tags = " << tags.size() << std::endl;
+        }
+
+        this->_logs.push_back(new Log(tags));
+        //Php::out << "     size tags = " << tags.size() << std::endl;
+
+
+        //Php::out << std::endl;
+        //for (auto& iter : this->_logs)
+        //{
+        //    Php::out << iter->_timestamp << std::endl;
+        //    for (auto& it : iter->_fields)
+        //    {
+        //        Php::out << "   "<<it->_key << " " << it->_value << std::endl;
+        //    }
+        //}
+    }
+
 }
 
 

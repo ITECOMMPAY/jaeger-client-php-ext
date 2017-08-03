@@ -217,9 +217,22 @@ void Tracer::addTags(Php::Parameters& params)
 
 void Tracer::addLogs(Php::Parameters& params)
 {
+    Php::out << "Tracer::addLogs" << std::endl;
     ISpan* span = global_tracer->getCurrentSpan();
     if (span)
     {
         span->addLogs(params);
+
+        //JaegerSpan* temp_out = dynamic_cast<JaegerSpan*>(span);
+
+        //Php::out << std::endl;
+        //for (auto& iter : temp_out->_logs)
+        //{
+        //    Php::out << iter->_timestamp << std::endl;
+        //    for (auto& it : iter->_fields)
+        //    {
+        //        Php::out << "   " << it->_key << " " << it->_value << std::endl;
+        //    }
+        //}
     }
 }

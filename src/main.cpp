@@ -83,14 +83,17 @@ extern "C" {
 
         Php::Interface ISpanInterface("ISpan");
         ISpanInterface.method("addTags", {});
+        ISpanInterface.method("addLogs", {});
 
         Php::Class<NoopSpan> NoopSpanClass("NoopSpan");
         NoopSpanClass.implements(ISpanInterface);
         NoopSpanClass.method<&NoopSpan::addTags>("addTags", {});
+        NoopSpanClass.method<&NoopSpan::addLogs>("addLogs", {});
 
         Php::Class<JaegerSpan> JaegerSpanClass("JaegerSpan");
         JaegerSpanClass.implements(ISpanInterface);
         JaegerSpanClass.method<&JaegerSpan::addTags>("addTags", {});
+        JaegerSpanClass.method<&JaegerSpan::addLogs>("addLogs", {});
 
         extension.add(std::move(ISpanInterface));
         extension.add(std::move(JaegerSpanClass));

@@ -1,12 +1,12 @@
 #include "Log.h"
 #include "Helper.h"
 
-Log::Log(const std::vector<Tag*>& logs, const Php::Value& timestamp)
+Log::Log(std::vector<Tag*>& logs, const Php::Value& timestamp) :
+    _fields{ std::move(logs) }
 {
-    _timestamp = !timestamp.isNull() ? static_cast<int64_t>(timestamp) : Helper::now();
+    this->_timestamp = !timestamp.isNull() ? static_cast<int64_t>(timestamp) : Helper::now();
     Php::out << "    Log::time " << _timestamp << std::endl;
-    //foreach($logs as $logKey = > $logValue) {
-    //    $this->fields[] = new Tag($logKey, $logValue);
+
 }
 
 Log::~Log()
