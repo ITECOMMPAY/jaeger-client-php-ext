@@ -4,6 +4,27 @@
 #include <algorithm>
 
 
+JaegerTracer::~JaegerTracer()
+{
+    delete _reporter;
+    delete _sampler;
+    delete _process;
+    for (auto& iter : _spans)
+        delete iter.second;
+    _spans.clear();
+    _activeSpans.clear();
+
+    Php::out << "~JaegerTracer" << std::endl;
+}
+
+JaegerTracer::JaegerTracer(IReporter * reporter, ISampler * sampler) :
+    _reporter{ reporter },
+    _sampler{ sampler },
+    _isSampled{ false }
+{
+    Php::out << "JaegerTracer::JaegerTracer" << std::endl;
+}
+
 void JaegerTracer::init(const std::string& serviceName)
 {
     if (!_spans.empty())

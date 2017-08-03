@@ -1,4 +1,7 @@
 #include "JaegerSpan.h"
+#include <unordered_map>
+#include <map>
+
 
 JaegerSpan::JaegerSpan(SpanContext* context, const std::string& operationName, const Php::Value& startTime) :
     _operationName{ operationName },
@@ -22,12 +25,62 @@ JaegerSpan::~JaegerSpan()
 
 void JaegerSpan::addTags(Php::Parameters& params)
 {
-    Php::out << "JaegerSpan::addTags addr: " << this << std::endl;
+    Php::out << "   ::addTags addr: " << this << std::endl;
+
+    if (!params.empty() > 0)
+    {
+        //std::map<std::string, std::string> tags = params[0];
+        //std::unordered_map<std::string, std::string> tags_unordered;
+        std::vector<std::pair<std::string, std::string>> tags_order; //appears how PHP shows an array using var_dump etc.
+
+        /*hack to keep the order of tags*/
+        /*could be expensive*/
+        {
+            Php::Value keys = Php::array_keys(params[0]);
+            Php::Value values = Php::array_values(params[0]);
+
+            //Php::call("var_dump", keys);
+            for (int i = 0; i < keys.size(); i++)
+            {
+                //std::string key = keys[i];
+                //std::string value = values[i];
+                //Php::out << key << "-" << value << std::endl;
+                //tags_order.push_back(std::make_pair(key, value));
+
+                this->_tags.push_back(new Tag(keys[i], values[i]));
+            }
+        }
+
+
+
+        //Php::out << std::endl;
+        //auto m = params[0].mapValue();
+        //for (auto& iter : m)
+        //    Php::out << iter.first << " " << iter.second << std::endl;
+
+        //Php::out << std::endl;
+        //for (auto& iter : tags)
+        //    Php::out << iter.first << " " << iter.second << std::endl;
+
+        //Php::out << std::endl;
+        //for (auto& iter : tags_order)
+        //    Php::out << iter.first << " " << iter.second << std::endl;
+
+
+        //Php::out << std::endl;
+        //for (auto& iter : this->_tags)
+        //    Php::out << iter->_key << " " << iter->_value << std::endl;
+
+        //Php::out << std::endl;
+
+    }
+
+
     /*
     public function addTags(array $tags)
     {
     foreach ($tags as $tagKey => $tagValue) {
-    $this->tags[$tagKey] = new Tag($tagKey, $tagValue);
+        $this->tags[$tagKey] = new Tag($tagKey, $tagValue);
     }
     }
     */
@@ -36,6 +89,14 @@ void JaegerSpan::addTags(Php::Parameters& params)
 void JaegerSpan::addLogs(Php::Parameters& logs)
 {
     //$this->logs[] = new Log($logs);
+}
+
+
+/*Whether the span is sampled*/
+
+bool JaegerSpan::isSampled() const
+{
+    return _context->_flags & SAMPLED_FLAG;
 }
 
 const char * JaegerSpan::_name() const

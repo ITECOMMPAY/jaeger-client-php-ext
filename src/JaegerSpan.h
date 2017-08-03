@@ -24,10 +24,7 @@ public:
     void addTags(Php::Parameters& params);
     void addLogs(Php::Parameters& logs);
     /*Whether the span is sampled*/
-    bool isSampled() const
-    {
-        return _context->_flags & SAMPLED_FLAG;
-    }
+    bool isSampled() const;
     const char* _name() const;
 };
 

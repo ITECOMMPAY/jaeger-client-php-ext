@@ -42,6 +42,7 @@ ISpan * NoopTracer::getCurrentSpan()
 {
     return new NoopSpan();
 }
+
 void NoopTracer::finishSpan(ISpan* span, const Php::Value& endTime)
 {
     Php::out << "NoopTracer::finishSpan " << span->_name() << std::endl;

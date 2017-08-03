@@ -22,26 +22,8 @@ private:
 public:
     std::unordered_map<int, ISpan*> _spans;
     std::vector<int> _activeSpans;
-    ~JaegerTracer()
-    {
-        delete _reporter;
-        delete _sampler;
-        delete _process;
-        for (auto& iter : _spans)
-            delete iter.second;
-        _spans.clear();
-        _activeSpans.clear();
-
-        Php::out << "~JaegerTracer" << std::endl;
-    }
-
-    JaegerTracer(IReporter* reporter, ISampler* sampler) :
-        _reporter{ reporter },
-        _sampler{ sampler },
-        _isSampled{ false }
-    {
-        Php::out << "JaegerTracer::JaegerTracer" << std::endl;
-    };
+    ~JaegerTracer();
+    JaegerTracer(IReporter* reporter, ISampler* sampler);
 
     void init(const std::string& serviceName);
     ISpan* startSpan(const std::string& operationName, const Php::Value& options = nullptr);
