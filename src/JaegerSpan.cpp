@@ -2,7 +2,6 @@
 #include <unordered_map>
 #include <map>
 
-
 JaegerSpan::JaegerSpan(SpanContext* context, const std::string& operationName, const Php::Value& startTime) :
     _operationName{ operationName },
     _context{ context }
@@ -64,8 +63,6 @@ void JaegerSpan::addTags(Php::Parameters& params)
             }
         }
 
-
-
         //Php::out << std::endl;
         //auto m = params[0].mapValue();
         //for (auto& iter : m)
@@ -83,12 +80,7 @@ void JaegerSpan::addTags(Php::Parameters& params)
         //Php::out << std::endl;
         //for (auto& iter : this->_tags)
         //    Php::out << iter->_key << " " << iter->_value << std::endl;
-
-
     }
-
-
-
 }
 
 void JaegerSpan::addLogs(Php::Parameters& logs)
@@ -126,12 +118,11 @@ void JaegerSpan::addLogs(Php::Parameters& logs)
                 }
 
             }
-            //Php::out << "     size tags = " << tags.size() << std::endl;
+            Php::out << "     size tags = " << tags.size() << std::endl;
         }
 
         this->_logs.push_back(new Log(tags));
-        //Php::out << "     size tags = " << tags.size() << std::endl;
-
+        Php::out << "     size tags = " << tags.size() << std::endl;
 
         //Php::out << std::endl;
         //for (auto& iter : this->_logs)
@@ -143,11 +134,7 @@ void JaegerSpan::addLogs(Php::Parameters& logs)
         //    }
         //}
     }
-
 }
-
-
-/*Whether the span is sampled*/
 
 bool JaegerSpan::isSampled() const
 {

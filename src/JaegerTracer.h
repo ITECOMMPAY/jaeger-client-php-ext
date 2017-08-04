@@ -22,6 +22,7 @@ private:
 public:
     std::unordered_map<int, ISpan*> _spans;
     std::vector<int> _activeSpans;
+
     ~JaegerTracer();
     JaegerTracer(IReporter* reporter, ISampler* sampler);
 
@@ -29,8 +30,8 @@ public:
     ISpan* startSpan(const std::string& operationName, const Php::Value& options = nullptr);
     ISpan* getCurrentSpan();
     void finishSpan(ISpan* span, const Php::Value& endTime = nullptr);
-    void inject() const;
-    void extract() const;
+    void inject(const Php::Value& context, const std::string& format, std::string& carrier);
+    SpanContext* extract(const std::string& format, const std::string& carier) const;
     void flush() const;
 
     const char* _name() const;

@@ -48,13 +48,24 @@ extern "C" {
         });
         TracerClass.method<&Tracer::getCurrentSpan>("getCurrentSpan", Php::Static, {});
         TracerClass.method<&Tracer::finishSpan>("finishSpan", Php::Static, {
-            //Php::ByVal("span",Php::Type::Object,true),
+            Php::ByVal("span",Php::Type::Object,true),
         });
-        TracerClass.method<&Tracer::inject>("inject", Php::Static, {});
-        TracerClass.method<&Tracer::extract>("extract", Php::Static, {});
+        TracerClass.method<&Tracer::inject>("inject", Php::Static, {
+            Php::ByVal("context",Php::Type::Object,true),
+            Php::ByVal("format",Php::Type::String,true),
+            Php::ByRef("carrier",Php::Type::String,true),
+        });
+        TracerClass.method<&Tracer::extract>("extract", Php::Static, {
+            Php::ByVal("format",Php::Type::String,true),
+            Php::ByVal("carrier",Php::Type::String,true),
+        });
         TracerClass.method<&Tracer::flush>("flush", Php::Static, {});
-        TracerClass.method<&Tracer::addTags>("addTags", Php::Static, {});
-        TracerClass.method<&Tracer::addLogs>("addLogs", Php::Static, {});
+        TracerClass.method<&Tracer::addTags>("addTags", Php::Static, {
+            Php::ByVal("tags",Php::Type::Array,true),
+        });
+        TracerClass.method<&Tracer::addLogs>("addLogs", Php::Static, {
+            Php::ByVal("logs",Php::Type::Array,true),
+        });
         extension.add(std::move(TracerClass));
 
         /*todo - try to leave only abstract interface*/
@@ -67,103 +78,34 @@ extern "C" {
             //NoopTracerClass.method<&NoopTracer::print>("print",{});
             //extension.add(NoopTracerClass);
         //}
-        //Php::Interface ITracerInterface("ITracer");
 
+        //Php::Interface ITracerInterface("ITracer");
         Php::Class<NoopTracer> NoopTracerClass("NoopTracer");
-        //NoopTracerClass.method<&NoopTracer::print>("print", {});
-        //NoopTracerClass.method<&NoopTracer::init>("init",{});
         //NoopTracerClass.implements(ITracerInterface);
         extension.add(std::move(NoopTracerClass));
-
         Php::Class<JaegerTracer> JaegerTracerClass("JaegerTracer");
-        //JaegerTracerClass.method<&JaegerTracer::print>("print", {});
+        //JaegerTracerClass.implements(ITracerInterface);
         extension.add(std::move(JaegerTracerClass));
-
         //extension.add(std::move(ITracerInterface));
+
+        Php::Class<SpanContext> SpanContextClass("SpanContext");
+        extension.add(std::move(SpanContextClass));
 
         Php::Interface ISpanInterface("ISpan");
         ISpanInterface.method("addTags", {});
         ISpanInterface.method("addLogs", {});
-
         Php::Class<NoopSpan> NoopSpanClass("NoopSpan");
         NoopSpanClass.implements(ISpanInterface);
         NoopSpanClass.method<&NoopSpan::addTags>("addTags", {});
         NoopSpanClass.method<&NoopSpan::addLogs>("addLogs", {});
-
         Php::Class<JaegerSpan> JaegerSpanClass("JaegerSpan");
         JaegerSpanClass.implements(ISpanInterface);
         JaegerSpanClass.method<&JaegerSpan::addTags>("addTags", {});
         JaegerSpanClass.method<&JaegerSpan::addLogs>("addLogs", {});
-
         extension.add(std::move(ISpanInterface));
         extension.add(std::move(JaegerSpanClass));
         extension.add(std::move(NoopSpanClass));
 
-
-
-
-
-
-        //Php::Class<Master> master("master");
-        //Php::Class<Child> child("child");
-        //master.method<&Master::child>("child");
-        //extension.add(std::move(master));
-        //extension.add(std::move(child));
-
-
-
-
-        // add the bubblesort function to the extension, we also tell the 
-        // extension that the function receives one parameter by value, and
-        // that that parameter must be an array
-        /*
-        //extension.add<native_bubblesort>("native_bubblesort");
-        extension.add<native_bubblesort>("native_bubblesort", { Php::ByVal("input", Php::Type::Array) });
-        ///("native_bubblesort", native_bubblesort, { Php::ByVal("input", Php::Type::Array) });
-
-        extension.add<print_start>("print_start");
-        extension.add<print_end>("print_end");
-        extension.add<arrayTest>("arrayTest",{
-        Php::ByVal("in1",Php::Type::String),
-        Php::ByVal("in2",Php::Type::Array),
-        });
-
-        Php::Class<TestClass> testClass("TestClass");
-        testClass.method<&TestClass::value>("value",{});
-        testClass.method<&TestClass::increment>("increment",{
-        Php::ByVal("change",Php::Type::Numeric,false)});
-        testClass.method<&TestClass::decrement>("decrement",{
-        Php::ByVal("change",Php::Type::Numeric,false)});
-        //testClass.property("temp",50,Php::Public | Php::Static);
-        extension.add(std::move(testClass));
-
-        Php::Class<PublicClass> class1("PublicClass");
-        class1.method<&PublicClass::method>("method",{});
-        //class1.method<regularFunction>("static1",{});
-        extension.add(std::move(class1));
-
-        extension.add<regularFunction>("regularFunction");
-
-        Php::Class<Child> _child("Child");
-        Php::Class<Master> _master("Master");
-        _master.method<&Master::child>("child",{});
-        _master.method<&Master::ret_child>("ret_child",{});
-        _master.method<&Master::__construct>("__construct");
-        // the Example class has one public property
-        //Php::Static
-        //_master.property("ind", 3, Php::Static);
-        extension.add(std::move(_child));
-        extension.add(std::move(_master));
-
-        Php::Class<test_static> class3("test_static");
-        class3.method<&test_static::inc>("inc",{});
-        //class3.method<&test_static::increment>("increment");
-        class3.method<&test_static::inc2>("inc2",{});
-        class3.method<&test_static::access>("access",{});
-        extension.add(std::move(class3));
-
-        //Child::_val = 11;
-        */
         // return the extension
         return extension;
     }

@@ -8,7 +8,6 @@ class Tag
 private:
     std::string _key;
     std::string _value;
-
 public:
     static const std::string TAG_TYPE_HOST;
     static const std::string TAG_TYPE_IP;

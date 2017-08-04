@@ -4,6 +4,7 @@
 #include <phpcpp.h>
 #include <iostream>
 #include "ITracer.h"
+#include "SpanContext.h"
 
 /*forward declaration*/
 class ISpan;
@@ -22,9 +23,9 @@ public:
     /*Finish span*/
     virtual void finishSpan(ISpan* span, const Php::Value& endTime = nullptr) = 0;
     /*Inject context into carrier*/
-    virtual void inject() const = 0;//($context, $format, &$carrier);
+    virtual void inject(const Php::Value& context, const std::string& format, std::string& carrier) = 0;
     /*Extract context from the carrier*/
-    virtual void extract() const = 0;//($format, $carrier);
+    virtual SpanContext* extract(const std::string& format, const std::string& carier) const = 0;
     /*Flush everything via reporter*/
     virtual void flush() const = 0;
     /*Name of a class to pass in Php::Object*/

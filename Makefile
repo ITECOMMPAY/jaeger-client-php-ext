@@ -121,11 +121,13 @@ SOURCES				=	\
 						src/Helper.cpp \
 						src/JaegerSpan.cpp \
 						src/JaegerTracer.cpp \
+						src/Log.cpp \
 						src/NoopSpan.cpp \
 						src/NoopTracer.cpp \
 						src/PercentageSampler.cpp \
 						src/Process.cpp \
 						src/Tag.cpp \
+						src/TextCarrier.cpp \
 						src/Tracer.cpp
 OBJECTS				=	$(SOURCES:%.cpp=%.o)
 

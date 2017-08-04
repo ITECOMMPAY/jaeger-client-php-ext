@@ -48,12 +48,13 @@ void NoopTracer::finishSpan(ISpan* span, const Php::Value& endTime)
     Php::out << "NoopTracer::finishSpan " << span->_name() << std::endl;
 }
 
-void NoopTracer::inject() const
+void NoopTracer::inject(const Php::Value& context, const std::string& format, std::string& carrier)
 {
 }
 
-void NoopTracer::extract() const
+SpanContext* NoopTracer::extract(const std::string& format, const std::string& carier) const
 {
+    return nullptr;
 }
 
 void NoopTracer::flush() const

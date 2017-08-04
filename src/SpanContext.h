@@ -3,7 +3,7 @@
 #include <phpcpp.h>
 #include <iostream>
 
-class SpanContext
+class SpanContext : public Php::Base
 {
 public:
     unsigned int _traceId;
@@ -23,8 +23,13 @@ public:
     }
     SpanContext(const SpanContext&) = delete;
 
-    ~SpanContext()
+    virtual ~SpanContext()
     {
+    }
+
+    const char * _name() const
+    {
+        return "SpanContext";
     }
 };
 

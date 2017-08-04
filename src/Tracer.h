@@ -28,9 +28,9 @@ public:
     /*Pass finishSpan call to the tracer*/
     static void finishSpan(Php::Parameters& params);
     /*Pass inject call to the tracer*/
-    static void inject();
+    static void inject(Php::Parameters& params);
     /*Pass extract call to the tracer*/
-    static void extract();
+    static Php::Value extract(Php::Parameters& params);
     /*Pass flush call to the tracer*/
     static void flush();
     /*Add tags to current span*/

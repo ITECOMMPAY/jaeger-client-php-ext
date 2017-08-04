@@ -1,5 +1,6 @@
 #include "JaegerTracer.h"
 #include "Helper.h"
+#include "TextCarrier.h"
 
 #include <algorithm>
 
@@ -149,12 +150,31 @@ void JaegerTracer::finishSpan(ISpan* span, const Php::Value& endTime)
     }
 }
 
-void JaegerTracer::inject() const
+void JaegerTracer::inject(const Php::Value& context, const std::string& format, std::string& carrier)
 {
+    SpanContext* paramContext = nullptr;
+
+    if (context.instanceOf("SpanContext"))
+    {
+        paramContext = (SpanContext*)context.implementation();
+    }
+    else if (context.instanceOf("ISpan"))
+    {
+        ISpan* span = (ISpan*)context.implementation();
+        paramContext = dynamic_cast<JaegerSpan*>(span)->_context;
+    }
+    else
+        throw Php::Exception("JaegerTracer::startSpan - no SpanContext nor ISpan passed");
+    
+
+    // TODO do we need TextMap format? headers format?
+    TextCarrier::inject(paramContext, carrier);
 }
 
-void JaegerTracer::extract() const
+SpanContext* JaegerTracer::extract(const std::string& format, const std::string& carier) const
 {
+    // TODO do we need TextMap format? headers format?
+    return TextCarrier::extract(carier);
 }
 
 void JaegerTracer::flush() const

@@ -175,30 +175,27 @@ void Tracer::finishSpan(Php::Parameters& params)
     }
 }
 
-void Tracer::inject()
+void Tracer::inject(Php::Parameters& params)
 {
-    //public static function inject($context, $format, &$carrier)
-    //{
-    //    try {
-    //        self::getTracer()->inject($context, $format, $carrier);
-    //    }
-    //    catch (\Throwable $e) {
-    //        // Noop
-    //    }
-    //}
+    Php::Value context = params[0];
+    std::string format = params[1];
+    std::string carrier = params[2];
+
+    if (!context.isNull())
+    {
+        global_tracer->inject(context, format, carrier);
+        params[2] = carrier;
+    }
 }
 
-void Tracer::extract()
+Php::Value Tracer::extract(Php::Parameters& params)
 {
-    //public static function extract($format, $carrier)
-    //{
-    //    try {
-    //        return self::getTracer()->extract($format, $carrier);
-    //    }
-    //    catch (\Throwable $e) {
-    //        return false;
-    //    }
-    //}
+    const std::string& format = params[0];
+    const std::string& carrier = params[1];
+
+    SpanContext* context = global_tracer->extract(format, carrier);
+
+    return context == nullptr ? static_cast<Php::Value>(nullptr) : Php::Object(context->_name(), context);
 }
 
 void Tracer::flush()

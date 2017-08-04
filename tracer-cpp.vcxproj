@@ -50,6 +50,7 @@
     <ClInclude Include="src\Process.h" />
     <ClInclude Include="src\SpanContext.h" />
     <ClInclude Include="src\Tag.h" />
+    <ClInclude Include="src\TextCarrier.h" />
     <ClInclude Include="src\Tracer.h" />
     <ClInclude Include="src\UdpReporter.h" />
   </ItemGroup>
@@ -66,6 +67,7 @@
     <ClCompile Include="src\PercentageSampler.cpp" />
     <ClCompile Include="src\Process.cpp" />
     <ClCompile Include="src\Tag.cpp" />
+    <ClCompile Include="src\TextCarrier.cpp" />
     <ClCompile Include="src\Tracer.cpp" />
   </ItemGroup>
   <ItemGroup>
