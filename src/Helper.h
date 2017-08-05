@@ -18,7 +18,7 @@ public:
     /*Get current unix timestamp in microseconds*/
     static const int64_t now();
     /*Get random id*/
-    static const unsigned generateId();
+    static const unsigned long long int generateId();
     /*Get current ip*/
     static const std::string getCurrentIp();
     /*Get Host name*/

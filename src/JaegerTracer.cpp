@@ -10,10 +10,7 @@ JaegerTracer::~JaegerTracer()
     delete _reporter;
     delete _sampler;
     delete _process;
-    for (auto& iter : _spans)
-        delete iter.second;
-    _spans.clear();
-    _activeSpans.clear();
+    clearSpans();
 
     Php::out << "~JaegerTracer" << std::endl;
 }
@@ -72,7 +69,7 @@ ISpan * JaegerTracer::startSpan(const std::string& operationName, const Php::Val
         }
         else
             throw Php::Exception("JaegerTracer::startSpan - no SpanContext nor ISpan passed");
-        
+
         context = new SpanContext(
             paramContext->_traceId,
             Helper::generateId(),
@@ -165,7 +162,7 @@ void JaegerTracer::inject(const Php::Value& context, const std::string& format, 
     }
     else
         throw Php::Exception("JaegerTracer::startSpan - no SpanContext nor ISpan passed");
-    
+
 
     // TODO do we need TextMap format? headers format?
     TextCarrier::inject(paramContext, carrier);
@@ -177,8 +174,41 @@ SpanContext* JaegerTracer::extract(const std::string& format, const std::string&
     return TextCarrier::extract(carier);
 }
 
-void JaegerTracer::flush() const
+void JaegerTracer::flush()
 {
+    if (this->_isSampled)
+        return;
+
+    if (strcmp(this->_reporter->_name(), "FileReporter") == 0)
+    {
+        //$data = json_encode($this, JSON_PRETTY_PRINT);
+    }
+    else if (strcmp(this->_reporter->_name(), "UdpReporter") == 0)
+    {
+        /*
+        $trans = new \Thrift\Transport\TMemoryBuffer();
+        $proto = new \Thrift\Protocol\TCompactProtocol($trans);
+        $agent = new \Eco\Tracer\Autogen\AgentClient(null, $proto);
+
+        $batch = Helper::jaegerizeTracer($this);
+
+        $agent->emitBatch($batch);
+        $data = $trans->getBuffer();
+        */
+    }
+    else
+        return;
+
+    this->_reporter->flush();//$data
+    this->clearSpans();
+}
+
+void JaegerTracer::clearSpans()
+{
+    for (auto& iter : _spans)
+        delete iter.second;
+    _spans.clear();
+    _activeSpans.clear();
 }
 
 const char * JaegerTracer::_name() const

@@ -57,7 +57,7 @@ SpanContext* NoopTracer::extract(const std::string& format, const std::string& c
     return nullptr;
 }
 
-void NoopTracer::flush() const
+void NoopTracer::flush()
 {
 }
 

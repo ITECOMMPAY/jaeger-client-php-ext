@@ -10,6 +10,7 @@ public:
     }
 
     virtual void flush() const = 0;
+    virtual const char* _name() const = 0;
 };
 
 

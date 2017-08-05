@@ -49,6 +49,11 @@ public:
             socket_close($socket);
         }*/
     }
+
+    const char* _name() const
+    {
+        return "UdpReporter";
+    }
 };
 
 

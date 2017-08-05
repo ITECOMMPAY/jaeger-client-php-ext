@@ -32,8 +32,9 @@ public:
     void finishSpan(ISpan* span, const Php::Value& endTime = nullptr);
     void inject(const Php::Value& context, const std::string& format, std::string& carrier);
     SpanContext* extract(const std::string& format, const std::string& carier) const;
-    void flush() const;
+    void flush();
 
+    void clearSpans();
     const char* _name() const;
 };
 

@@ -27,7 +27,7 @@ public:
     /*Extract context from the carrier*/
     virtual SpanContext* extract(const std::string& format, const std::string& carier) const = 0;
     /*Flush everything via reporter*/
-    virtual void flush() const = 0;
+    virtual void flush() = 0;
     /*Name of a class to pass in Php::Object*/
     virtual const char* _name() const = 0;
 };

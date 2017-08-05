@@ -5,6 +5,7 @@ std::random_device rd;
 std::default_random_engine re{ rd() };
 std::uniform_int_distribution<int> dist{ 0, 99 };
 std::uniform_int_distribution<unsigned int> dist_32bit{ 0x00000000, 0xFFFFFFFF };
+std::uniform_int_distribution<unsigned long long int> dist_64bit{ 0x0000000000000000, 0xFFFFFFFFFFFFFFFF };
 
 const int64_t Helper::now()
 {
@@ -14,9 +15,9 @@ const int64_t Helper::now()
     return microsec;
 }
 
-const unsigned int Helper::generateId()
+const unsigned long long int Helper::generateId()
 {
-    return dist_32bit(re);
+    return dist_64bit(re);
 }
 
 const std::string Helper::getHostName()

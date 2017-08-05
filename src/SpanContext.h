@@ -6,13 +6,18 @@
 class SpanContext : public Php::Base
 {
 public:
-    unsigned int _traceId;
-    unsigned int _spanId;
-    unsigned int _parentId;
+    unsigned long long int _traceId;
+    unsigned long long int _spanId;
+    unsigned long long int _parentId;
     int _flags;
     Php::Value _refType;
 
-    SpanContext(const unsigned int& traceId, const unsigned int& spanId, const unsigned int& parentId, const int& flags, const Php::Value& refType = nullptr) :
+    SpanContext(
+        const unsigned long long int& traceId,
+        const unsigned long long int& spanId,
+        const unsigned long long int& parentId,
+        const int& flags,
+        const Php::Value& refType = nullptr) :
         _traceId{ traceId },
         _spanId{ spanId },
         _parentId{ parentId },

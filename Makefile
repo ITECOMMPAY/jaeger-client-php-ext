@@ -86,7 +86,7 @@ LINKER				=	g++
 #	with a list of all flags that should be passed to the linker.
 #
 
-#DEFS = -DTRACER_DEBUG
+DEFS = -DTRACER_DEBUG
 COMPILER_FLAGS		=	-Wall -c -O2 $(DEFS) -std=c++11 -fpic -o
 LINKER_FLAGS		=	-shared
 LINKER_DEPENDENCIES	=	-lphpcpp

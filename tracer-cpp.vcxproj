@@ -72,6 +72,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Makefile" />
+    <None Include="src\thrift\agent.thrift" />
+    <None Include="src\thrift\jaeger.thrift" />
+    <None Include="src\thrift\zipkincore.thrift" />
     <None Include="tracer-cpp.ini" />
   </ItemGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">

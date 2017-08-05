@@ -33,6 +33,11 @@ public:
     {
         Php::out << "    FileReporter::flush addr: " << std::endl;
     }
+
+    const char* _name() const
+    {
+        return "FileReporter";
+    }
 };
 
 #endif /* FILEREPORTER_H */

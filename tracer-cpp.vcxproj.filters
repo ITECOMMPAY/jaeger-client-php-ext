@@ -7,6 +7,12 @@
     <Filter Include="src\interface">
       <UniqueIdentifier>{77a565e0-61c1-4d75-ae23-c765c4fcde27}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\thrift">
+      <UniqueIdentifier>{e5d4a3be-5dad-423b-abdf-40e4e623a0ba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\thrift-gen">
+      <UniqueIdentifier>{8e2758b0-b107-4cb9-b312-a953a5c220f8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\FileReporter.h">
@@ -111,5 +117,14 @@
   <ItemGroup>
     <None Include="Makefile" />
     <None Include="tracer-cpp.ini" />
+    <None Include="src\thrift\zipkincore.thrift">
+      <Filter>src\thrift</Filter>
+    </None>
+    <None Include="src\thrift\jaeger.thrift">
+      <Filter>src\thrift</Filter>
+    </None>
+    <None Include="src\thrift\agent.thrift">
+      <Filter>src\thrift</Filter>
+    </None>
   </ItemGroup>
 </Project>
