@@ -1,10 +1,10 @@
 #ifndef JAEGERSPAN_H
 #define JAEGERSPAN_H
+
 #include "ISpan.h"
 #include "Tag.h"
 #include "Log.h"
 #include "SpanContext.h"
-#include "Helper.h"
 
 namespace OpenTracing
 {

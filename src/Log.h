@@ -1,5 +1,7 @@
 #ifndef LOG_H
 #define LOG_H
+
+#include <vector>
 #include "Tag.h"
 
 namespace OpenTracing

@@ -1,16 +1,12 @@
 #ifndef HELPER_H
 #define HELPER_H
-#include <random>
-#include <unistd.h>
-#include <limits.h>
+
 #include "ISpan.h"
 #include "ITracer.h"
 #include "Process.h"
 #include "Log.h"
+#include "Tag.h"
 #include "thrift-gen/jaeger_types.h"
-
-extern std::default_random_engine re;
-extern std::uniform_int_distribution<int> dist;
 
 namespace OpenTracing
 {
@@ -21,6 +17,8 @@ namespace OpenTracing
         static const int64_t now();
         /*Get random id*/
         static const uint64_t generateId();
+        /*Get random percentage in [0;100]*/
+        static const int genPercentage();
         /*Get current ip*/
         static const std::string getCurrentIp();
         /*Get Host name*/

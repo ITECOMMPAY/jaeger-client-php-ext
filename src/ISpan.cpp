@@ -1,3 +1,4 @@
+#include <iostream>
 #include "ISpan.h"
 using namespace OpenTracing;
 

@@ -1,3 +1,4 @@
+#include <iostream>
 #include "ITracer.h"
 using namespace OpenTracing;
 

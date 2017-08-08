@@ -1,3 +1,4 @@
+#include <iostream>
 #include "PercentageSampler.h"
 #include "Helper.h"
 using namespace OpenTracing;
@@ -23,5 +24,5 @@ PercentageSampler::PercentageSampler(const Php::Value& params) :
 bool PercentageSampler::isSampled()
 {
     Php::out << "    PercentageSampler::isSampled" << std::endl;
-    return dist(re) < this->_value;
+    return Helper::genPercentage() < this->_value;
 }

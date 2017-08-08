@@ -2,6 +2,8 @@
 #include "UdpReporter.h"
 #include "FileReporter.h"
 #include "PercentageSampler.h"
+#include "NoopTracer.h"
+#include "JaegerTracer.h"
 using namespace OpenTracing;
 
 ITracer* global_tracer;

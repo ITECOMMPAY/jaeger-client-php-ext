@@ -2,7 +2,6 @@
 #define PERCENTAGESAMPLER_H
 
 #include <phpcpp.h>
-#include <iostream>
 #include "ISampler.h"
 
 namespace OpenTracing

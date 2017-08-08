@@ -1,6 +1,5 @@
 #include "JaegerSpan.h"
-#include <unordered_map>
-#include <map>
+#include "Helper.h"
 using namespace OpenTracing;
 
 JaegerSpan::JaegerSpan(SpanContext* context, const std::string& operationName, const Php::Value& startTime) :
@@ -144,7 +143,7 @@ bool JaegerSpan::isSampled() const
     return _context->_flags & SAMPLED_FLAG;
 }
 
-const char * JaegerSpan::_name() const
+const char* JaegerSpan::_name() const
 {
     return "JaegerSpan";
 }

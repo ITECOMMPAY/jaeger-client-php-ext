@@ -1,10 +1,8 @@
 #ifndef TRACER_H
 #define TRACER_H
+
 #include <phpcpp.h>
 #include "ITracer.h"
-#include "NoopTracer.h"
-#include "JaegerTracer.h"
-
 #include "IReporter.h"
 #include "ISampler.h"
 

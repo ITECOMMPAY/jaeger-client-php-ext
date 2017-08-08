@@ -1,7 +1,7 @@
 #ifndef SPANCONTEXT_H
 #define SPANCONTEXT_H
+
 #include <phpcpp.h>
-#include <iostream>
 
 namespace OpenTracing
 {
@@ -14,25 +14,9 @@ namespace OpenTracing
         int _flags;
         Php::Value _refType;
 
-        SpanContext(const uint64_t& traceId, const uint64_t& spanId, const uint64_t& parentId, const int& flags, const Php::Value& refType = nullptr) :
-            _traceId{ traceId },
-            _spanId{ spanId },
-            _parentId{ parentId },
-            _flags{ flags },
-            _refType{ refType }
-        {
-            Php::out << "    SpanContext: " << _traceId << " " << _spanId << " " << _parentId << " " << _flags << " " << std::endl;
-        }
+        SpanContext(const uint64_t& traceId, const uint64_t& spanId, const uint64_t& parentId, const int& flags, const Php::Value& refType = nullptr);
         SpanContext(const SpanContext&) = delete;
-
-        virtual ~SpanContext()
-        {
-        }
-
-        const char * _name() const
-        {
-            return "SpanContext";
-        }
+        const char* _name() const;
     };
 }
 

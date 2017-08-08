@@ -2,7 +2,6 @@
 #define ITRACER_H
 
 #include <phpcpp.h>
-#include <iostream>
 #include "ISpan.h"
 #include "SpanContext.h"
 
@@ -17,7 +16,7 @@ namespace OpenTracing
         virtual void init(const std::string& serviceName) = 0;
         /*Start span*/
         virtual OpenTracing::ISpan* startSpan(const std::string& operationName, const Php::Value& options = nullptr) = 0;
-        /*Get current OPENED span*/
+        /*Get current opened span*/
         virtual OpenTracing::ISpan* getCurrentSpan() = 0;
         /*Finish span*/
         virtual void finishSpan(ISpan* span, const Php::Value& endTime = nullptr) = 0;

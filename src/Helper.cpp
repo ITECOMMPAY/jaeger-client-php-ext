@@ -1,8 +1,11 @@
+#include <random>
 #include <sys/time.h>
+#include <unistd.h>
+#include <limits.h>
 #include "Helper.h"
 #include "NoopTracer.h"
 #include "JaegerTracer.h"
-using namespace OpenTracing;
+#include "JaegerSpan.h"
 
 std::random_device rd;
 std::default_random_engine re{ rd() };
@@ -10,7 +13,7 @@ std::uniform_int_distribution<int> dist{ 0, 99 };
 std::uniform_int_distribution<unsigned int> dist_32bit{ 0x00000000, 0xFFFFFFFF };
 std::uniform_int_distribution<uint64_t> dist_64bit{ 0x0000000000000000, 0xFFFFFFFFFFFFFFFF };
 
-const int64_t Helper::now()
+const int64_t OpenTracing::Helper::now()
 {
     struct timeval time;
     gettimeofday(&time, NULL);
@@ -18,12 +21,17 @@ const int64_t Helper::now()
     return microsec;
 }
 
-const uint64_t Helper::generateId()
+const uint64_t OpenTracing::Helper::generateId()
 {
     return dist_64bit(re);
 }
 
-const std::string Helper::getCurrentIp()
+const int OpenTracing::Helper::genPercentage()
+{
+    return dist(re);
+}
+
+const std::string OpenTracing::Helper::getCurrentIp()
 {
     const char *cmd = "ifconfig | grep -Eo 'inet (addr:)?([0-9]*\\.){3}[0-9]*' | grep -Eo '([0-9]*\\.){3}[0-9]*' | grep -v '127.0.0.1'";
     char buf[BUFSIZ];
@@ -37,7 +45,7 @@ const std::string Helper::getCurrentIp()
     return std::string{ buf };
 }
 
-const std::string Helper::getHostName()
+const std::string OpenTracing::Helper::getHostName()
 {
     char name[HOST_NAME_MAX];
     gethostname(name, HOST_NAME_MAX);
@@ -163,8 +171,9 @@ const ::Batch* OpenTracing::Helper::jaegerizeTracer(const OpenTracing::ITracer* 
     jaegerTag.__set_vType(TagType::type::STRING);
     jaegerTag.__set_vStr(tag->_value);
 
-    /*
-            switch (true) {
+
+    /*todo - because Tag is <string,string>
+        switch (true) {
             case is_numeric($tag->value):
                 $vType = Autogen\TagType::DOUBLE;
                 $vKey = 'vDouble';

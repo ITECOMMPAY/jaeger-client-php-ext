@@ -2,12 +2,9 @@
 #define JAEGERTRACER_H
 
 #include <phpcpp.h>
-#include <iostream>
 #include <unordered_map>
-#include <unordered_set>
 
 #include "ITracer.h"
-#include "JaegerSpan.h"
 #include "IReporter.h"
 #include "ISampler.h"
 #include "Process.h"

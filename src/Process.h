@@ -1,7 +1,7 @@
 #ifndef PROCESS_H
 #define PROCESS_H
+
 #include <phpcpp.h>
-#include <iostream>
 #include "Tag.h"
 
 namespace OpenTracing

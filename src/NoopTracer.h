@@ -2,9 +2,7 @@
 #define NOOPTRACER_H
 
 #include <phpcpp.h>
-#include <iostream>
 #include "ITracer.h"
-#include "NoopSpan.h"
 
 namespace OpenTracing
 {

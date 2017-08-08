@@ -1,3 +1,4 @@
+#include <iostream>
 #include "Tag.h"
 using namespace OpenTracing;
 

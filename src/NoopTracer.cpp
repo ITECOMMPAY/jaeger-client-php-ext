@@ -1,4 +1,6 @@
+#include <iostream>
 #include "NoopTracer.h"
+#include "NoopSpan.h"
 using namespace OpenTracing;
 
 NoopTracer::~NoopTracer()
@@ -39,7 +41,7 @@ ISpan * NoopTracer::startSpan(const std::string& operationName, const Php::Value
     return new NoopSpan();
 }
 
-ISpan * NoopTracer::getCurrentSpan()
+ISpan* NoopTracer::getCurrentSpan()
 {
     return new NoopSpan();
 }
@@ -62,7 +64,7 @@ void NoopTracer::flush()
 {
 }
 
-const char * NoopTracer::_name() const
+const char* NoopTracer::_name() const
 {
     return "NoopTracer";
 }

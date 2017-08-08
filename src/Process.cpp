@@ -1,6 +1,6 @@
+#include <iostream>
 #include "Process.h"
 #include "Helper.h"
-//using namespace OpenTracing;
 
 const std::string OpenTracing::Process::DEFAULT_SERVICE_NAME{ "unknown" };
 

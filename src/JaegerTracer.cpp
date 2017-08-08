@@ -1,7 +1,9 @@
+#include <iostream>
 #include <algorithm>
 #include "JaegerTracer.h"
 #include "Helper.h"
 #include "TextCarrier.h"
+#include "JaegerSpan.h"
 
 #include "thrift-gen/Agent.h"
 #include <thrift/transport/TBufferTransports.h>
@@ -20,7 +22,7 @@ JaegerTracer::~JaegerTracer()
     Php::out << "~JaegerTracer" << std::endl;
 }
 
-JaegerTracer::JaegerTracer(IReporter * reporter, ISampler * sampler) :
+JaegerTracer::JaegerTracer(IReporter* reporter, ISampler* sampler) :
     _reporter{ reporter },
     _sampler{ sampler },
     _isSampled{ false }
@@ -131,9 +133,11 @@ void JaegerTracer::finishSpan(ISpan* span, const Php::Value& endTime)
     Php::out << "    _logs.size: " << dynamic_cast<JaegerSpan*>(span)->_logs.size() << std::endl;
     Php::out << "    _tags.size: " << dynamic_cast<JaegerSpan*>(span)->_tags.size() << std::endl;
 #endif
-    //if ($span instanceof SpanContext) {
-    //    $span = $this->spans[(string)$span->spanId] ?? null;
-    //}
+    /*
+        if ($span instanceof SpanContext) {
+            $span = $this->spans[(string)$span->spanId] ?? null;
+        }
+    */
     JaegerSpan* jaegerSpan = dynamic_cast<JaegerSpan*>(span);
     if (jaegerSpan != nullptr)
     {
@@ -256,7 +260,7 @@ void JaegerTracer::clearSpans()
     _activeSpans.clear();
 }
 
-const char * JaegerTracer::_name() const
+const char* JaegerTracer::_name() const
 {
     return "JaegerTracer";
 }

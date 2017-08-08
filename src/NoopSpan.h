@@ -1,5 +1,6 @@
 #ifndef NOOPSPAN_H
 #define NOOPSPAN_H
+
 #include "ISpan.h"
 
 namespace OpenTracing

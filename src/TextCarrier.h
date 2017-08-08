@@ -1,5 +1,6 @@
 #ifndef TEXTCARRIER_H
 #define TEXTCARRIER_H
+
 #include <phpcpp.h>
 #include "SpanContext.h"
 
@@ -21,4 +22,5 @@ namespace OpenTracing
 
     };
 }
+
 #endif /* TEXTCARRIER_H */

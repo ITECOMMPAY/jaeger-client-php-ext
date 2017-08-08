@@ -57,7 +57,10 @@
     <ClInclude Include="src\UdpReporter.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\FileReporter.cpp" />
     <ClCompile Include="src\Helper.cpp" />
+    <ClCompile Include="src\IReporter.cpp" />
+    <ClCompile Include="src\ISampler.cpp" />
     <ClCompile Include="src\ISpan.cpp" />
     <ClCompile Include="src\ITracer.cpp" />
     <ClCompile Include="src\JaegerSpan.cpp" />
@@ -68,11 +71,13 @@
     <ClCompile Include="src\NoopTracer.cpp" />
     <ClCompile Include="src\PercentageSampler.cpp" />
     <ClCompile Include="src\Process.cpp" />
+    <ClCompile Include="src\SpanContext.cpp" />
     <ClCompile Include="src\Tag.cpp" />
     <ClCompile Include="src\TextCarrier.cpp" />
     <ClCompile Include="src\thrift-gen\Agent.cpp" />
     <ClCompile Include="src\thrift-gen\jaeger_types.cpp" />
     <ClCompile Include="src\Tracer.cpp" />
+    <ClCompile Include="src\UdpReporter.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Makefile" />

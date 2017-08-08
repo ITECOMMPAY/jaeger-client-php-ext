@@ -1,3 +1,4 @@
+#include <iostream>
 #include "NoopSpan.h"
 using namespace OpenTracing;
 
@@ -29,7 +30,7 @@ void NoopSpan::addLogs(Php::Parameters& logs)
 #endif
 }
 
-const char * NoopSpan::_name() const
+const char* NoopSpan::_name() const
 {
     return "NoopSpan";
 }

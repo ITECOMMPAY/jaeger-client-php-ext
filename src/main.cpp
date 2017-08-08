@@ -1,15 +1,9 @@
 #include <phpcpp.h>
 #include "Tracer.h"
-//#include "NoopTracer.h"
-//#include "ChildMaster.h"
-//#include "bubleSort.h"
-//#include "print.h"
-//#include "_test.h"
-//#include "testClass.h"
-//#include "ISpan.h"
 #include "NoopSpan.h"
 #include "NoopTracer.h"
-
+#include "JaegerSpan.h"
+#include "JaegerTracer.h"
 
 #include "IReporter.h"
 #include "UdpReporter.h"
