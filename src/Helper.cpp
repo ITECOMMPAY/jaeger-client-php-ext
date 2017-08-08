@@ -44,7 +44,7 @@ const std::string Helper::getHostName()
     return std::string{ name };
 }
 
-const ::Batch* OpenTracing::Helper::jaegerizeTracer(OpenTracing::ITracer* tracer)
+const ::Batch* OpenTracing::Helper::jaegerizeTracer(const OpenTracing::ITracer* tracer)
 {
     ::Batch* batch = new ::Batch();
 
@@ -55,7 +55,7 @@ const ::Batch* OpenTracing::Helper::jaegerizeTracer(OpenTracing::ITracer* tracer
     {
         std::vector<::Span> jaegerSpans;
 
-        JaegerTracer* jaegerTracer = dynamic_cast<JaegerTracer*>(tracer);
+        const JaegerTracer* jaegerTracer = dynamic_cast<const JaegerTracer*>(tracer);
         for (auto& iter : jaegerTracer->_spans)
         {
             if (dynamic_cast<JaegerSpan*>(iter.second)->isSampled())
@@ -75,7 +75,69 @@ const ::Batch* OpenTracing::Helper::jaegerizeTracer(OpenTracing::ITracer* tracer
 {
     ::Span jaegerSpan;
 
-    //jaegerSpan.
+    const JaegerSpan* _span = dynamic_cast<const JaegerSpan*>(span);
+
+    if (_span->_tags.size() > 0)
+    {
+        std::vector<::Tag> tags;
+        for (auto& iter : _span->_tags)
+        {
+            tags.push_back(jaegerizeTag(iter));
+        }
+        jaegerSpan.__set_tags(tags);
+    }
+
+    if (_span->_logs.size() > 0)
+    {
+        std::vector<::Log> logs;
+        for (auto iter = _span->_logs.rbegin(); iter != _span->_logs.rend(); iter++)
+        {
+            if (logs.size() < Log::LOGS_THRESHOLD)
+            {
+                logs.push_back(jaegerizeLog(*iter));
+            }
+        }
+
+        // the first one log will usually contain useful data, let's include it explicitly, if omitted
+        if (logs.size() >= Log::LOGS_THRESHOLD && _span->_logs.size() > 0)
+        {
+            logs.push_back(jaegerizeLog(*_span->_logs.begin()));
+
+            std::vector<Tag*> tags{ new Tag("info", "<---Too many logs, some were omitted in order to fit udp package size--->") };
+            OpenTracing::Log* log = new OpenTracing::Log(tags, logs.back().timestamp);
+
+            logs.push_back(jaegerizeLog(log));
+            delete log;
+            for (auto& iter : tags)
+                delete iter;
+        }
+
+        jaegerSpan.__set_logs(logs);
+    }
+
+    jaegerSpan.__set_traceIdLow(_span->_context->_traceId);
+    jaegerSpan.__set_traceIdHigh(0);
+    jaegerSpan.__set_spanId(_span->_context->_spanId);
+    jaegerSpan.__set_parentSpanId(_span->_context->_parentId);
+    jaegerSpan.__set_operationName(_span->_operationName);
+    jaegerSpan.__set_flags(_span->_context->_flags);
+    jaegerSpan.__set_startTime(_span->_startTime);
+    jaegerSpan.__set_duration(_span->_endTime != 0 ? _span->_endTime - _span->_startTime : Helper::now() - _span->_startTime);
+
+    if (!_span->_context->_refType.isNull())
+    {
+        std::vector<SpanRef> references;
+
+        SpanRef spanRef;
+        spanRef.__set_refType(static_cast<SpanRefType::type>(_span->_context->_refType.numericValue()));
+        spanRef.__set_traceIdLow(_span->_context->_traceId);
+        spanRef.__set_traceIdHigh(0);
+        spanRef.__set_spanId(_span->_context->_parentId);
+        references.push_back(spanRef);
+
+        jaegerSpan.__set_references(references);
+    }
+
     return jaegerSpan;
 }
 
@@ -124,6 +186,21 @@ const ::Batch* OpenTracing::Helper::jaegerizeTracer(OpenTracing::ITracer* tracer
     */
 
     return jaegerTag;
+}
+
+::Log OpenTracing::Helper::jaegerizeLog(const OpenTracing::Log* log)
+{
+    ::Log jaegerLog;
+    std::vector<::Tag> fields;
+
+    for (auto& iter : log->_fields)
+    {
+        fields.push_back(jaegerizeTag(iter));
+    }
+
+    jaegerLog.__set_timestamp(log->_timestamp);
+    jaegerLog.__set_fields(fields);
+    return jaegerLog;
 }
 
 

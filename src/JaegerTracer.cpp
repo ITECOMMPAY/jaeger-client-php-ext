@@ -47,14 +47,12 @@ ISpan * JaegerTracer::startSpan(const std::string& operationName, const Php::Val
     if (Php::array_key_exists("childOf", options))
     {
         parent = options["childOf"];
-        //refType = \Eco\Tracer\Autogen\SpanRefType::CHILD_OF;
-        refType = 0;    //todo
+        refType = SpanRefType::type::CHILD_OF;
     }
     else if (Php::array_key_exists("followsFrom", options))
     {
         parent = options["followsFrom"];
-        //refType = \Eco\Tracer\Autogen\SpanRefType::FOLLOWS_FROM;
-        refType = 1;    //todo
+        refType = SpanRefType::type::FOLLOWS_FROM;
     }
 
     if (!parent.isNull())

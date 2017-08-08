@@ -6,6 +6,7 @@
 #include "ISpan.h"
 #include "ITracer.h"
 #include "Process.h"
+#include "Log.h"
 #include "thrift-gen/jaeger_types.h"
 
 extern std::default_random_engine re;
@@ -25,7 +26,7 @@ namespace OpenTracing
         /*Get Host name*/
         static const std::string getHostName();
         /*Get jaeger version of the Tracer*/
-        static const ::Batch* jaegerizeTracer(OpenTracing::ITracer* tracer);
+        static const ::Batch* jaegerizeTracer(const OpenTracing::ITracer* tracer);
         /*Get jaeger version of the Span*/
         static ::Span jaegerizeSpan(const OpenTracing::ISpan* span);
         /*Get jaeger version of the Process*/
@@ -33,7 +34,7 @@ namespace OpenTracing
         /*Get jaeger version of the Tag*/
         static ::Tag jaegerizeTag(const OpenTracing::Tag* tag);
         /*Get jaeger version of the Log*/
-        //public static function jaegerizeLog(Log $log) : Autogen\Log
+        static ::Log jaegerizeLog(const OpenTracing::Log* log);
     };
 }
 #endif /* HELPER_H */

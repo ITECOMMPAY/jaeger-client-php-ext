@@ -89,7 +89,7 @@ LINKER				=	g++
 DEFS = -DTRACER_DEBUG
 COMPILER_FLAGS		=	-Wall -c -O2 $(DEFS) -std=c++11 -fpic -o
 LINKER_FLAGS		=	-shared
-LINKER_DEPENDENCIES	=	-lphpcpp
+LINKER_DEPENDENCIES	=	-lphpcpp -lthrift
 
 
 #
@@ -128,7 +128,9 @@ SOURCES				=	\
 						src/Process.cpp \
 						src/Tag.cpp \
 						src/TextCarrier.cpp \
-						src/Tracer.cpp
+						src/Tracer.cpp \
+						src/thrift-gen/Agent.cpp \
+						src/thrift-gen/jaeger_types.cpp
 OBJECTS				=	$(SOURCES:%.cpp=%.o)
 
 
@@ -161,3 +163,4 @@ uninstall:
 
 restart:		
 						service php7.0-fpm restart
+						php -m | grep tracer-cpp

@@ -5,6 +5,8 @@ using namespace OpenTracing;
 
 JaegerSpan::JaegerSpan(SpanContext* context, const std::string& operationName, const Php::Value& startTime) :
     _operationName{ operationName },
+    _startTime{},
+    _endTime{},
     _context{ context }
 {
     Php::out << "    JaegerSpan::JaegerSpan addr: " << this << std::endl;
@@ -40,8 +42,7 @@ void JaegerSpan::addTags(Php::Parameters& params)
         //std::unordered_map<std::string, std::string> tags_unordered;
         //std::vector<std::pair<std::string, std::string>> tags_order; //appears how PHP shows an array using var_dump etc.
 
-        /*hack to keep the order of tags*/
-        /*could be expensive*/
+        //to keep the order of tags - could be expensive
         {
             Php::Value keys = Php::array_keys(params[0]);
             Php::Value values = Php::array_values(params[0]);
@@ -97,8 +98,7 @@ void JaegerSpan::addLogs(Php::Parameters& logs)
     {
         std::vector<Tag*> tags;
 
-        /*hack to keep the order of tags*/
-        /*could be expensive*/
+        //to keep the order of tags - could be expensive
         {
             Php::Value keys = Php::array_keys(logs[0]);
             Php::Value values = Php::array_values(logs[0]);
