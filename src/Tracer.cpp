@@ -1,3 +1,4 @@
+#include <iostream>
 #include "Tracer.h"
 #include "UdpReporter.h"
 #include "FileReporter.h"

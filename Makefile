@@ -116,8 +116,11 @@ MKDIR				=	mkdir -p
 #SOURCES				=	$(wildcard *.cpp)
 SOURCES				=	\
 						src/main.cpp \
+						src/IReporter.cpp \
+						src/ISampler.cpp \
 						src/ISpan.cpp \
 						src/ITracer.cpp \
+						src/FileReporter.cpp \
 						src/Helper.cpp \
 						src/JaegerSpan.cpp \
 						src/JaegerTracer.cpp \
@@ -126,9 +129,11 @@ SOURCES				=	\
 						src/NoopTracer.cpp \
 						src/PercentageSampler.cpp \
 						src/Process.cpp \
+						src/SpanContext.cpp \
 						src/Tag.cpp \
 						src/TextCarrier.cpp \
 						src/Tracer.cpp \
+						src/UdpReporter.cpp \
 						src/thrift-gen/Agent.cpp \
 						src/thrift-gen/jaeger_types.cpp
 OBJECTS				=	$(SOURCES:%.cpp=%.o)

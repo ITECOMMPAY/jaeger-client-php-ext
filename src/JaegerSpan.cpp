@@ -1,3 +1,4 @@
+#include <iostream>
 #include "JaegerSpan.h"
 #include "Helper.h"
 using namespace OpenTracing;

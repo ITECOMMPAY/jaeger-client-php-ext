@@ -1,3 +1,4 @@
+#include <iostream>
 #include "Log.h"
 #include "Helper.h"
 
