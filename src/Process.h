@@ -8,10 +8,9 @@ namespace OpenTracing
 {
     class Process
     {
-    private:
+    public:
         std::string _serviceName;
         std::vector<Tag*> _tags;
-    public:
         static const std::string DEFAULT_SERVICE_NAME;
 
         Process(const std::string& serviceName);

@@ -213,9 +213,8 @@ void JaegerTracer::flush()
         boost::shared_ptr<TCompactProtocol> proto(new TCompactProtocol(trans));
         boost::shared_ptr<AgentConcurrentClient> agent(new AgentConcurrentClient(nullptr, proto));
 
-        Batch* batch = new Batch();
-        ////Batch* batch = Helper::jaegerizeTracer($this);
 
+        const ::Batch* batch = Helper::jaegerizeTracer(this);
         agent->emitBatch(*batch);
         //uint8_t* buf;
         //uint32_t sz;

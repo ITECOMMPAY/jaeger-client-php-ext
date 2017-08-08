@@ -1,10 +1,10 @@
 #include "Process.h"
 #include "Helper.h"
-using namespace OpenTracing;
+//using namespace OpenTracing;
 
-const std::string Process::DEFAULT_SERVICE_NAME{ "unknown" };
+const std::string OpenTracing::Process::DEFAULT_SERVICE_NAME{ "unknown" };
 
-Process::Process(const std::string& serviceName) :
+OpenTracing::Process::Process(const std::string& serviceName) :
     _serviceName{ serviceName }
 {
     Php::out << "    Process::Process addr: " << this << std::endl;
@@ -13,7 +13,7 @@ Process::Process(const std::string& serviceName) :
     _tags.push_back(new Tag(Tag::TAG_TYPE_IP, Helper::getCurrentIp()));
 }
 
-Process::~Process()
+OpenTracing::Process::~Process()
 {
     for (auto& iter : _tags)
         delete iter;

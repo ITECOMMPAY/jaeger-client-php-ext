@@ -137,9 +137,9 @@ class Tag : public virtual ::apache::thrift::TBase {
   virtual void printTo(std::ostream& out) const;
 };
 
-void swap(Tag &a, Tag &b);
+void swap(::Tag &a, ::Tag &b);
 
-inline std::ostream& operator<<(std::ostream& out, const Tag& obj)
+inline std::ostream& operator<<(std::ostream& out, const ::Tag& obj)
 {
   obj.printTo(out);
   return out;
@@ -156,11 +156,11 @@ class Log : public virtual ::apache::thrift::TBase {
 
   virtual ~Log() throw();
   int64_t timestamp;
-  std::vector<Tag>  fields;
+  std::vector<::Tag>  fields;
 
   void __set_timestamp(const int64_t val);
 
-  void __set_fields(const std::vector<Tag> & val);
+  void __set_fields(const std::vector<::Tag> & val);
 
   bool operator == (const Log & rhs) const
   {
@@ -182,9 +182,9 @@ class Log : public virtual ::apache::thrift::TBase {
   virtual void printTo(std::ostream& out) const;
 };
 
-void swap(Log &a, Log &b);
+void swap(::Log &a, ::Log &b);
 
-inline std::ostream& operator<<(std::ostream& out, const Log& obj)
+inline std::ostream& operator<<(std::ostream& out, const ::Log& obj)
 {
   obj.printTo(out);
   return out;
@@ -270,8 +270,8 @@ class Span : public virtual ::apache::thrift::TBase {
   int32_t flags;
   int64_t startTime;
   int64_t duration;
-  std::vector<Tag>  tags;
-  std::vector<Log>  logs;
+  std::vector<::Tag>  tags;
+  std::vector<::Log>  logs;
 
   _Span__isset __isset;
 
@@ -293,9 +293,9 @@ class Span : public virtual ::apache::thrift::TBase {
 
   void __set_duration(const int64_t val);
 
-  void __set_tags(const std::vector<Tag> & val);
+  void __set_tags(const std::vector<::Tag> & val);
 
-  void __set_logs(const std::vector<Log> & val);
+  void __set_logs(const std::vector<::Log> & val);
 
   bool operator == (const Span & rhs) const
   {
@@ -364,13 +364,13 @@ class Process : public virtual ::apache::thrift::TBase {
 
   virtual ~Process() throw();
   std::string serviceName;
-  std::vector<Tag>  tags;
+  std::vector<::Tag>  tags;
 
   _Process__isset __isset;
 
   void __set_serviceName(const std::string& val);
 
-  void __set_tags(const std::vector<Tag> & val);
+  void __set_tags(const std::vector<::Tag> & val);
 
   bool operator == (const Process & rhs) const
   {
@@ -394,9 +394,9 @@ class Process : public virtual ::apache::thrift::TBase {
   virtual void printTo(std::ostream& out) const;
 };
 
-void swap(Process &a, Process &b);
+void swap(::Process &a, ::Process &b);
 
-inline std::ostream& operator<<(std::ostream& out, const Process& obj)
+inline std::ostream& operator<<(std::ostream& out, const ::Process& obj)
 {
   obj.printTo(out);
   return out;
@@ -412,10 +412,10 @@ class Batch : public virtual ::apache::thrift::TBase {
   }
 
   virtual ~Batch() throw();
-  Process process;
+  ::Process process;
   std::vector<Span>  spans;
 
-  void __set_process(const Process& val);
+  void __set_process(const ::Process& val);
 
   void __set_spans(const std::vector<Span> & val);
 

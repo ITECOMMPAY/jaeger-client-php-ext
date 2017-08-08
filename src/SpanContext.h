@@ -8,18 +8,13 @@ namespace OpenTracing
     class SpanContext : public Php::Base
     {
     public:
-        unsigned long long int _traceId;
-        unsigned long long int _spanId;
-        unsigned long long int _parentId;
+        uint64_t _traceId;
+        uint64_t _spanId;
+        uint64_t _parentId;
         int _flags;
         Php::Value _refType;
 
-        SpanContext(
-            const unsigned long long int& traceId,
-            const unsigned long long int& spanId,
-            const unsigned long long int& parentId,
-            const int& flags,
-            const Php::Value& refType = nullptr) :
+        SpanContext(const uint64_t& traceId, const uint64_t& spanId, const uint64_t& parentId, const int& flags, const Php::Value& refType = nullptr) :
             _traceId{ traceId },
             _spanId{ spanId },
             _parentId{ parentId },

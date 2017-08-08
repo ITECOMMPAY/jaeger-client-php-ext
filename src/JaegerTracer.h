@@ -16,14 +16,13 @@ namespace OpenTracing
 {
     class JaegerTracer : public ITracer
     {
-    private:
+    public:
         IReporter* _reporter;
         ISampler* _sampler;
         Process* _process;
         bool _isSampled;
-    public:
-        std::unordered_map<unsigned long long int, ISpan*> _spans;
-        std::vector<unsigned long long int> _activeSpans;
+        std::unordered_map<uint64_t, ISpan*> _spans;
+        std::vector<uint64_t> _activeSpans;
 
         ~JaegerTracer();
         JaegerTracer(IReporter* reporter, ISampler* sampler);
