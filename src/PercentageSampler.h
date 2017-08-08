@@ -5,14 +5,18 @@
 #include <iostream>
 #include "ISampler.h"
 
-class PercentageSampler : public ISampler
+namespace OpenTracing
 {
-private:
-    int _value;
-public:
-    ~PercentageSampler();
-    PercentageSampler(const Php::Value& params = nullptr);
-    bool isSampled();
-};
+    class PercentageSampler : public ISampler
+    {
+    private:
+        int _value;
+    public:
+        ~PercentageSampler();
+        PercentageSampler(const Php::Value& params = nullptr);
+        PercentageSampler(const PercentageSampler&) = delete;
+        bool isSampled();
+    };
+}
 
 #endif /* PERCENTAGESAMPLER_H */

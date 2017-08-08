@@ -4,41 +4,44 @@
 #include <iostream>
 #include "IReporter.h"
 
-class FileReporter : public IReporter
+namespace OpenTracing
 {
-public:
-    ~FileReporter()
+    class FileReporter : public IReporter
     {
-        Php::out << "~FileReporter" << std::endl;
-    }
+    public:
+        ~FileReporter()
+        {
+            Php::out << "~FileReporter" << std::endl;
+        }
 
-    FileReporter(const Php::Value& params)
-    {
-        Php::out << "FileReporter::FileReporter" << std::endl;
-        /*$defaults = [
-            'path' => 'tmp' . DIRECTORY_SEPARATOR,
-            'file' => 'reports.log'
-        ];
+        FileReporter(const Php::Value& params)
+        {
+            Php::out << "FileReporter::FileReporter" << std::endl;
+            /*$defaults = [
+                'path' => 'tmp' . DIRECTORY_SEPARATOR,
+                'file' => 'reports.log'
+            ];
 
-        $this->options = array_merge($defaults, $options);
+            $this->options = array_merge($defaults, $options);
 
-        if (!is_dir($this->options['path'])) {
-            throw new \Exception('Directory doesn\'t not exist');
-        }*/
+            if (!is_dir($this->options['path'])) {
+                throw new \Exception('Directory doesn\'t not exist');
+            }*/
 
 
-    }
+        }
 
-    void flush() const
-    {
-        Php::out << "    FileReporter::flush addr: " << std::endl;
-    }
+        void flush() const
+        {
+            Php::out << "    FileReporter::flush addr: " << std::endl;
+        }
 
-    const char* _name() const
-    {
-        return "FileReporter";
-    }
-};
+        const char* _name() const
+        {
+            return "FileReporter";
+        }
+    };
+}
 
 #endif /* FILEREPORTER_H */
 

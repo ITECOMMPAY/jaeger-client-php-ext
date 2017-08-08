@@ -1,6 +1,7 @@
 #include "ISpan.h"
+using namespace OpenTracing;
+
 ISpan::~ISpan()
 {
-    Php::out << "    ~ISpan" << std::endl;
+    Php::out << "    ~ISpan addr: " << this << std::endl;
 }
-

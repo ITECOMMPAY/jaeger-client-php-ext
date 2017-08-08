@@ -48,9 +48,6 @@
     <ClInclude Include="src\ISpan.h">
       <Filter>src\interface</Filter>
     </ClInclude>
-    <ClInclude Include="src\ITracer.h">
-      <Filter>src\interface</Filter>
-    </ClInclude>
     <ClInclude Include="src\Tag.h">
       <Filter>src</Filter>
     </ClInclude>
@@ -68,6 +65,15 @@
     </ClInclude>
     <ClInclude Include="src\TextCarrier.h">
       <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ITracer.h">
+      <Filter>src\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="src\thrift-gen\Agent.h">
+      <Filter>src\thrift-gen</Filter>
+    </ClInclude>
+    <ClInclude Include="src\thrift-gen\jaeger_types.h">
+      <Filter>src\thrift-gen</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -92,12 +98,6 @@
     <ClCompile Include="src\JaegerSpan.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\ISpan.cpp">
-      <Filter>src\interface</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ITracer.cpp">
-      <Filter>src\interface</Filter>
-    </ClCompile>
     <ClCompile Include="src\Tag.cpp">
       <Filter>src</Filter>
     </ClCompile>
@@ -112,6 +112,18 @@
     </ClCompile>
     <ClCompile Include="src\TextCarrier.cpp">
       <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ITracer.cpp">
+      <Filter>src\interface</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ISpan.cpp">
+      <Filter>src\interface</Filter>
+    </ClCompile>
+    <ClCompile Include="src\thrift-gen\Agent.cpp">
+      <Filter>src\thrift-gen</Filter>
+    </ClCompile>
+    <ClCompile Include="src\thrift-gen\jaeger_types.cpp">
+      <Filter>src\thrift-gen</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

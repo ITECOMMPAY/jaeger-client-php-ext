@@ -1,4 +1,5 @@
 #include "ITracer.h"
+using namespace OpenTracing;
 
 ITracer::~ITracer()
 {

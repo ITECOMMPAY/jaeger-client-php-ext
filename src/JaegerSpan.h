@@ -6,26 +6,28 @@
 #include "SpanContext.h"
 #include "Helper.h"
 
-class JaegerSpan : public ISpan
+namespace OpenTracing
 {
-private:
-    std::string _operationName;
-    int64_t _startTime;
-    std::vector<Tag*> _tags;
-    std::vector<Log*> _logs;
-public:
-    static const int SAMPLED_FLAG = 0x01;
-    SpanContext* _context;
-    int64_t _endTime;
+    class JaegerSpan : public ISpan
+    {
+    public:
+        std::string _operationName;
+        int64_t _startTime;
+        std::vector<Tag*> _tags;
+        std::vector<Log*> _logs;
+        static const int SAMPLED_FLAG = 0x01;
+        SpanContext* _context;
+        int64_t _endTime;
 
-    JaegerSpan(SpanContext* context, const std::string& operationName, const Php::Value& startTime = nullptr);
-    JaegerSpan(const JaegerSpan&) = delete;
-    ~JaegerSpan();
-    void addTags(Php::Parameters& params);
-    void addLogs(Php::Parameters& logs);
-    /*Whether the span is sampled*/
-    bool isSampled() const;
-    const char* _name() const;
-};
+        JaegerSpan(SpanContext* context, const std::string& operationName, const Php::Value& startTime = nullptr);
+        JaegerSpan(const JaegerSpan&) = delete;
+        ~JaegerSpan();
+        void addTags(Php::Parameters& params);
+        void addLogs(Php::Parameters& logs);
+        /*Whether the span is sampled*/
+        bool isSampled() const;
+        const char* _name() const;
+    };
+}
 
 #endif /* JAEGERSPAN_H */

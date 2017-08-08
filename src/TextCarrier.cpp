@@ -1,5 +1,6 @@
 #include <sstream>
 #include "TextCarrier.h"
+using namespace OpenTracing;
 
 const std::string TextCarrier::KFK_DELIMITER = "|";
 const std::string TextCarrier::OTR_DELIMITER = ":";

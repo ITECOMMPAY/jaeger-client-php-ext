@@ -1,4 +1,5 @@
 #include "NoopTracer.h"
+using namespace OpenTracing;
 
 NoopTracer::~NoopTracer()
 {

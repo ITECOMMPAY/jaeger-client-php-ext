@@ -1,16 +1,18 @@
 #ifndef ISAMPLER_H
 #define ISAMPLER_H
 
-class ISampler
+namespace OpenTracing
 {
-public:
-    virtual ~ISampler()
+    class ISampler
     {
-        Php::out << "    ~ISampler addr: " << this << std::endl;
-    }
+    public:
+        virtual ~ISampler()
+        {
+            Php::out << "    ~ISampler addr: " << this << std::endl;
+        }
 
-    virtual bool isSampled() = 0;
-};
-
+        virtual bool isSampled() = 0;
+    };
+}
 #endif /* ISAMPLER_H */
 

@@ -3,18 +3,20 @@
 #include <phpcpp.h>
 #include <iostream>
 
-class Tag
+namespace OpenTracing
 {
-private:
-    std::string _key;
-    std::string _value;
-public:
-    static const std::string TAG_TYPE_HOST;
-    static const std::string TAG_TYPE_IP;
+    class Tag
+    {
+    public:
+        std::string _key;
+        std::string _value;
+        static const std::string TAG_TYPE_HOST;
+        static const std::string TAG_TYPE_IP;
 
-    Tag(const std::string& key, const std::string& value);
-    Tag(const Tag&) = delete;
-    ~Tag();
-};
+        Tag(const std::string& key, const std::string& value);
+        Tag(const Tag&) = delete;
+        ~Tag();
+    };
+}
 
 #endif /* TAG_H */

@@ -1,23 +1,24 @@
 #include "JaegerSpan.h"
 #include <unordered_map>
 #include <map>
+using namespace OpenTracing;
 
 JaegerSpan::JaegerSpan(SpanContext* context, const std::string& operationName, const Php::Value& startTime) :
     _operationName{ operationName },
     _context{ context }
 {
-    Php::out << "JaegerSpan::JaegerSpan addr: " << this << std::endl;
+    Php::out << "    JaegerSpan::JaegerSpan addr: " << this << std::endl;
     _startTime = !startTime.isNull() ? static_cast<int64_t>(startTime) : Helper::now();
 }
 
 JaegerSpan::~JaegerSpan()
 {
-    Php::out << "~JaegerSpan addr: " << this << std::endl;
+    Php::out << "    ~JaegerSpan addr: " << this << std::endl;
     delete _context;
-    for (auto iter : _tags)
+    for (auto& iter : _tags)
         delete iter;
     _tags.clear();
-    for (auto iter : _logs)
+    for (auto& iter : _logs)
         delete iter;
     _logs.clear();
 }
@@ -90,7 +91,7 @@ void JaegerSpan::addLogs(Php::Parameters& logs)
     //foreach($logs as $logKey = > $logValue) {
     //    $this->fields[] = new Tag($logKey, $logValue);
 
-    Php::out << "   JaegerSpan::addLogs" << std::endl;
+    Php::out << "   JaegerSpan(" << this << ")::addLogs " << std::endl;
 
     if (!logs.empty() > 0)
     {
@@ -114,26 +115,28 @@ void JaegerSpan::addLogs(Php::Parameters& logs)
                 }
                 catch (...)
                 {
-                    throw Php::Exception("  ::addTags - wring parameters, check to be a [string=>string,]");
+                    throw Php::Exception("  ::addTags - wrong parameters, check it to be a [string=>string,]");
                 }
 
             }
-            Php::out << "     size tags = " << tags.size() << std::endl;
+            //Php::out << "     size tags = " << tags.size() << std::endl;
         }
 
         this->_logs.push_back(new Log(tags));
-        Php::out << "     size tags = " << tags.size() << std::endl;
-
-        //Php::out << std::endl;
-        //for (auto& iter : this->_logs)
-        //{
-        //    Php::out << iter->_timestamp << std::endl;
-        //    for (auto& it : iter->_fields)
-        //    {
-        //        Php::out << "   "<<it->_key << " " << it->_value << std::endl;
-        //    }
-        //}
     }
+#ifdef TRACER_DEBUG
+    JaegerSpan* temp = dynamic_cast<JaegerSpan*>(this);
+    int i = 0;
+    Php::out << "    Log count: " << temp->_logs.size() << std::endl;
+    for (auto& iter1 : temp->_logs)
+    {
+        Php::out << "    Log" << ++i << ": " << iter1 << " time : " << iter1->_timestamp << std::endl;
+        for (auto& it : iter1->_fields)
+        {
+            Php::out << "        " << it->_key << " " << it->_value << std::endl;
+        }
+    }
+#endif
 }
 
 bool JaegerSpan::isSampled() const

@@ -14,6 +14,7 @@
 #include "IReporter.h"
 #include "UdpReporter.h"
 #include "SpanContext.h"
+using namespace OpenTracing;
 
 /**
 *  tell the compiler that the get_module is a pure C function
@@ -79,17 +80,18 @@ extern "C" {
             //extension.add(NoopTracerClass);
         //}
 
-        //Php::Interface ITracerInterface("ITracer");
-        Php::Class<NoopTracer> NoopTracerClass("NoopTracer");
-        //NoopTracerClass.implements(ITracerInterface);
-        extension.add(std::move(NoopTracerClass));
-        Php::Class<JaegerTracer> JaegerTracerClass("JaegerTracer");
-        //JaegerTracerClass.implements(ITracerInterface);
-        extension.add(std::move(JaegerTracerClass));
-        //extension.add(std::move(ITracerInterface));
-
         Php::Class<SpanContext> SpanContextClass("SpanContext");
         extension.add(std::move(SpanContextClass));
+
+        //Php::Interface ITracerInterface("ITracer");
+        //extension.add(std::move(ITracerInterface));
+        Php::Class<NoopTracer> NoopTracerClass("NoopTracer");
+        //NoopTracerClass.implements(ITracerInterface);
+        Php::Class<JaegerTracer> JaegerTracerClass("JaegerTracer");
+        extension.add(std::move(NoopTracerClass));
+        //JaegerTracerClass.implements(ITracerInterface);
+        extension.add(std::move(JaegerTracerClass));
+
 
         Php::Interface ISpanInterface("ISpan");
         ISpanInterface.method("addTags", {});

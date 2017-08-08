@@ -1,9 +1,10 @@
 #include "PercentageSampler.h"
 #include "Helper.h"
+using namespace OpenTracing;
 
 PercentageSampler::~PercentageSampler()
 {
-    Php::out << "~PercentageSampler" << std::endl;
+    Php::out << "~PercentageSampler " << this << std::endl;
 }
 
 PercentageSampler::PercentageSampler(const Php::Value& params) :
@@ -14,13 +15,13 @@ PercentageSampler::PercentageSampler(const Php::Value& params) :
     {
         _value = params["percents"];
 #ifdef TRACER_DEBUG
-        Php::out << "_value " << _value << std::endl;
+        Php::out << "PercentageSampler::_value " << _value << std::endl;
 #endif
     }
 }
 
 bool PercentageSampler::isSampled()
 {
-    Php::out << "PercentageSampler::isSampled" << std::endl;
+    Php::out << "    PercentageSampler::isSampled" << std::endl;
     return dist(re) < this->_value;
 }

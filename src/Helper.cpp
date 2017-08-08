@@ -1,5 +1,6 @@
 #include "Helper.h"
 #include <sys/time.h>
+using namespace OpenTracing;
 
 std::random_device rd;
 std::default_random_engine re{ rd() };

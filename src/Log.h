@@ -2,17 +2,19 @@
 #define LOG_H
 #include "Tag.h"
 
-class Log
+namespace OpenTracing
 {
-private:
-    int64_t _timestamp;
-    std::vector<Tag*> _fields;
-public:
-    static const int LOGS_THRESHOLD = 50;
-    Log(std::vector<Tag*>& logs, const Php::Value& timestamp = nullptr);
-    Log(const Log&) = delete;
-    ~Log();
-};
+    class Log
+    {
+    public:
+        int64_t _timestamp;
+        std::vector<Tag*> _fields;
+        static const int LOGS_THRESHOLD = 50;
+        Log(std::vector<Tag*>& logs, const Php::Value& timestamp = nullptr);
+        Log(const Log&) = delete;
+        ~Log();
+    };
+}
 
 #endif /* LOG_H */
 

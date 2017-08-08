@@ -1,18 +1,19 @@
 #ifndef IREPORTER_H
 #define IREPORTER_H
 
-class IReporter
+namespace OpenTracing
 {
-public:
-    virtual ~IReporter()
+    class IReporter
     {
-        Php::out << "    ~IReporter addr: " << this << std::endl;
-    }
+    public:
+        virtual ~IReporter()
+        {
+            Php::out << "    ~IReporter addr: " << this << std::endl;
+        }
 
-    virtual void flush() const = 0;
-    virtual const char* _name() const = 0;
-};
-
-
+        virtual void flush() const = 0;
+        virtual const char* _name() const = 0;
+    };
+}
 #endif /* IREPORTER_H */
 

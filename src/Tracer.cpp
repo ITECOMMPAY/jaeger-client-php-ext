@@ -2,6 +2,7 @@
 #include "UdpReporter.h"
 #include "FileReporter.h"
 #include "PercentageSampler.h"
+using namespace OpenTracing;
 
 ITracer* global_tracer;
 //Php::Value ref_global_tracer; //increase ref count so PHP GC will not delete it
@@ -140,19 +141,23 @@ Php::Value Tracer::startSpan(Php::Parameters& params)
     if (params.size() == 1)
     {
 #ifdef TRACER_DEBUG
-        Php::out << "1 parameter" << std::endl;
+        Php::out << "    1 parameter" << std::endl;
 #endif
     }
     else
     {
         options = params[1];
 #ifdef TRACER_DEBUG
-        Php::out << "2 parameters" << std::endl;
+        Php::out << "    2 parameters" << std::endl;
 #endif
     }
 
     ISpan* span = global_tracer->startSpan(operationName, options);
 
+#ifdef TRACER_DEBUG
+    JaegerTracer* temp = dynamic_cast<JaegerTracer*>(global_tracer);
+    Php::out << "    total spans: " << temp->_spans.size() << std::endl;
+#endif
     return span == nullptr ? static_cast<Php::Value>(nullptr) : Php::Object(span->_name(), span);
 }
 
@@ -160,6 +165,7 @@ Php::Value Tracer::getCurrentSpan()
 {
     ISpan* span = global_tracer->getCurrentSpan();
 
+    //todo - return a copy of object... fucking zend
     return span == nullptr ? static_cast<Php::Value>(nullptr) : Php::Object(span->_name(), span);
 }
 
@@ -219,17 +225,5 @@ void Tracer::addLogs(Php::Parameters& params)
     if (span)
     {
         span->addLogs(params);
-
-        //JaegerSpan* temp_out = dynamic_cast<JaegerSpan*>(span);
-
-        //Php::out << std::endl;
-        //for (auto& iter : temp_out->_logs)
-        //{
-        //    Php::out << iter->_timestamp << std::endl;
-        //    for (auto& it : iter->_fields)
-        //    {
-        //        Php::out << "   " << it->_key << " " << it->_value << std::endl;
-        //    }
-        //}
     }
 }

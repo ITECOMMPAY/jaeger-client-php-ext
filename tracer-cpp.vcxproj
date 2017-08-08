@@ -51,6 +51,8 @@
     <ClInclude Include="src\SpanContext.h" />
     <ClInclude Include="src\Tag.h" />
     <ClInclude Include="src\TextCarrier.h" />
+    <ClInclude Include="src\thrift-gen\Agent.h" />
+    <ClInclude Include="src\thrift-gen\jaeger_types.h" />
     <ClInclude Include="src\Tracer.h" />
     <ClInclude Include="src\UdpReporter.h" />
   </ItemGroup>
@@ -68,6 +70,8 @@
     <ClCompile Include="src\Process.cpp" />
     <ClCompile Include="src\Tag.cpp" />
     <ClCompile Include="src\TextCarrier.cpp" />
+    <ClCompile Include="src\thrift-gen\Agent.cpp" />
+    <ClCompile Include="src\thrift-gen\jaeger_types.cpp" />
     <ClCompile Include="src\Tracer.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -93,7 +97,7 @@
       <PreprocessorDefinitions>TRACER_DEBUG</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <LibraryDependencies>phpcpp</LibraryDependencies>
+      <LibraryDependencies>phpcpp;thrift;</LibraryDependencies>
       <Relocation />
       <FunctionBinding />
       <NoExecStackRequired />

@@ -6,21 +6,24 @@
 #include "ITracer.h"
 #include "NoopSpan.h"
 
-class NoopTracer : public ITracer
+namespace OpenTracing
 {
-public:
-    ~NoopTracer();
-    NoopTracer();
-    void init(const std::string& serviceName);
-    ISpan* startSpan(const std::string& operationName, const Php::Value& options = nullptr);
-    ISpan* getCurrentSpan();
-    void finishSpan(ISpan* span, const Php::Value& endTime = nullptr);
-    void inject(const Php::Value& context, const std::string& format, std::string& carrier);
-    SpanContext* extract(const std::string& format, const std::string& carier) const;
-    void flush();
+    class NoopTracer : public ITracer
+    {
+    public:
+        ~NoopTracer();
+        NoopTracer();
+        void init(const std::string& serviceName);
+        ISpan* startSpan(const std::string& operationName, const Php::Value& options = nullptr);
+        ISpan* getCurrentSpan();
+        void finishSpan(ISpan* span, const Php::Value& endTime = nullptr);
+        void inject(const Php::Value& context, const std::string& format, std::string& carrier);
+        SpanContext* extract(const std::string& format, const std::string& carier) const;
+        void flush();
 
-    const char* _name() const;
-};
+        const char* _name() const;
+    };
+}
 
 
 #endif /* NOOPTRACER_H */

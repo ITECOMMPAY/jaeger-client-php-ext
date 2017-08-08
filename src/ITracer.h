@@ -3,34 +3,34 @@
 
 #include <phpcpp.h>
 #include <iostream>
-#include "ITracer.h"
+#include "ISpan.h"
 #include "SpanContext.h"
 
-/*forward declaration*/
-class ISpan;
-
-class ITracer : public Php::Base
+namespace OpenTracing
 {
-public:
-    virtual ~ITracer();
-
-    /*Init tracing*/
-    virtual void init(const std::string& serviceName) = 0;
-    /*Start span*/
-    virtual ISpan* startSpan(const std::string& operationName, const Php::Value& options = nullptr) = 0;
-    /*Get current OPENED span*/
-    virtual ISpan* getCurrentSpan() = 0;
-    /*Finish span*/
-    virtual void finishSpan(ISpan* span, const Php::Value& endTime = nullptr) = 0;
-    /*Inject context into carrier*/
-    virtual void inject(const Php::Value& context, const std::string& format, std::string& carrier) = 0;
-    /*Extract context from the carrier*/
-    virtual SpanContext* extract(const std::string& format, const std::string& carier) const = 0;
-    /*Flush everything via reporter*/
-    virtual void flush() = 0;
-    /*Name of a class to pass in Php::Object*/
-    virtual const char* _name() const = 0;
-};
+    class ITracer : public Php::Base
+    {
+    public:
+        virtual ~ITracer() = 0;
+        
+        /*Init tracing*/
+        virtual void init(const std::string& serviceName) = 0;
+        /*Start span*/
+        virtual OpenTracing::ISpan* startSpan(const std::string& operationName, const Php::Value& options = nullptr) = 0;
+        /*Get current OPENED span*/
+        virtual OpenTracing::ISpan* getCurrentSpan() = 0;
+        /*Finish span*/
+        virtual void finishSpan(ISpan* span, const Php::Value& endTime = nullptr) = 0;
+        /*Inject context into carrier*/
+        virtual void inject(const Php::Value& context, const std::string& format, std::string& carrier) = 0;
+        /*Extract context from the carrier*/
+        virtual OpenTracing::SpanContext* extract(const std::string& format, const std::string& carier) const = 0;
+        /*Flush everything via reporter*/
+        virtual void flush() = 0;
+        /*Name of a class to pass in Php::Object*/
+        virtual const char* _name() const = 0;
+    };
+}
 
 #endif /* ITRACER_H */
 

@@ -1,4 +1,5 @@
 #include "NoopSpan.h"
+using namespace OpenTracing;
 
 NoopSpan::NoopSpan()
 {

@@ -1,5 +1,6 @@
 #include "Process.h"
 #include "Helper.h"
+using namespace OpenTracing;
 
 const std::string Process::DEFAULT_SERVICE_NAME{ "unknown" };
 
@@ -14,7 +15,7 @@ Process::Process(const std::string& serviceName) :
 
 Process::~Process()
 {
-    for (auto iter : _tags)
+    for (auto& iter : _tags)
         delete iter;
     _tags.clear();
 

@@ -12,32 +12,35 @@
 #include "ISampler.h"
 #include "Process.h"
 
-class JaegerTracer : public ITracer
+namespace OpenTracing
 {
-private:
-    IReporter* _reporter;
-    ISampler* _sampler;
-    Process* _process;
-    bool _isSampled;
-public:
-    std::unordered_map<int, ISpan*> _spans;
-    std::vector<int> _activeSpans;
+    class JaegerTracer : public ITracer
+    {
+    private:
+        IReporter* _reporter;
+        ISampler* _sampler;
+        Process* _process;
+        bool _isSampled;
+    public:
+        std::unordered_map<unsigned long long int, ISpan*> _spans;
+        std::vector<unsigned long long int> _activeSpans;
 
-    ~JaegerTracer();
-    JaegerTracer(IReporter* reporter, ISampler* sampler);
+        ~JaegerTracer();
+        JaegerTracer(IReporter* reporter, ISampler* sampler);
+        JaegerTracer(const JaegerTracer&) = delete;
 
-    void init(const std::string& serviceName);
-    ISpan* startSpan(const std::string& operationName, const Php::Value& options = nullptr);
-    ISpan* getCurrentSpan();
-    void finishSpan(ISpan* span, const Php::Value& endTime = nullptr);
-    void inject(const Php::Value& context, const std::string& format, std::string& carrier);
-    SpanContext* extract(const std::string& format, const std::string& carier) const;
-    void flush();
+        void init(const std::string& serviceName);
+        ISpan* startSpan(const std::string& operationName, const Php::Value& options = nullptr);
+        ISpan* getCurrentSpan();
+        void finishSpan(ISpan* span, const Php::Value& endTime = nullptr);
+        void inject(const Php::Value& context, const std::string& format, std::string& carrier);
+        SpanContext* extract(const std::string& format, const std::string& carier) const;
+        void flush();
 
-    void clearSpans();
-    const char* _name() const;
-};
-
+        void clearSpans();
+        const char* _name() const;
+    };
+}
 
 #endif /* JAEGERTRACER_H */
 
