@@ -9,7 +9,7 @@ namespace OpenTracing
     {
     public:
         virtual ~IReporter() = 0;
-        virtual void flush(const uint8_t* data, int len) const = 0;
+        virtual void flush(const std::string& data) const = 0;
         virtual const char* _name() const = 0;
     };
 }

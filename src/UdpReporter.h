@@ -14,12 +14,7 @@ namespace OpenTracing
         ~UdpReporter();
         UdpReporter(const Php::Value& params = nullptr);
 
-        //UdpReporter() = delete;
-        //UdpReporter(const UdpReporter&) = delete;
-        //UdpReporter(const UdpReporter&&) = delete;
-        //UdpReporter& operator=(const UdpReporter&) = delete;
-        //UdpReporter& operator=(const UdpReporter&&) = delete;
-        void flush(const uint8_t* data, int len) const;
+        void flush(const std::string& data) const;
         const char* _name() const;
     };
 }

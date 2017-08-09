@@ -45,7 +45,6 @@ ISpan * JaegerTracer::startSpan(const std::string& operationName, const Php::Val
     Php::Value parent = nullptr;
     SpanContext* context = nullptr;
 
-    // check reference
     if (Php::array_key_exists("childOf", options))
     {
         parent = options["childOf"];
@@ -85,7 +84,6 @@ ISpan * JaegerTracer::startSpan(const std::string& operationName, const Php::Val
     }
     else
     {
-        //int64_t traceId = Helper::generateId();
         int flags = 0;
         if (this->_sampler->isSampled())
         {
@@ -93,8 +91,6 @@ ISpan * JaegerTracer::startSpan(const std::string& operationName, const Php::Val
         }
 
         context = new SpanContext(
-            //traceId,
-            //traceId,
             Helper::generateId(),
             Helper::generateId(),
             0,
@@ -128,7 +124,7 @@ void JaegerTracer::finishSpan(ISpan* span, const Php::Value& endTime)
 #ifdef TRACER_DEBUG
     Php::out << "JaegerTracer(" << span << ")::finishSpan " << std::endl;
     Php::out << "    _spans count:" << this->_spans.size() << std::endl;
-    //Php::out << "    time: " << jaegerSpan->_endTime << std::endl;
+    Php::out << "    time: " << dynamic_cast<JaegerSpan*>(span)->_endTime << std::endl;
     Php::out << "    spanid: " << dynamic_cast<JaegerSpan*>(span)->_context->_spanId << std::endl;
     Php::out << "    _logs.size: " << dynamic_cast<JaegerSpan*>(span)->_logs.size() << std::endl;
     Php::out << "    _tags.size: " << dynamic_cast<JaegerSpan*>(span)->_tags.size() << std::endl;
@@ -202,9 +198,7 @@ void JaegerTracer::flush()
     if (!this->_isSampled)
         return;
 
-    uint8_t* buf = nullptr;
-    uint32_t sz{};
-
+    std::string data{};
     if (strcmp(this->_reporter->_name(), "FileReporter") == 0)
     {
         /*
@@ -217,29 +211,16 @@ void JaegerTracer::flush()
 
         boost::shared_ptr<TMemoryBuffer> trans(new TMemoryBuffer());
         boost::shared_ptr<TCompactProtocol> proto(new TCompactProtocol(trans));
-        boost::shared_ptr<AgentConcurrentClient> agent(new AgentConcurrentClient(nullptr, proto));
+        boost::shared_ptr<AgentClient> agent(new AgentClient(nullptr, proto));
 
         const ::Batch* batch = Helper::jaegerizeTracer(this);
         agent->emitBatch(*batch);
-
-        trans->getBuffer(&buf, &sz);
-        //Php::out << "---1" << std::endl;
-        //for (uint32_t i = 0; i < sz; i++)
-        //    printf("%c", buf[i]);
-        //printf("\n");
-        //Php::out << "---1" << std::endl;
-
-        //std::string data{};
-        //data = trans->getBufferAsString();
-
-        //Php::out << "---2" << std::endl;
-        //Php::out << data << std::endl;
-        //Php::out << "---2" << std::endl;
+        data = trans->getBufferAsString();
     }
     else
         return;
 
-    this->_reporter->flush(buf, sz);
+    this->_reporter->flush(data);
     this->clearSpans();
 }
 
@@ -250,7 +231,6 @@ void JaegerTracer::clearSpans()
     {
         //issue with PHP ref count, so it will be deleted after script finishes
         //will be handled by PHP __destruct of a JaegerSpan
-
         //delete iter.second; 
     }
     _spans.clear();

@@ -24,7 +24,7 @@ FileReporter::FileReporter(const Php::Value& params)
     */
 }
 
-void FileReporter::flush(const uint8_t* data, int len) const
+void FileReporter::flush(const std::string& data) const
 {
     Php::out << "    FileReporter::flush addr: " << std::endl;
     /*

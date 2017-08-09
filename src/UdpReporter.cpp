@@ -6,6 +6,8 @@
 #include <netinet/ip.h>
 #include <arpa/inet.h>
 #include <unistd.h>
+
+#include <sstream>
 using namespace OpenTracing;
 
 UdpReporter::~UdpReporter()
@@ -32,7 +34,7 @@ UdpReporter::UdpReporter(const Php::Value& params)
     }
 }
 
-void UdpReporter::flush(const uint8_t* data, int len) const
+void UdpReporter::flush(const std::string& data) const
 {
     Php::out << "    UdpReporter::flush" << std::endl;
 
@@ -40,7 +42,7 @@ void UdpReporter::flush(const uint8_t* data, int len) const
     _addr.sin_family = AF_INET;
     _addr.sin_port = htons(static_cast<uint16_t>(std::stoul(this->_options["port"].stringValue())));
 
-    if(this->_options["addr"].stringValue() == "localhost")
+    if (this->_options["addr"].stringValue() == "localhost")
         _addr.sin_addr.s_addr = htonl(INADDR_LOOPBACK); /* Inet 127.0.0.1.  */
     else
         _addr.sin_addr.s_addr = inet_addr(this->_options["addr"].stringValue().c_str());
@@ -48,7 +50,8 @@ void UdpReporter::flush(const uint8_t* data, int len) const
     int _socket = socket(AF_INET, SOCK_DGRAM, 0);
     if (_socket != -1)
     {
-        sendto(_socket, data, len, 0, (sockaddr*)&_addr, sizeof(_addr));
+        size_t num_send = sendto(_socket, data.c_str(), data.length(), 0, (sockaddr*)&_addr, sizeof(_addr));
+        Php::out << "    num_send: " << num_send << std::endl;
         close(_socket);
     }
 }
