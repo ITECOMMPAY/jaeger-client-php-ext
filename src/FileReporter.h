@@ -11,7 +11,7 @@ namespace OpenTracing
     public:
         ~FileReporter();
         FileReporter(const Php::Value& params);
-        void flush() const;
+        void flush(const uint8_t* data, int len) const;
         const char* _name() const;
     };
 }

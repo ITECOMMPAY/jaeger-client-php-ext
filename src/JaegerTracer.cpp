@@ -185,7 +185,6 @@ void JaegerTracer::inject(const Php::Value& context, const std::string& format, 
     else
         throw Php::Exception("JaegerTracer::startSpan - no SpanContext nor ISpan passed");
 
-
     // TODO do we need TextMap format? headers format?
     TextCarrier::inject(paramContext, carrier);
 }
@@ -203,9 +202,14 @@ void JaegerTracer::flush()
     if (!this->_isSampled)
         return;
 
+    uint8_t* buf = nullptr;
+    uint32_t sz{};
+
     if (strcmp(this->_reporter->_name(), "FileReporter") == 0)
     {
-        //$data = json_encode($this, JSON_PRETTY_PRINT);
+        /*
+            $data = json_encode($this, JSON_PRETTY_PRINT);
+        */
     }
     else if (strcmp(this->_reporter->_name(), "UdpReporter") == 0)
     {
@@ -215,34 +219,27 @@ void JaegerTracer::flush()
         boost::shared_ptr<TCompactProtocol> proto(new TCompactProtocol(trans));
         boost::shared_ptr<AgentConcurrentClient> agent(new AgentConcurrentClient(nullptr, proto));
 
-
         const ::Batch* batch = Helper::jaegerizeTracer(this);
         agent->emitBatch(*batch);
-        //uint8_t* buf;
-        //uint32_t sz;
-        //trans->getBuffer(&buf, &sz);
-        std::string data = trans->getBufferAsString();
 
-        Php::out << data << std::endl;
+        trans->getBuffer(&buf, &sz);
+        //Php::out << "---1" << std::endl;
+        //for (uint32_t i = 0; i < sz; i++)
+        //    printf("%c", buf[i]);
+        //printf("\n");
+        //Php::out << "---1" << std::endl;
 
+        //std::string data{};
+        //data = trans->getBufferAsString();
 
-
-        /*
-        $trans = new \Thrift\Transport\TMemoryBuffer();
-        $proto = new \Thrift\Protocol\TCompactProtocol($trans);
-        $agent = new \Eco\Tracer\Autogen\AgentClient(null, $proto);
-
-        $batch = Helper::jaegerizeTracer($this);
-
-        $agent->emitBatch($batch);
-        $data = $trans->getBuffer();
-
-        */
+        //Php::out << "---2" << std::endl;
+        //Php::out << data << std::endl;
+        //Php::out << "---2" << std::endl;
     }
     else
         return;
 
-    this->_reporter->flush();//$data
+    this->_reporter->flush(buf, sz);
     this->clearSpans();
 }
 

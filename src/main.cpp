@@ -63,29 +63,17 @@ extern "C" {
         });
         extension.add(std::move(TracerClass));
 
-        /*todo - try to leave only abstract interface*/
-        //{
-            //Php::Class<ITracer> ITracerClass("ITracer");
-            //ITracerClass.method("print",{});
-            //extension.add(std::move(ITracerClass));
-
-            //Php::Class<NoopTracer> NoopTracerClass("NoopTracer");
-            //NoopTracerClass.method<&NoopTracer::print>("print",{});
-            //extension.add(NoopTracerClass);
-        //}
-
         Php::Class<SpanContext> SpanContextClass("SpanContext");
         extension.add(std::move(SpanContextClass));
 
-        //Php::Interface ITracerInterface("ITracer");
-        //extension.add(std::move(ITracerInterface));
+        Php::Interface ITracerInterface("ITracer");
         Php::Class<NoopTracer> NoopTracerClass("NoopTracer");
-        //NoopTracerClass.implements(ITracerInterface);
+        NoopTracerClass.implements(ITracerInterface);
         Php::Class<JaegerTracer> JaegerTracerClass("JaegerTracer");
+        JaegerTracerClass.implements(ITracerInterface);
+        extension.add(std::move(ITracerInterface));
         extension.add(std::move(NoopTracerClass));
-        //JaegerTracerClass.implements(ITracerInterface);
         extension.add(std::move(JaegerTracerClass));
-
 
         Php::Interface ISpanInterface("ISpan");
         ISpanInterface.method("addTags", {});
@@ -99,8 +87,8 @@ extern "C" {
         JaegerSpanClass.method<&JaegerSpan::addTags>("addTags", {});
         JaegerSpanClass.method<&JaegerSpan::addLogs>("addLogs", {});
         extension.add(std::move(ISpanInterface));
-        extension.add(std::move(JaegerSpanClass));
         extension.add(std::move(NoopSpanClass));
+        extension.add(std::move(JaegerSpanClass));
 
         // return the extension
         return extension;
