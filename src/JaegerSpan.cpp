@@ -9,13 +9,17 @@ JaegerSpan::JaegerSpan(SpanContext* context, const std::string& operationName, c
     _endTime{},
     _context{ context }
 {
+#ifdef TRACER_DEBUG
     Php::out << "    JaegerSpan::JaegerSpan addr: " << this << std::endl;
+#endif    
     _startTime = !startTime.isNull() ? static_cast<int64_t>(startTime) : Helper::now();
 }
 
 JaegerSpan::~JaegerSpan()
 {
+#ifdef TRACER_DEBUG
     Php::out << "    ~JaegerSpan addr: " << this << std::endl;
+#endif    
     delete _context;
     for (auto& iter : _tags)
         delete iter;
@@ -27,7 +31,9 @@ JaegerSpan::~JaegerSpan()
 
 void JaegerSpan::addTags(Php::Parameters& params)
 {
+#ifdef TRACER_DEBUG
     Php::out << "   ::addTags addr: " << this << std::endl;
+#endif    
 
     if (!params.empty() > 0)
     {
@@ -61,7 +67,9 @@ void JaegerSpan::addTags(Php::Parameters& params)
 
 void JaegerSpan::addLogs(Php::Parameters& logs)
 {
+#ifdef TRACER_DEBUG
     Php::out << "   JaegerSpan(" << this << ")::addLogs " << std::endl;
+#endif    
 
     if (!logs.empty() > 0)
     {

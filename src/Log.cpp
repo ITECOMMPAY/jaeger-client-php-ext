@@ -14,5 +14,7 @@ OpenTracing::Log::~Log()
         delete iter;
     _fields.clear();
 
+#ifdef TRACER_DEBUG
     Php::out << "    ~Log" << std::endl;
+#endif    
 }

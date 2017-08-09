@@ -19,7 +19,9 @@ JaegerTracer::~JaegerTracer()
     delete _sampler;
     delete _process;
     clearSpans();
+#ifdef TRACER_DEBUG
     Php::out << "~JaegerTracer" << std::endl;
+#endif    
 }
 
 JaegerTracer::JaegerTracer(IReporter* reporter, ISampler* sampler) :
@@ -27,7 +29,9 @@ JaegerTracer::JaegerTracer(IReporter* reporter, ISampler* sampler) :
     _sampler{ sampler },
     _isSampled{ false }
 {
+#ifdef TRACER_DEBUG
     Php::out << "JaegerTracer::JaegerTracer " << this << std::endl;
+#endif    
 }
 
 void JaegerTracer::init(const std::string& serviceName)
@@ -61,13 +65,17 @@ ISpan * JaegerTracer::startSpan(const std::string& operationName, const Php::Val
         SpanContext* paramContext = nullptr;
         if (parent.instanceOf("SpanContext"))
         {
+#ifdef TRACER_DEBUG
             Php::out << "-received SpanContext" << std::endl;
+#endif    
             paramContext = (SpanContext*)parent.implementation();
         }
         else if (parent.instanceOf("ISpan"))
         {
             // allow span to be passed as reference, not just SpanContext
+#ifdef TRACER_DEBUG
             Php::out << "-received Span" << std::endl;
+#endif    
             ISpan* span = (ISpan*)parent.implementation();
             paramContext = dynamic_cast<JaegerSpan*>(span)->_context;
         }
@@ -193,7 +201,9 @@ SpanContext* JaegerTracer::extract(const std::string& format, const std::string&
 
 void JaegerTracer::flush()
 {
+#ifdef TRACER_DEBUG
     Php::out << "JaegerTracer::flush " << std::endl;
+#endif    
 
     if (!this->_isSampled)
         return;
@@ -207,7 +217,9 @@ void JaegerTracer::flush()
     }
     else if (strcmp(this->_reporter->_name(), "UdpReporter") == 0)
     {
+#ifdef TRACER_DEBUG
         Php::out << "*** " << std::endl;
+#endif    
 
         boost::shared_ptr<TMemoryBuffer> trans(new TMemoryBuffer());
         boost::shared_ptr<TCompactProtocol> proto(new TCompactProtocol(trans));
@@ -226,7 +238,9 @@ void JaegerTracer::flush()
 
 void JaegerTracer::clearSpans()
 {
+#ifdef TRACER_DEBUG
     Php::out << "\tclearSpans()" << std::endl;
+#endif    
     //for (auto& iter : _spans)
     {
         //issue with PHP ref count, so it will be deleted after script finishes

@@ -136,7 +136,9 @@ Php::Value Tracer::getTracer()
 
 Php::Value Tracer::startSpan(Php::Parameters& params)
 {
+#ifdef TRACER_DEBUG
     Php::out << "Tracer::startSpan" << std::endl;
+#endif    
 
     std::string operationName = params[0];
     Php::Value options = nullptr;
@@ -158,8 +160,7 @@ Php::Value Tracer::startSpan(Php::Parameters& params)
     ISpan* span = global_tracer->startSpan(operationName, options);
 
 #ifdef TRACER_DEBUG
-    JaegerTracer* temp = dynamic_cast<JaegerTracer*>(global_tracer);
-    Php::out << "    total spans: " << temp->_spans.size() << std::endl;
+    Php::out << "    total spans: " << dynamic_cast<JaegerTracer*>(global_tracer)->_spans.size() << std::endl;
 #endif
     return span == nullptr ? static_cast<Php::Value>(nullptr) : Php::Object(span->_name(), span);
 }
@@ -223,7 +224,9 @@ void Tracer::addTags(Php::Parameters& params)
 
 void Tracer::addLogs(Php::Parameters& params)
 {
+#ifdef TRACER_DEBUG
     Php::out << "Tracer::addLogs" << std::endl;
+#endif
     ISpan* span = global_tracer->getCurrentSpan();
     if (span)
     {

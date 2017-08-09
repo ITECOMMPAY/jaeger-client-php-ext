@@ -12,12 +12,16 @@ using namespace OpenTracing;
 
 UdpReporter::~UdpReporter()
 {
+#ifdef TRACER_DEBUG
     Php::out << "~UdpReporter" << std::endl;
+#endif
 }
 
 UdpReporter::UdpReporter(const Php::Value& params)
 {
+#ifdef TRACER_DEBUG
     Php::out << "UdpReporter::UdpReporter" << std::endl;
+#endif
 
     Php::Value defaults;
     defaults["addr"] = "localhost";
@@ -36,7 +40,9 @@ UdpReporter::UdpReporter(const Php::Value& params)
 
 void UdpReporter::flush(const std::string& data) const
 {
+#ifdef TRACER_DEBUG
     Php::out << "    UdpReporter::flush" << std::endl;
+#endif
 
     sockaddr_in _addr;
     _addr.sin_family = AF_INET;
@@ -50,8 +56,14 @@ void UdpReporter::flush(const std::string& data) const
     int _socket = socket(AF_INET, SOCK_DGRAM, 0);
     if (_socket != -1)
     {
-        size_t num_send = sendto(_socket, data.c_str(), data.length(), 0, (sockaddr*)&_addr, sizeof(_addr));
-        Php::out << "    num_send: " << num_send << std::endl;
+        sendto(_socket, data.c_str(), data.length(), 0, (sockaddr*)&_addr, sizeof(_addr));
+#ifdef TRACER_DEBUG
+        ssize_t num_send = {};
+        if (num_send != -1)
+            Php::out << "    num_send: " << num_send << std::endl;
+        else
+            Php::out << "    nothing sent, some error occures" << std::endl;
+#endif
         close(_socket);
     }
 }
