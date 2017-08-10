@@ -9,13 +9,9 @@
 
 #include <iosfwd>
 
-#include <thrift/Thrift.h>
-#include <thrift/TApplicationException.h>
 #include <thrift/TBase.h>
 #include <thrift/protocol/TProtocol.h>
 #include <thrift/transport/TTransport.h>
-
-#include <thrift/cxxfunctional.h>
 
 
 
@@ -52,8 +48,6 @@ class Span;
 class Process;
 
 class Batch;
-
-class BatchSubmitResponse;
 
 typedef struct _Tag__isset {
   _Tag__isset() : vStr(false), vDouble(false), vBool(false), vLong(false), vBinary(false) {}
@@ -134,17 +128,9 @@ class Tag : public virtual ::apache::thrift::TBase {
   uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
   uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
 
-  virtual void printTo(std::ostream& out) const;
 };
 
 void swap(::Tag &a, ::Tag &b);
-
-inline std::ostream& operator<<(std::ostream& out, const ::Tag& obj)
-{
-  obj.printTo(out);
-  return out;
-}
-
 
 class Log : public virtual ::apache::thrift::TBase {
  public:
@@ -179,17 +165,9 @@ class Log : public virtual ::apache::thrift::TBase {
   uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
   uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
 
-  virtual void printTo(std::ostream& out) const;
 };
 
 void swap(::Log &a, ::Log &b);
-
-inline std::ostream& operator<<(std::ostream& out, const ::Log& obj)
-{
-  obj.printTo(out);
-  return out;
-}
-
 
 class SpanRef : public virtual ::apache::thrift::TBase {
  public:
@@ -234,16 +212,9 @@ class SpanRef : public virtual ::apache::thrift::TBase {
   uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
   uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
 
-  virtual void printTo(std::ostream& out) const;
 };
 
 void swap(SpanRef &a, SpanRef &b);
-
-inline std::ostream& operator<<(std::ostream& out, const SpanRef& obj)
-{
-  obj.printTo(out);
-  return out;
-}
 
 typedef struct _Span__isset {
   _Span__isset() : references(false), tags(false), logs(false) {}
@@ -338,16 +309,9 @@ class Span : public virtual ::apache::thrift::TBase {
   uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
   uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
 
-  virtual void printTo(std::ostream& out) const;
 };
 
 void swap(Span &a, Span &b);
-
-inline std::ostream& operator<<(std::ostream& out, const Span& obj)
-{
-  obj.printTo(out);
-  return out;
-}
 
 typedef struct _Process__isset {
   _Process__isset() : tags(false) {}
@@ -391,17 +355,9 @@ class Process : public virtual ::apache::thrift::TBase {
   uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
   uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
 
-  virtual void printTo(std::ostream& out) const;
 };
 
 void swap(::Process &a, ::Process &b);
-
-inline std::ostream& operator<<(std::ostream& out, const ::Process& obj)
-{
-  obj.printTo(out);
-  return out;
-}
-
 
 class Batch : public virtual ::apache::thrift::TBase {
  public:
@@ -436,57 +392,8 @@ class Batch : public virtual ::apache::thrift::TBase {
   uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
   uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
 
-  virtual void printTo(std::ostream& out) const;
 };
 
 void swap(Batch &a, Batch &b);
-
-inline std::ostream& operator<<(std::ostream& out, const Batch& obj)
-{
-  obj.printTo(out);
-  return out;
-}
-
-
-class BatchSubmitResponse : public virtual ::apache::thrift::TBase {
- public:
-
-  BatchSubmitResponse(const BatchSubmitResponse&);
-  BatchSubmitResponse& operator=(const BatchSubmitResponse&);
-  BatchSubmitResponse() : ok(0) {
-  }
-
-  virtual ~BatchSubmitResponse() throw();
-  bool ok;
-
-  void __set_ok(const bool val);
-
-  bool operator == (const BatchSubmitResponse & rhs) const
-  {
-    if (!(ok == rhs.ok))
-      return false;
-    return true;
-  }
-  bool operator != (const BatchSubmitResponse &rhs) const {
-    return !(*this == rhs);
-  }
-
-  bool operator < (const BatchSubmitResponse & ) const;
-
-  uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
-  uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
-
-  virtual void printTo(std::ostream& out) const;
-};
-
-void swap(BatchSubmitResponse &a, BatchSubmitResponse &b);
-
-inline std::ostream& operator<<(std::ostream& out, const BatchSubmitResponse& obj)
-{
-  obj.printTo(out);
-  return out;
-}
-
-
 
 #endif

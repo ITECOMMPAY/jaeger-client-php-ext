@@ -7,11 +7,7 @@
 #ifndef Agent_H
 #define Agent_H
 
-#include <thrift/TDispatchProcessor.h>
-#include <thrift/async/TConcurrentClientSyncInfo.h>
-//#include "agent_types.h"
 #include "jaeger_types.h"
-
 
 #ifdef _WIN32
   #pragma warning( push )
@@ -23,41 +19,6 @@ class AgentIf {
   virtual ~AgentIf() {}
   virtual void emitZipkinBatch(const std::vector< ::Span> & spans) = 0;
   virtual void emitBatch(const  ::Batch& batch) = 0;
-};
-
-class AgentIfFactory {
- public:
-  typedef AgentIf Handler;
-
-  virtual ~AgentIfFactory() {}
-
-  virtual AgentIf* getHandler(const ::apache::thrift::TConnectionInfo& connInfo) = 0;
-  virtual void releaseHandler(AgentIf* /* handler */) = 0;
-};
-
-class AgentIfSingletonFactory : virtual public AgentIfFactory {
- public:
-  AgentIfSingletonFactory(const boost::shared_ptr<AgentIf>& iface) : iface_(iface) {}
-  virtual ~AgentIfSingletonFactory() {}
-
-  virtual AgentIf* getHandler(const ::apache::thrift::TConnectionInfo&) {
-    return iface_.get();
-  }
-  virtual void releaseHandler(AgentIf* /* handler */) {}
-
- protected:
-  boost::shared_ptr<AgentIf> iface_;
-};
-
-class AgentNull : virtual public AgentIf {
- public:
-  virtual ~AgentNull() {}
-  void emitZipkinBatch(const std::vector< ::Span> & /* spans */) {
-    return;
-  }
-  void emitBatch(const  ::Batch& /* batch */) {
-    return;
-  }
 };
 
 typedef struct _Agent_emitZipkinBatch_args__isset {
@@ -192,109 +153,6 @@ class AgentClient : virtual public AgentIf {
   boost::shared_ptr< ::apache::thrift::protocol::TProtocol> poprot_;
   ::apache::thrift::protocol::TProtocol* iprot_;
   ::apache::thrift::protocol::TProtocol* oprot_;
-};
-
-class AgentProcessor : public ::apache::thrift::TDispatchProcessor {
- protected:
-  boost::shared_ptr<AgentIf> iface_;
-  virtual bool dispatchCall(::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, const std::string& fname, int32_t seqid, void* callContext);
- private:
-  typedef  void (AgentProcessor::*ProcessFunction)(int32_t, ::apache::thrift::protocol::TProtocol*, ::apache::thrift::protocol::TProtocol*, void*);
-  typedef std::map<std::string, ProcessFunction> ProcessMap;
-  ProcessMap processMap_;
-  void process_emitZipkinBatch(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
-  void process_emitBatch(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
- public:
-  AgentProcessor(boost::shared_ptr<AgentIf> iface) :
-    iface_(iface) {
-    processMap_["emitZipkinBatch"] = &AgentProcessor::process_emitZipkinBatch;
-    processMap_["emitBatch"] = &AgentProcessor::process_emitBatch;
-  }
-
-  virtual ~AgentProcessor() {}
-};
-
-class AgentProcessorFactory : public ::apache::thrift::TProcessorFactory {
- public:
-  AgentProcessorFactory(const ::boost::shared_ptr< AgentIfFactory >& handlerFactory) :
-      handlerFactory_(handlerFactory) {}
-
-  ::boost::shared_ptr< ::apache::thrift::TProcessor > getProcessor(const ::apache::thrift::TConnectionInfo& connInfo);
-
- protected:
-  ::boost::shared_ptr< AgentIfFactory > handlerFactory_;
-};
-
-class AgentMultiface : virtual public AgentIf {
- public:
-  AgentMultiface(std::vector<boost::shared_ptr<AgentIf> >& ifaces) : ifaces_(ifaces) {
-  }
-  virtual ~AgentMultiface() {}
- protected:
-  std::vector<boost::shared_ptr<AgentIf> > ifaces_;
-  AgentMultiface() {}
-  void add(boost::shared_ptr<AgentIf> iface) {
-    ifaces_.push_back(iface);
-  }
- public:
-  void emitZipkinBatch(const std::vector< ::Span> & spans) {
-    size_t sz = ifaces_.size();
-    size_t i = 0;
-    for (; i < (sz - 1); ++i) {
-      ifaces_[i]->emitZipkinBatch(spans);
-    }
-    ifaces_[i]->emitZipkinBatch(spans);
-  }
-
-  void emitBatch(const  ::Batch& batch) {
-    size_t sz = ifaces_.size();
-    size_t i = 0;
-    for (; i < (sz - 1); ++i) {
-      ifaces_[i]->emitBatch(batch);
-    }
-    ifaces_[i]->emitBatch(batch);
-  }
-
-};
-
-// The 'concurrent' client is a thread safe client that correctly handles
-// out of order responses.  It is slower than the regular client, so should
-// only be used when you need to share a connection among multiple threads
-class AgentConcurrentClient : virtual public AgentIf {
- public:
-  AgentConcurrentClient(boost::shared_ptr< ::apache::thrift::protocol::TProtocol> prot) {
-    setProtocol(prot);
-  }
-  AgentConcurrentClient(boost::shared_ptr< ::apache::thrift::protocol::TProtocol> iprot, boost::shared_ptr< ::apache::thrift::protocol::TProtocol> oprot) {
-    setProtocol(iprot,oprot);
-  }
- private:
-  void setProtocol(boost::shared_ptr< ::apache::thrift::protocol::TProtocol> prot) {
-  setProtocol(prot,prot);
-  }
-  void setProtocol(boost::shared_ptr< ::apache::thrift::protocol::TProtocol> iprot, boost::shared_ptr< ::apache::thrift::protocol::TProtocol> oprot) {
-    piprot_=iprot;
-    poprot_=oprot;
-    iprot_ = iprot.get();
-    oprot_ = oprot.get();
-  }
- public:
-  boost::shared_ptr< ::apache::thrift::protocol::TProtocol> getInputProtocol() {
-    return piprot_;
-  }
-  boost::shared_ptr< ::apache::thrift::protocol::TProtocol> getOutputProtocol() {
-    return poprot_;
-  }
-  void emitZipkinBatch(const std::vector< ::Span> & spans);
-  void send_emitZipkinBatch(const std::vector< ::Span> & spans);
-  void emitBatch(const  ::Batch& batch);
-  void send_emitBatch(const  ::Batch& batch);
- protected:
-  boost::shared_ptr< ::apache::thrift::protocol::TProtocol> piprot_;
-  boost::shared_ptr< ::apache::thrift::protocol::TProtocol> poprot_;
-  ::apache::thrift::protocol::TProtocol* iprot_;
-  ::apache::thrift::protocol::TProtocol* oprot_;
-  ::apache::thrift::async::TConcurrentClientSyncInfo sync_;
 };
 
 #ifdef _WIN32

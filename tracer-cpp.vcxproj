@@ -53,6 +53,19 @@
     <ClInclude Include="src\TextCarrier.h" />
     <ClInclude Include="src\thrift-gen\Agent.h" />
     <ClInclude Include="src\thrift-gen\jaeger_types.h" />
+    <ClInclude Include="src\thrift-lib\thrift\protocol\TCompactProtocol.h" />
+    <ClInclude Include="src\thrift-lib\thrift\protocol\TProtocol.h" />
+    <ClInclude Include="src\thrift-lib\thrift\protocol\TProtocolException.h" />
+    <ClInclude Include="src\thrift-lib\thrift\protocol\TVirtualProtocol.h" />
+    <ClInclude Include="src\thrift-lib\thrift\TBase.h" />
+    <ClInclude Include="src\thrift-lib\thrift\Thrift.h" />
+    <ClInclude Include="src\thrift-lib\thrift\TLogging.h" />
+    <ClInclude Include="src\thrift-lib\thrift\TOutput.h" />
+    <ClInclude Include="src\thrift-lib\thrift\transport\PlatformSocket.h" />
+    <ClInclude Include="src\thrift-lib\thrift\transport\TBufferTransports.h" />
+    <ClInclude Include="src\thrift-lib\thrift\transport\TTransport.h" />
+    <ClInclude Include="src\thrift-lib\thrift\transport\TTransportException.h" />
+    <ClInclude Include="src\thrift-lib\thrift\transport\TVirtualTransport.h" />
     <ClInclude Include="src\Tracer.h" />
     <ClInclude Include="src\UdpReporter.h" />
   </ItemGroup>
@@ -76,11 +89,16 @@
     <ClCompile Include="src\TextCarrier.cpp" />
     <ClCompile Include="src\thrift-gen\Agent.cpp" />
     <ClCompile Include="src\thrift-gen\jaeger_types.cpp" />
+    <ClCompile Include="src\thrift-lib\thrift\protocol\TProtocol.cpp" />
+    <ClCompile Include="src\thrift-lib\thrift\TOutput.cpp" />
+    <ClCompile Include="src\thrift-lib\thrift\transport\TBufferTransports.cpp" />
+    <ClCompile Include="src\thrift-lib\thrift\transport\TTransportException.cpp" />
     <ClCompile Include="src\Tracer.cpp" />
     <ClCompile Include="src\UdpReporter.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Makefile" />
+    <None Include="src\thrift-lib\thrift\protocol\TCompactProtocol.tcc" />
     <None Include="src\thrift\agent.thrift" />
     <None Include="src\thrift\jaeger.thrift" />
     <None Include="src\thrift\zipkincore.thrift" />
@@ -88,7 +106,7 @@
   </ItemGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(UBUNTU_INCLUDE);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(UBUNTU_INCLUDE);./src/thrift-lib/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>-fPIC</AdditionalOptions>
       <DebugInformationFormat />
       <CAdditionalWarning />
@@ -102,7 +120,7 @@
       <PreprocessorDefinitions>TRACER_DEBUG</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <LibraryDependencies>phpcpp;thrift;</LibraryDependencies>
+      <LibraryDependencies>phpcpp;</LibraryDependencies>
       <Relocation />
       <FunctionBinding />
       <NoExecStackRequired />

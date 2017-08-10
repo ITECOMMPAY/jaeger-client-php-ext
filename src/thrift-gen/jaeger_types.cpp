@@ -9,9 +9,6 @@
 #include <algorithm>
 #include <ostream>
 
-#include <thrift/TToString.h>
-
-
 
 int _kTagTypeValues[] = {
   TagType::STRING,
@@ -250,19 +247,6 @@ Tag& Tag::operator=(const Tag& other2) {
   __isset = other2.__isset;
   return *this;
 }
-void Tag::printTo(std::ostream& out) const {
-  using ::apache::thrift::to_string;
-  out << "Tag(";
-  out << "key=" << to_string(key);
-  out << ", " << "vType=" << to_string(vType);
-  out << ", " << "vStr="; (__isset.vStr ? (out << to_string(vStr)) : (out << "<null>"));
-  out << ", " << "vDouble="; (__isset.vDouble ? (out << to_string(vDouble)) : (out << "<null>"));
-  out << ", " << "vBool="; (__isset.vBool ? (out << to_string(vBool)) : (out << "<null>"));
-  out << ", " << "vLong="; (__isset.vLong ? (out << to_string(vLong)) : (out << "<null>"));
-  out << ", " << "vBinary="; (__isset.vBinary ? (out << to_string(vBinary)) : (out << "<null>"));
-  out << ")";
-}
-
 
 Log::~Log() throw() {
 }
@@ -384,14 +368,6 @@ Log& Log::operator=(const Log& other10) {
   fields = other10.fields;
   return *this;
 }
-void Log::printTo(std::ostream& out) const {
-  using ::apache::thrift::to_string;
-  out << "Log(";
-  out << "timestamp=" << to_string(timestamp);
-  out << ", " << "fields=" << to_string(fields);
-  out << ")";
-}
-
 
 SpanRef::~SpanRef() throw() {
 }
@@ -539,16 +515,6 @@ SpanRef& SpanRef::operator=(const SpanRef& other13) {
   spanId = other13.spanId;
   return *this;
 }
-void SpanRef::printTo(std::ostream& out) const {
-  using ::apache::thrift::to_string;
-  out << "SpanRef(";
-  out << "refType=" << to_string(refType);
-  out << ", " << "traceIdLow=" << to_string(traceIdLow);
-  out << ", " << "traceIdHigh=" << to_string(traceIdHigh);
-  out << ", " << "spanId=" << to_string(spanId);
-  out << ")";
-}
-
 
 Span::~Span() throw() {
 }
@@ -908,23 +874,6 @@ Span& Span::operator=(const Span& other33) {
   __isset = other33.__isset;
   return *this;
 }
-void Span::printTo(std::ostream& out) const {
-  using ::apache::thrift::to_string;
-  out << "Span(";
-  out << "traceIdLow=" << to_string(traceIdLow);
-  out << ", " << "traceIdHigh=" << to_string(traceIdHigh);
-  out << ", " << "spanId=" << to_string(spanId);
-  out << ", " << "parentSpanId=" << to_string(parentSpanId);
-  out << ", " << "operationName=" << to_string(operationName);
-  out << ", " << "references="; (__isset.references ? (out << to_string(references)) : (out << "<null>"));
-  out << ", " << "flags=" << to_string(flags);
-  out << ", " << "startTime=" << to_string(startTime);
-  out << ", " << "duration=" << to_string(duration);
-  out << ", " << "tags="; (__isset.tags ? (out << to_string(tags)) : (out << "<null>"));
-  out << ", " << "logs="; (__isset.logs ? (out << to_string(logs)) : (out << "<null>"));
-  out << ")";
-}
-
 
 Process::~Process() throw() {
 }
@@ -1048,14 +997,6 @@ Process& Process::operator=(const Process& other41) {
   __isset = other41.__isset;
   return *this;
 }
-void Process::printTo(std::ostream& out) const {
-  using ::apache::thrift::to_string;
-  out << "Process(";
-  out << "serviceName=" << to_string(serviceName);
-  out << ", " << "tags="; (__isset.tags ? (out << to_string(tags)) : (out << "<null>"));
-  out << ")";
-}
-
 
 Batch::~Batch() throw() {
 }
@@ -1177,98 +1118,3 @@ Batch& Batch::operator=(const Batch& other49) {
   spans = other49.spans;
   return *this;
 }
-void Batch::printTo(std::ostream& out) const {
-  using ::apache::thrift::to_string;
-  out << "Batch(";
-  out << "process=" << to_string(process);
-  out << ", " << "spans=" << to_string(spans);
-  out << ")";
-}
-
-
-BatchSubmitResponse::~BatchSubmitResponse() throw() {
-}
-
-
-void BatchSubmitResponse::__set_ok(const bool val) {
-  this->ok = val;
-}
-
-uint32_t BatchSubmitResponse::read(::apache::thrift::protocol::TProtocol* iprot) {
-
-  apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
-  uint32_t xfer = 0;
-  std::string fname;
-  ::apache::thrift::protocol::TType ftype;
-  int16_t fid;
-
-  xfer += iprot->readStructBegin(fname);
-
-  using ::apache::thrift::protocol::TProtocolException;
-
-  bool isset_ok = false;
-
-  while (true)
-  {
-    xfer += iprot->readFieldBegin(fname, ftype, fid);
-    if (ftype == ::apache::thrift::protocol::T_STOP) {
-      break;
-    }
-    switch (fid)
-    {
-      case 1:
-        if (ftype == ::apache::thrift::protocol::T_BOOL) {
-          xfer += iprot->readBool(this->ok);
-          isset_ok = true;
-        } else {
-          xfer += iprot->skip(ftype);
-        }
-        break;
-      default:
-        xfer += iprot->skip(ftype);
-        break;
-    }
-    xfer += iprot->readFieldEnd();
-  }
-
-  xfer += iprot->readStructEnd();
-
-  if (!isset_ok)
-    throw TProtocolException(TProtocolException::INVALID_DATA);
-  return xfer;
-}
-
-uint32_t BatchSubmitResponse::write(::apache::thrift::protocol::TProtocol* oprot) const {
-  uint32_t xfer = 0;
-  apache::thrift::protocol::TOutputRecursionTracker tracker(*oprot);
-  xfer += oprot->writeStructBegin("BatchSubmitResponse");
-
-  xfer += oprot->writeFieldBegin("ok", ::apache::thrift::protocol::T_BOOL, 1);
-  xfer += oprot->writeBool(this->ok);
-  xfer += oprot->writeFieldEnd();
-
-  xfer += oprot->writeFieldStop();
-  xfer += oprot->writeStructEnd();
-  return xfer;
-}
-
-void swap(BatchSubmitResponse &a, BatchSubmitResponse &b) {
-  using ::std::swap;
-  swap(a.ok, b.ok);
-}
-
-BatchSubmitResponse::BatchSubmitResponse(const BatchSubmitResponse& other50) {
-  ok = other50.ok;
-}
-BatchSubmitResponse& BatchSubmitResponse::operator=(const BatchSubmitResponse& other51) {
-  ok = other51.ok;
-  return *this;
-}
-void BatchSubmitResponse::printTo(std::ostream& out) const {
-  using ::apache::thrift::to_string;
-  out << "BatchSubmitResponse(";
-  out << "ok=" << to_string(ok);
-  out << ")";
-}
-
-
