@@ -7,7 +7,9 @@
 
 #include "thrift-gen/Agent.h"
 #include <thrift/transport/TBufferTransports.h>
+#include <thrift/transport/TSocket.h>
 #include <thrift/protocol/TCompactProtocol.h>
+#include <thrift/protocol/TBinaryProtocol.h>
 
 using namespace OpenTracing;
 using namespace ::apache::thrift::transport;
@@ -220,7 +222,7 @@ void JaegerTracer::flush()
 #ifdef TRACER_DEBUG
         Php::out << "*** " << std::endl;
 #endif    
-
+        /*TMemoryBuffer implementation*/
         boost::shared_ptr<TMemoryBuffer> trans(new TMemoryBuffer());
         boost::shared_ptr<TCompactProtocol> proto(new TCompactProtocol(trans));
         boost::shared_ptr<AgentClient> agent(new AgentClient(nullptr, proto));
@@ -228,10 +230,22 @@ void JaegerTracer::flush()
         const ::Batch* batch = Helper::jaegerizeTracer(this);
         agent->emitBatch(*batch);
         data = trans->getBufferAsString();
+
+        /*TSocket implementation*/
+        //boost::shared_ptr<TSocket> sock(new TSocket("127.0.0.1", 6832));
+        //boost::shared_ptr<TBufferedTransport> trans(new TBufferedTransport(sock));
+        //boost::shared_ptr<TBinaryProtocol> proto(new TBinaryProtocol(trans));
+        //boost::shared_ptr<AgentConcurrentClient> agent(new AgentConcurrentClient(nullptr, proto));
+        //trans->open();
+        //const ::Batch* batch = Helper::jaegerizeTracer(this);
+        //agent->emitBatch(*batch);
+        //trans->flush();
+        //trans->close();
     }
     else
         return;
 
+    /*TMemoryBuffer implementation*/
     this->_reporter->flush(data);
     this->clearSpans();
 }
