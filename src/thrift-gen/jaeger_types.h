@@ -13,9 +13,6 @@
 #include <thrift/protocol/TProtocol.h>
 #include <thrift/transport/TTransport.h>
 
-
-
-
 struct TagType {
   enum type {
     STRING = 0,

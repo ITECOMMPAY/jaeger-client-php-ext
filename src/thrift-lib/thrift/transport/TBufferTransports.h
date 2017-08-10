@@ -26,7 +26,6 @@
 
 #include <thrift/transport/TTransport.h>
 #include <thrift/transport/TVirtualTransport.h>
-#include <boost/shared_ptr.hpp>
 
 #ifdef __GNUC__
 #define TDB_LIKELY(val) (__builtin_expect((val), 1))
@@ -102,30 +101,6 @@ public:
     }
     writeSlow(buf, len);
   }
-
-  /**
-   * Fast-path borrow.  A lot like the fast-path read.
-   */
-  const uint8_t* borrow(uint8_t* buf, uint32_t* len) {
-    if (TDB_LIKELY(static_cast<ptrdiff_t>(*len) <= rBound_ - rBase_)) {
-      // With strict aliasing, writing to len shouldn't force us to
-      // refetch rBase_ from memory.  TODO(dreiss): Verify this.
-      *len = static_cast<uint32_t>(rBound_ - rBase_);
-      return rBase_;
-    }
-    return borrowSlow(buf, len);
-  }
-
-  /**
-   * Consume doesn't require a slow path.
-   */
-  //void consume(uint32_t len) {
-  //  if (TDB_LIKELY(static_cast<ptrdiff_t>(len) <= rBound_ - rBase_)) {
-  //    rBase_ += len;
-  //  } else {
-  //    throw TTransportException(TTransportException::BAD_ARGS, "consume did not follow a borrow.");
-  //  }
-  //}
 
 protected:
   /// Slow path read.

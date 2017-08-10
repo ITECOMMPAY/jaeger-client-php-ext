@@ -223,19 +223,19 @@ void JaegerTracer::flush()
         Php::out << "*** " << std::endl;
 #endif    
         /*TMemoryBuffer implementation*/
-        boost::shared_ptr<TMemoryBuffer> trans(new TMemoryBuffer());
-        boost::shared_ptr<TCompactProtocol> proto(new TCompactProtocol(trans));
-        boost::shared_ptr<AgentClient> agent(new AgentClient(nullptr, proto));
+        std::shared_ptr<TMemoryBuffer> trans(new TMemoryBuffer());
+        std::shared_ptr<TCompactProtocol> proto(new TCompactProtocol(trans));
+        std::shared_ptr<AgentClient> agent(new AgentClient(nullptr, proto));
 
         const ::Batch* batch = Helper::jaegerizeTracer(this);
         agent->emitBatch(*batch);
         data = trans->getBufferAsString();
 
         /*TSocket implementation*/
-        //boost::shared_ptr<TSocket> sock(new TSocket("127.0.0.1", 6832));
-        //boost::shared_ptr<TBufferedTransport> trans(new TBufferedTransport(sock));
-        //boost::shared_ptr<TBinaryProtocol> proto(new TBinaryProtocol(trans));
-        //boost::shared_ptr<AgentConcurrentClient> agent(new AgentConcurrentClient(nullptr, proto));
+        //std::shared_ptr<TSocket> sock(new TSocket("127.0.0.1", 6832));
+        //std::shared_ptr<TBufferedTransport> trans(new TBufferedTransport(sock));
+        //std::shared_ptr<TBinaryProtocol> proto(new TBinaryProtocol(trans));
+        //std::shared_ptr<AgentConcurrentClient> agent(new AgentConcurrentClient(nullptr, proto));
         //trans->open();
         //const ::Batch* batch = Helper::jaegerizeTracer(this);
         //agent->emitBatch(*batch);

@@ -89,5 +89,3 @@ void AgentClient::send_emitBatch(const  ::Batch& batch)
   oprot_->getTransport()->flush();
 }
 
-
-

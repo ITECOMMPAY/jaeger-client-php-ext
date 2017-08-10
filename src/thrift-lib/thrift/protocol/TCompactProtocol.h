@@ -23,7 +23,6 @@
 #include <thrift/protocol/TVirtualProtocol.h>
 
 #include <stack>
-#include <boost/shared_ptr.hpp>
 
 namespace apache {
 namespace thrift {
@@ -74,7 +73,7 @@ protected:
   int16_t lastFieldId_;
 
 public:
-  TCompactProtocolT(boost::shared_ptr<Transport_> trans)
+  TCompactProtocolT(std::shared_ptr<Transport_> trans)
     : TVirtualProtocol<TCompactProtocolT<Transport_> >(trans),
       trans_(trans.get()),
       lastFieldId_(0),
@@ -86,7 +85,7 @@ public:
     boolValue_.hasBoolValue = false;
   }
 
-  TCompactProtocolT(boost::shared_ptr<Transport_> trans,
+  TCompactProtocolT(std::shared_ptr<Transport_> trans,
                     int32_t string_limit,
                     int32_t container_limit)
     : TVirtualProtocol<TCompactProtocolT<Transport_> >(trans),
@@ -222,41 +221,6 @@ protected:
 
 typedef TCompactProtocolT<TTransport> TCompactProtocol;
 
-///**
-// * Constructs compact protocol handlers
-// */
-//template <class Transport_>
-//class TCompactProtocolFactoryT : public TProtocolFactory {
-//public:
-//  TCompactProtocolFactoryT() : string_limit_(0), container_limit_(0) {}
-//
-//  TCompactProtocolFactoryT(int32_t string_limit, int32_t container_limit)
-//    : string_limit_(string_limit), container_limit_(container_limit) {}
-//
-//  virtual ~TCompactProtocolFactoryT() {}
-//
-//  void setStringSizeLimit(int32_t string_limit) { string_limit_ = string_limit; }
-//
-//  void setContainerSizeLimit(int32_t container_limit) { container_limit_ = container_limit; }
-//
-//  boost::shared_ptr<TProtocol> getProtocol(boost::shared_ptr<TTransport> trans) {
-//    boost::shared_ptr<Transport_> specific_trans = boost::dynamic_pointer_cast<Transport_>(trans);
-//    TProtocol* prot;
-//    if (specific_trans) {
-//      prot = new TCompactProtocolT<Transport_>(specific_trans, string_limit_, container_limit_);
-//    } else {
-//      prot = new TCompactProtocol(trans, string_limit_, container_limit_);
-//    }
-//
-//    return boost::shared_ptr<TProtocol>(prot);
-//  }
-//
-//private:
-//  int32_t string_limit_;
-//  int32_t container_limit_;
-//};
-//
-//typedef TCompactProtocolFactoryT<TTransport> TCompactProtocolFactory;
 }
 }
 } // apache::thrift::protocol

@@ -20,9 +20,13 @@
 #include <thrift/Thrift.h>
 #include <cstring>
 #include <cstdlib>
-#include <boost/lexical_cast.hpp>
 #include <stdarg.h>
 #include <stdio.h>
+
+ /* Define to 1 if you have the `strerror_r' function. */
+#define HAVE_STRERROR_R 1
+ /* Define to 1 if strerror_r returns char *. */
+#define STRERROR_R_CHAR_P 1
 
 namespace apache {
 namespace thrift {
@@ -100,20 +104,12 @@ void TOutput::perror(const char* message, int errno_copy) {
 
 std::string TOutput::strerror_s(int errno_copy) {
 #ifndef HAVE_STRERROR_R
-  return "errno = " + boost::lexical_cast<std::string>(errno_copy);
 #else // HAVE_STRERROR_R
 
   char b_errbuf[1024] = {'\0'};
 #ifdef STRERROR_R_CHAR_P
   char* b_error = strerror_r(errno_copy, b_errbuf, sizeof(b_errbuf));
 #else
-  char* b_error = b_errbuf;
-  int rv = strerror_r(errno_copy, b_errbuf, sizeof(b_errbuf));
-  if (rv == -1) {
-    // strerror_r failed.  omgwtfbbq.
-    return "XSI-compliant strerror_r() failed with errno = "
-           + boost::lexical_cast<std::string>(errno_copy);
-  }
 #endif
   // Can anyone prove that explicit cast is probably not necessary
   // to ensure that the string object is constructed before
