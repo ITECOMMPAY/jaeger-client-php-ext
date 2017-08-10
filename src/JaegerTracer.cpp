@@ -6,9 +6,9 @@
 #include "JaegerSpan.h"
 
 #include "thrift-gen/Agent.h"
-#include <thrift/transport/TBufferTransports.h>
+#include "thrift-lib/transport/TBufferTransports.h"
 //#include <thrift/transport/TSocket.h>
-#include <thrift/protocol/TCompactProtocol.h>
+#include "thrift-lib/protocol/TCompactProtocol.h"
 //#include <thrift/protocol/TBinaryProtocol.h>
 
 using namespace OpenTracing;

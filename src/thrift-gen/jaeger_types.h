@@ -9,9 +9,9 @@
 
 #include <iosfwd>
 
-#include <thrift/TBase.h>
-#include <thrift/protocol/TProtocol.h>
-#include <thrift/transport/TTransport.h>
+#include "thrift-lib/TBase.h"
+#include "thrift-lib/protocol/TProtocol.h"
+#include "thrift-lib/transport/TTransport.h"
 
 struct TagType {
   enum type {

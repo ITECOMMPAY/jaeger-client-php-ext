@@ -16,11 +16,11 @@
     <Filter Include="src\thrift-lib">
       <UniqueIdentifier>{b1492f2f-3fa9-4ab2-bfe1-4c9847dbe000}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\thrift-lib\trasnport">
-      <UniqueIdentifier>{354259d9-b0db-45b7-897e-839deef0a063}</UniqueIdentifier>
-    </Filter>
     <Filter Include="src\thrift-lib\protocol">
       <UniqueIdentifier>{1680b5e1-5601-4b3a-8d2a-7412af72b008}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\thrift-lib\transport">
+      <UniqueIdentifier>{354259d9-b0db-45b7-897e-839deef0a063}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -84,44 +84,44 @@
     <ClInclude Include="src\thrift-gen\jaeger_types.h">
       <Filter>src\thrift-gen</Filter>
     </ClInclude>
-    <ClInclude Include="src\thrift-lib\thrift\transport\PlatformSocket.h">
-      <Filter>src\thrift-lib\trasnport</Filter>
-    </ClInclude>
-    <ClInclude Include="src\thrift-lib\thrift\transport\TTransport.h">
-      <Filter>src\thrift-lib\trasnport</Filter>
-    </ClInclude>
-    <ClInclude Include="src\thrift-lib\thrift\TOutput.h">
+    <ClInclude Include="src\thrift-lib\TBase.h">
       <Filter>src\thrift-lib</Filter>
     </ClInclude>
-    <ClInclude Include="src\thrift-lib\thrift\TBase.h">
+    <ClInclude Include="src\thrift-lib\Thrift.h">
       <Filter>src\thrift-lib</Filter>
     </ClInclude>
-    <ClInclude Include="src\thrift-lib\thrift\protocol\TProtocol.h">
-      <Filter>src\thrift-lib\protocol</Filter>
-    </ClInclude>
-    <ClInclude Include="src\thrift-lib\thrift\transport\TTransportException.h">
-      <Filter>src\thrift-lib\trasnport</Filter>
-    </ClInclude>
-    <ClInclude Include="src\thrift-lib\thrift\protocol\TProtocolException.h">
-      <Filter>src\thrift-lib\protocol</Filter>
-    </ClInclude>
-    <ClInclude Include="src\thrift-lib\thrift\transport\TBufferTransports.h">
-      <Filter>src\thrift-lib\trasnport</Filter>
-    </ClInclude>
-    <ClInclude Include="src\thrift-lib\thrift\transport\TVirtualTransport.h">
-      <Filter>src\thrift-lib\trasnport</Filter>
-    </ClInclude>
-    <ClInclude Include="src\thrift-lib\thrift\protocol\TCompactProtocol.h">
-      <Filter>src\thrift-lib\protocol</Filter>
-    </ClInclude>
-    <ClInclude Include="src\thrift-lib\thrift\protocol\TVirtualProtocol.h">
-      <Filter>src\thrift-lib\protocol</Filter>
-    </ClInclude>
-    <ClInclude Include="src\thrift-lib\thrift\Thrift.h">
+    <ClInclude Include="src\thrift-lib\TLogging.h">
       <Filter>src\thrift-lib</Filter>
     </ClInclude>
-    <ClInclude Include="src\thrift-lib\thrift\TLogging.h">
+    <ClInclude Include="src\thrift-lib\TOutput.h">
       <Filter>src\thrift-lib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\thrift-lib\protocol\TCompactProtocol.h">
+      <Filter>src\thrift-lib\protocol</Filter>
+    </ClInclude>
+    <ClInclude Include="src\thrift-lib\protocol\TProtocol.h">
+      <Filter>src\thrift-lib\protocol</Filter>
+    </ClInclude>
+    <ClInclude Include="src\thrift-lib\protocol\TProtocolException.h">
+      <Filter>src\thrift-lib\protocol</Filter>
+    </ClInclude>
+    <ClInclude Include="src\thrift-lib\protocol\TVirtualProtocol.h">
+      <Filter>src\thrift-lib\protocol</Filter>
+    </ClInclude>
+    <ClInclude Include="src\thrift-lib\transport\PlatformSocket.h">
+      <Filter>src\thrift-lib\transport</Filter>
+    </ClInclude>
+    <ClInclude Include="src\thrift-lib\transport\TBufferTransports.h">
+      <Filter>src\thrift-lib\transport</Filter>
+    </ClInclude>
+    <ClInclude Include="src\thrift-lib\transport\TTransport.h">
+      <Filter>src\thrift-lib\transport</Filter>
+    </ClInclude>
+    <ClInclude Include="src\thrift-lib\transport\TTransportException.h">
+      <Filter>src\thrift-lib\transport</Filter>
+    </ClInclude>
+    <ClInclude Include="src\thrift-lib\transport\TVirtualTransport.h">
+      <Filter>src\thrift-lib\transport</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -188,17 +188,17 @@
     <ClCompile Include="src\SpanContext.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\thrift-lib\thrift\protocol\TProtocol.cpp">
-      <Filter>src\thrift-lib\protocol</Filter>
-    </ClCompile>
-    <ClCompile Include="src\thrift-lib\thrift\TOutput.cpp">
+    <ClCompile Include="src\thrift-lib\TOutput.cpp">
       <Filter>src\thrift-lib</Filter>
     </ClCompile>
-    <ClCompile Include="src\thrift-lib\thrift\transport\TBufferTransports.cpp">
-      <Filter>src\thrift-lib\trasnport</Filter>
+    <ClCompile Include="src\thrift-lib\protocol\TProtocol.cpp">
+      <Filter>src\thrift-lib\protocol</Filter>
     </ClCompile>
-    <ClCompile Include="src\thrift-lib\thrift\transport\TTransportException.cpp">
-      <Filter>src\thrift-lib\trasnport</Filter>
+    <ClCompile Include="src\thrift-lib\transport\TBufferTransports.cpp">
+      <Filter>src\thrift-lib\transport</Filter>
+    </ClCompile>
+    <ClCompile Include="src\thrift-lib\transport\TTransportException.cpp">
+      <Filter>src\thrift-lib\transport</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -213,7 +213,7 @@
     <None Include="src\thrift\agent.thrift">
       <Filter>src\thrift</Filter>
     </None>
-    <None Include="src\thrift-lib\thrift\protocol\TCompactProtocol.tcc">
+    <None Include="src\thrift-lib\protocol\TCompactProtocol.tcc">
       <Filter>src\thrift-lib\protocol</Filter>
     </None>
   </ItemGroup>

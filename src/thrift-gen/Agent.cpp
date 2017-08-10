@@ -4,7 +4,7 @@
  * DO NOT EDIT UNLESS YOU ARE SURE THAT YOU KNOW WHAT YOU ARE DOING
  *  @generated
  */
-#include "Agent.h"
+#include "thrift-gen/Agent.h"
 
 Agent_emitZipkinBatch_args::~Agent_emitZipkinBatch_args() throw() {
 }

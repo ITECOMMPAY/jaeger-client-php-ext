@@ -17,7 +17,7 @@
  * under the License.
  */
 
-#include <thrift/transport/TTransportException.h>
+#include "thrift-lib/transport/TTransportException.h"
 #include <cstring>
 
 using std::string;

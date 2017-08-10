@@ -24,8 +24,8 @@
 #include <cstring>
 #include <limits>
 
-#include <thrift/transport/TTransport.h>
-#include <thrift/transport/TVirtualTransport.h>
+#include "thrift-lib/transport/TTransport.h"
+#include "thrift-lib/transport/TVirtualTransport.h"
 
 #ifdef __GNUC__
 #define TDB_LIKELY(val) (__builtin_expect((val), 1))

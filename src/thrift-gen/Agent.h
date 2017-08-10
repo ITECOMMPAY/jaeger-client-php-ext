@@ -7,7 +7,7 @@
 #ifndef Agent_H
 #define Agent_H
 
-#include "jaeger_types.h"
+#include "thrift-gen/jaeger_types.h"
 
 #ifdef _WIN32
   #pragma warning( push )

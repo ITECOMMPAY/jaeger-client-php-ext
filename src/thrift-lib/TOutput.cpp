@@ -17,7 +17,7 @@
  * under the License.
  */
 
-#include <thrift/Thrift.h>
+#include "thrift-lib/Thrift.h"
 #include <cstring>
 #include <cstdlib>
 #include <stdarg.h>

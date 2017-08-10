@@ -4,7 +4,7 @@
  * DO NOT EDIT UNLESS YOU ARE SURE THAT YOU KNOW WHAT YOU ARE DOING
  *  @generated
  */
-#include "jaeger_types.h"
+#include "thrift-gen/jaeger_types.h"
 
 #include <algorithm>
 #include <ostream>

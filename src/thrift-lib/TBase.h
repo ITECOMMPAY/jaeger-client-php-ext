@@ -17,17 +17,22 @@
  * under the License.
  */
 
-#include <thrift/protocol/TProtocol.h>
+#ifndef _THRIFT_TBASE_H_
+#define _THRIFT_TBASE_H_ 1
+
+#include "thrift-lib/Thrift.h"
+#include "thrift-lib/protocol/TProtocol.h"
 
 namespace apache {
 namespace thrift {
-namespace protocol {
 
-TProtocol::~TProtocol() {}
-uint32_t TProtocol::skip_virt(TType type) {
-  return ::apache::thrift::protocol::skip(*this, type);
+class TBase {
+public:
+  virtual ~TBase(){};
+  virtual uint32_t read(protocol::TProtocol* iprot) = 0;
+  virtual uint32_t write(protocol::TProtocol* oprot) const = 0;
+};
 }
+} // apache::thrift
 
-TProtocolFactory::~TProtocolFactory() {}
-
-}}} // apache::thrift::protocol
+#endif // #ifndef _THRIFT_TBASE_H_

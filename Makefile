@@ -87,9 +87,9 @@ LINKER				=	g++
 #
 
 #DEFS = -DTRACER_DEBUG
-COMPILER_FLAGS		=	-Wall -c -O2 $(DEFS) -std=c++11 -fpic -o
+COMPILER_FLAGS		=	-Wall -c -Isrc -O2 $(DEFS) -std=c++11 -fpic -o
 LINKER_FLAGS		=	-shared
-LINKER_DEPENDENCIES	=	-lphpcpp -lthrift
+LINKER_DEPENDENCIES	=	-lphpcpp
 
 
 #
@@ -135,7 +135,11 @@ SOURCES				=	\
 						src/Tracer.cpp \
 						src/UdpReporter.cpp \
 						src/thrift-gen/Agent.cpp \
-						src/thrift-gen/jaeger_types.cpp
+						src/thrift-gen/jaeger_types.cpp \
+						src/thrift-lib/protocol/TProtocol.cpp \
+						src/thrift-lib/transport/TBufferTransports.cpp \
+						src/thrift-lib/transport/TTransportException.cpp \
+						src/thrift-lib/TOutput.cpp 
 OBJECTS				=	$(SOURCES:%.cpp=%.o)
 
 
