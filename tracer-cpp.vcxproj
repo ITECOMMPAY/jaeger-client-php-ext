@@ -102,6 +102,8 @@
     <None Include="src\thrift\agent.thrift" />
     <None Include="src\thrift\jaeger.thrift" />
     <None Include="src\thrift\zipkincore.thrift" />
+    <None Include="test\index.php" />
+    <None Include="test\request.http" />
     <None Include="tracer-cpp.ini" />
   </ItemGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">

@@ -22,6 +22,9 @@
     <Filter Include="src\thrift-lib\transport">
       <UniqueIdentifier>{354259d9-b0db-45b7-897e-839deef0a063}</UniqueIdentifier>
     </Filter>
+    <Filter Include="test">
+      <UniqueIdentifier>{f0c1402f-0d1a-4516-964e-411da806ad94}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\FileReporter.h">
@@ -215,6 +218,12 @@
     </None>
     <None Include="src\thrift-lib\protocol\TCompactProtocol.tcc">
       <Filter>src\thrift-lib\protocol</Filter>
+    </None>
+    <None Include="test\index.php">
+      <Filter>test</Filter>
+    </None>
+    <None Include="test\request.http">
+      <Filter>test</Filter>
     </None>
   </ItemGroup>
 </Project>
