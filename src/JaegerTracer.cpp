@@ -99,10 +99,13 @@ ISpan * JaegerTracer::startSpan(const std::string& operationName, const Php::Val
         {
             flags |= JaegerSpan::SAMPLED_FLAG;
         }
-
+        /*some workaround*/
+        uint64_t traceId = Helper::generateId();
         context = new SpanContext(
-            Helper::generateId(),
-            Helper::generateId(),
+            traceId,
+            traceId,
+            //Helper::generateId(),
+            //Helper::generateId(),
             0,
             flags,
             refType
