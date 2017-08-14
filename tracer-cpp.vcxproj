@@ -119,17 +119,17 @@
       <ThreadSafeStatics />
       <ExceptionHandling />
       <RuntimeTypeInfo />
-      <PreprocessorDefinitions>TRACER_DEBUG</PreprocessorDefinitions>
+      <PreprocessorDefinitions>TRACER_DEBUG_</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <LibraryDependencies>phpcpp;</LibraryDependencies>
+      <LibraryDependencies>phpcpp</LibraryDependencies>
       <Relocation />
       <FunctionBinding />
       <NoExecStackRequired />
       <UnresolvedSymbolReferences />
     </Link>
     <RemotePostBuildEvent>
-      <Command>cd $(RemoteProjectDir) &amp;&amp; echo -e "nooblol0\n" | sudo -S make install &amp;&amp; sudo make restart</Command>
+      <Command>cd $(RemoteProjectDir) &amp;&amp; echo -e "nooblol0\n" | sudo -S make install &amp;&amp; echo -e "nooblol0\n" | sudo -S make restart</Command>
     </RemotePostBuildEvent>
     <PreBuildEvent>
       <Command>if not exist bin\x64\Debug\ mkdir bin\x64\Debug\</Command>

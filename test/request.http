@@ -1,0 +1,27 @@
+POST http://gate.dev/v2/payment/card/payout
+content-type: application/json
+Cookie: XDEBUG_SESSION=PHPSTORM
+
+{
+  "general": {
+    "project_id": 3,
+    "payment_id": "ORDER_ID_C00540_0710_7",
+    "signature": "9u4mQ15z8hUzg7Z1a69ooshSphgJQ4bSmvHP1OhV\/1tTOddXafaJ902Ry2XnRDHpSY0Lw7gCp4Cls7YDr388\/w=="
+  },
+  "card": {
+    "pan": "4000000000000002",
+    "year": 2020,
+    "month": 1
+  },
+  "user": {
+    "id": "USER ID",
+    "country": "RU",
+    "ip_address": "1.2.3.4"
+  },
+  "order": {
+    "amount": 780,
+    "currency": "RUB",
+    "description": "CreditPilot"
+  }
+}
+
