@@ -125,11 +125,13 @@ ISpan * JaegerTracer::startSpan(const std::string& operationName, const Php::Val
 
 ISpan * JaegerTracer::getCurrentSpan()
 {
+    ISpan* span = nullptr;
+
     if (!_activeSpans.empty())
     {
-        return _spans[_activeSpans.back()];
+        span = _spans[_activeSpans.back()];
     }
-    return nullptr;
+    return span;
 }
 
 void JaegerTracer::finishSpan(ISpan* span, const Php::Value& endTime)

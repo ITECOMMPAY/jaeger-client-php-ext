@@ -25,11 +25,18 @@ extern "C" {
     PHPCPP_EXPORT void *get_module()
     {
         /* Some globals init */
-        GlobalInit();
+        //GlobalInit();
 
         // static(!) Php::Extension object that should stay in memory
         // for the entire duration of the process (that's why it's static)
         static Php::Extension extension("tracer-cpp", "1.0");
+
+
+        extension.onStartup(&onInit);
+        extension.onRequest(&onRequest);
+        extension.onIdle(&onIdle);
+        extension.onShutdown(&onShutDown);
+        extension.add<&updateCounters>("updateCounters");
 
         // version 1 - static calls to Tracer::
         {
@@ -98,7 +105,7 @@ extern "C" {
             //    Php::ByVal("logs",Php::Type::Array,true),
             //});
         }
-        
+
         Php::Class<SpanContext> SpanContextClass("SpanContext");
         extension.add(std::move(SpanContextClass));
 

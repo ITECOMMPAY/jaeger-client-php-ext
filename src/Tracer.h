@@ -5,9 +5,16 @@
 #include "ITracer.h"
 #include "IReporter.h"
 #include "ISampler.h"
+#include "Logger.h"
 
 extern OpenTracing::ITracer* global_tracer;
-void GlobalInit();
+extern OpenTracing::Logger* file_logger;
+
+void onInit();
+void onRequest();
+void onIdle();
+void onShutDown();
+void updateCounters();
 
 namespace OpenTracing
 {

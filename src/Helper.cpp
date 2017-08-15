@@ -213,7 +213,3 @@ const ::Batch* OpenTracing::Helper::jaegerizeTracer(const OpenTracing::ITracer* 
     jaegerLog.__set_fields(fields);
     return jaegerLog;
 }
-
-
-
-

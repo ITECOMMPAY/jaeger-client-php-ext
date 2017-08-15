@@ -5,18 +5,101 @@
 #include "PercentageSampler.h"
 #include "NoopTracer.h"
 #include "JaegerTracer.h"
+#include "Logger.h"
 using namespace OpenTracing;
 
-ITracer* global_tracer;
+ITracer* global_tracer = nullptr;
 //Php::Value ref_global_tracer; //increase ref count so PHP GC will not delete it
+Logger* file_logger = nullptr;
 
-void GlobalInit()
+void onInit()
 {
 #ifdef TRACER_DEBUG
     Php::out << "main::GlobalInit" << std::endl;
 #endif
     global_tracer = new NoopTracer();
+    //file_logger = new Logger("/home/data/logs");
+    if (file_logger == nullptr)
+    {
+        file_logger = new Logger("/home/vadbes46/_work/data/logs");
+        file_logger->PrintLine("onInit");
+    }
 }
+
+void onIdle()
+{
+
+    if (global_tracer != nullptr)
+    {
+        delete global_tracer;
+        global_tracer = nullptr;
+    }
+    if (file_logger != nullptr)
+    {
+        file_logger->PrintLine("onIdle");
+
+        delete file_logger;
+        file_logger = nullptr;
+    }
+}
+
+
+void onShutDown()
+{
+
+    if (global_tracer != nullptr)
+    {
+        delete global_tracer;
+        global_tracer = nullptr;
+    }
+    if (file_logger != nullptr)
+    {
+        file_logger->PrintLine("onShutDown");
+
+        delete file_logger;
+        file_logger = nullptr;
+    }
+}
+
+/**
+*  Global variable that stores the number of times
+*  the function updateCounters() has been called in total
+*  @var    int
+*/
+int invokeTotalCount = 0;
+
+/**
+*  Global variable that keeps track how many times the
+*  function updateCounters() was called during the
+*  current request
+*  @var    int
+*/
+int invokeDuringRequestCount = 0;
+
+/**
+*  Native function that is callable from PHP
+*
+*  This function updates a number of global variables that count
+*  the number of times a function was called
+*/
+void updateCounters()
+{
+    // increment global counters
+    invokeTotalCount++;
+    invokeDuringRequestCount++;
+
+    Php::out << "invokeTotalCount: " << invokeTotalCount << std::endl;
+    Php::out << "invokeDuringRequestCount: " << invokeDuringRequestCount << std::endl;
+}
+
+
+
+void onRequest()
+{
+    file_logger->PrintLine("onRequest");
+    invokeDuringRequestCount = 0;
+}
+
 
 Tracer::~Tracer()
 {
@@ -86,7 +169,7 @@ void Tracer::init(Php::Parameters& params)
     //];
 
 #ifdef TRACER_DEBUG
-#endif   
+#endif
 
     Php::Value defaults;
     defaults["enabled"] = false;

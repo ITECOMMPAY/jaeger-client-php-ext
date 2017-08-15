@@ -125,6 +125,7 @@ SOURCES				=	\
 						src/JaegerSpan.cpp \
 						src/JaegerTracer.cpp \
 						src/Log.cpp \
+						src/Logger.cpp \
 						src/NoopSpan.cpp \
 						src/NoopTracer.cpp \
 						src/PercentageSampler.cpp \
