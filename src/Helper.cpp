@@ -6,6 +6,8 @@
 #include "NoopTracer.h"
 #include "JaegerTracer.h"
 #include "JaegerSpan.h"
+#include "Logger.h"
+extern OpenTracing::Logger* file_logger;
 
 std::random_device rd;
 std::default_random_engine re{ rd() };
@@ -64,13 +66,22 @@ const ::Batch* OpenTracing::Helper::jaegerizeTracer(const OpenTracing::ITracer* 
     else if (strcmp(tracer->_name(), "JaegerTracer") == 0)
     {
         std::vector<::Span> jaegerSpans;
-
+        file_logger->PrintLine("batch jaegerizeTracer");
         const JaegerTracer* jaegerTracer = dynamic_cast<const JaegerTracer*>(tracer);
         for (auto& iter : jaegerTracer->_spans)
         {
-            if (dynamic_cast<JaegerSpan*>(iter.second)->isSampled())
+            if (dynamic_cast<JaegerSpan*>(iter.second) != nullptr)
             {
-                jaegerSpans.push_back(jaegerizeSpan(iter.second));
+                file_logger->PrintLine("batch jaegerSpans");
+
+                if (dynamic_cast<JaegerSpan*>(iter.second)->isSampled())
+                {
+                    jaegerSpans.push_back(jaegerizeSpan(iter.second));
+                }
+            }
+            else
+            {
+                file_logger->PrintLine("batch jaegerizeTracer - no spans");
             }
         }
 
@@ -156,13 +167,16 @@ const ::Batch* OpenTracing::Helper::jaegerizeTracer(const OpenTracing::ITracer* 
     ::Process jaegerProcess;
     std::vector<::Tag> tags;
 
-    for (auto& iter : process->_tags)
+    if (process != nullptr)
     {
-        tags.push_back(jaegerizeTag(iter));
-    }
+        for (auto& iter : process->_tags)
+        {
+            tags.push_back(jaegerizeTag(iter));
+        }
 
-    jaegerProcess.__set_tags(tags);
-    jaegerProcess.__set_serviceName(process->_serviceName);
+        jaegerProcess.__set_tags(tags);
+        jaegerProcess.__set_serviceName(process->_serviceName);
+    }
     return jaegerProcess;
 }
 

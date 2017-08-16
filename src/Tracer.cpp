@@ -21,7 +21,8 @@ void onInit()
     //file_logger = new Logger("/home/data/logs");
     if (file_logger == nullptr)
     {
-        file_logger = new Logger("/home/vadbes46/_work/data/logs");
+        //file_logger = new Logger("/home/vadbes46/_work/data/logs");
+        file_logger = new Logger("/data/logs");
         file_logger->PrintLine("onInit");
     }
 }

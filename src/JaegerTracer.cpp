@@ -29,6 +29,7 @@ JaegerTracer::~JaegerTracer()
 JaegerTracer::JaegerTracer(IReporter* reporter, ISampler* sampler) :
     _reporter{ reporter },
     _sampler{ sampler },
+    _process{ nullptr },
     _isSampled{ false }
 {
 #ifdef TRACER_DEBUG
@@ -250,7 +251,6 @@ void JaegerTracer::flush()
     else
         return;
 
-    /*TMemoryBuffer implementation*/
     this->_reporter->flush(data);
     this->clearSpans();
 }

@@ -17,7 +17,7 @@ int mkpath(std::string s, mode_t mode)
     while ((pos = s.find_first_of('/', pre)) != std::string::npos)
     {
         dir = s.substr(0, pos++);
-        Php::out << dir << std::endl;
+        //Php::out << dir << std::endl;
         pre = pos;
         if (dir.size() == 0)
             continue; // if leading / first time is 0 length
@@ -63,10 +63,16 @@ OpenTracing::Logger::~Logger()
 
 void OpenTracing::Logger::Open()
 {
-    _logFile.open(_reportPath + "/" + _reportName, std::ofstream::out | std::ofstream::app);
-    if (_logFile.bad())
+    try
     {
-        Php::out << "Couldn't open log file" << std::endl;
+        _logFile.open(_reportPath + "/" + _reportName, std::ofstream::out | std::ofstream::app);
+        if (_logFile.bad())
+        {
+            Php::out << "Couldn't open log file" << std::endl;
+        }
+    }
+    catch (...)
+    {
     }
 }
 
@@ -133,7 +139,7 @@ void OpenTracing::Logger::PrintLine(const std::string& line, bool printTime)
                 time(&startTime);
                 localtime_r(&startTime, &lTimeinfo);
                 strftime(strDate, 51, "%Y-%m-%d %H:%M:%S", &lTimeinfo);
-                _logFile << std::string(strDate) << '\t';
+                _logFile << std::string(strDate) << " " << this << "\t\t";
             }
             _logFile << line << std::endl;
         }
@@ -144,25 +150,6 @@ void OpenTracing::Logger::PrintLine(const std::string& line, bool printTime)
 
     Close();
 
-    Php::out << line << std::endl;
+    //Php::out << line << std::endl;
 }
 
-//void OpenTracing::Logger::Print(const std::string& line)
-//{
-//    Open();
-//
-//    //if (!_logFile.bad())
-//    //{
-//    //    try
-//    //    {
-//            _logFile << line;
-//    //    }
-//    //    catch (...)
-//    //    {
-//    //    }
-//    //}
-//
-//    Close();
-//
-//    Php::out << line;
-//}

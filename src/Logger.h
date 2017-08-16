@@ -30,7 +30,6 @@ namespace OpenTracing
         void PrintStart();
         void PrintEnd();
         void PrintLine(const std::string& line, bool printTime = true);
-        //void Print(const std::string& line);
     };
 }
 
