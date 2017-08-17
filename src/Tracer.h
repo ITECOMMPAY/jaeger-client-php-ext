@@ -5,16 +5,7 @@
 #include "ITracer.h"
 #include "IReporter.h"
 #include "ISampler.h"
-#include "Logger.h"
-
-extern OpenTracing::ITracer* global_tracer;
-extern OpenTracing::Logger* file_logger;
-
-void onInit();
-void onRequest();
-void onIdle();
-void onShutDown();
-void updateCounters();
+#include "Printer.h"
 
 namespace OpenTracing
 {
@@ -23,6 +14,9 @@ namespace OpenTracing
     public:
         Tracer() {};
         virtual ~Tracer();
+
+        static Printer file_logger;
+        static ITracer* global_tracer;
 
         /*Create tracer instance and call its init method*/
         static void init(Php::Parameters& params);
@@ -49,7 +43,6 @@ namespace OpenTracing
         static IReporter* buildReporter(const Php::Value& settings);
         /*Build sampler*/
         static ISampler* buildSampler(const Php::Value& settings);
-
     };
 }
 #endif /* TRACER_H */

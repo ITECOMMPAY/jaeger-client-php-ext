@@ -1,5 +1,5 @@
-#ifndef LOGGER_H
-#define LOGGER_H
+#ifndef PRINTER_H
+#define PRINTER_H
 
 #include <iostream>
 #include <sstream>
@@ -8,21 +8,23 @@
 
 namespace OpenTracing
 {
-    class Logger
+    class Printer
     {
     private:
         std::string _reportPath;
         std::string _reportName;
-
         std::ofstream _logFile;
 
         time_t startTime;
         time_t stopTime;
         int durationTime;
-    public:
-        Logger(const std::string& reportPath);
 
-        ~Logger();
+        bool _flag;
+
+    public:
+        Printer(const std::string& reportPath, bool printFooters);
+
+        ~Printer();
 
         void Open();
         void Close();
@@ -33,4 +35,4 @@ namespace OpenTracing
     };
 }
 
-#endif /* LOGGER_H */
+#endif /* PRINTER_H */

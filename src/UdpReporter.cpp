@@ -56,7 +56,8 @@ void UdpReporter::flush(const std::string& data) const
     int _socket = socket(AF_INET, SOCK_DGRAM, 0);
     if (_socket != -1)
     {
-        sendto(_socket, (data + '\n').c_str(), data.length() + 1, 0, (sockaddr*)&_addr, sizeof(_addr));
+        //sendto(_socket, (data + '\n').c_str(), data.length() + 1, 0, (sockaddr*)&_addr, sizeof(_addr));
+        sendto(_socket, (data).c_str(), data.length(), 0, (sockaddr*)&_addr, sizeof(_addr));
 #ifdef TRACER_DEBUG
         ssize_t num_send = {};
         if (num_send != -1)

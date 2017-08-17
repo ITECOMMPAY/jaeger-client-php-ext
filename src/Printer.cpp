@@ -1,38 +1,41 @@
-#include "Logger.h"
+#include "Printer.h"
 #include <time.h>
 #include <sys/stat.h>
+#include <mutex>
 
-int mkpath(std::string s, mode_t mode)
-{
-    size_t pre = 0, pos;
-    std::string dir;
-    int mdret{ -1 };
+std::mutex mtx;
 
-    if (s[s.size() - 1] != '/')
-    {
-        // force trailing / so we can handle everything in loop
-        s += '/';
-    }
+//int mkpath(std::string s, mode_t mode)
+//{
+//    size_t pre = 0, pos;
+//    std::string dir;
+//    int mdret{ -1 };
+//
+//    if (s[s.size() - 1] != '/')
+//    {
+//        // force trailing / so we can handle everything in loop
+//        s += '/';
+//    }
+//
+//    while ((pos = s.find_first_of('/', pre)) != std::string::npos)
+//    {
+//        dir = s.substr(0, pos++);
+//        //Php::out << dir << std::endl;
+//        pre = pos;
+//        if (dir.size() == 0)
+//            continue; // if leading / first time is 0 length
+//        if ((mdret = mkdir(dir.c_str(), mode)) && errno != EEXIST)
+//        {
+//            return mdret;
+//        }
+//    }
+//    return mdret;
+//}
 
-    while ((pos = s.find_first_of('/', pre)) != std::string::npos)
-    {
-        dir = s.substr(0, pos++);
-        //Php::out << dir << std::endl;
-        pre = pos;
-        if (dir.size() == 0)
-            continue; // if leading / first time is 0 length
-        if ((mdret = mkdir(dir.c_str(), mode)) && errno != EEXIST)
-        {
-            return mdret;
-        }
-    }
-    return mdret;
-}
-
-
-OpenTracing::Logger::Logger(const std::string& reportPath) :
+OpenTracing::Printer::Printer(const std::string& reportPath, bool printFooters) :
     _reportPath{ reportPath },
-    _reportName{ "tracer-cpp.log" }
+    _reportName{ "tracer-cpp.log" },
+    _flag{ printFooters }
 {
     try
     {
@@ -47,41 +50,72 @@ OpenTracing::Logger::Logger(const std::string& reportPath) :
         //{
         //    //throw
         //}
+
     }
     catch (...)
     {
         Php::out << "Can't create directory " << reportPath << std::endl;
     }
-    PrintStart();
+
+    if (_flag)
+    {
+        PrintStart();
+    }
+    {
+        //std::ostringstream ss;
+        //ss << this;
+        //PrintLine("Printer constructor: " + ss.str());
+    }
 }
 
-OpenTracing::Logger::~Logger()
+OpenTracing::Printer::~Printer()
 {
-    PrintLine("~Logger");
-    PrintEnd();
+    {
+        //std::ostringstream ss;
+        //ss << this;
+        //PrintLine("~Printer destructor: " + ss.str());
+    }
+    if (_flag)
+    {
+        PrintEnd();
+    }
 }
 
-void OpenTracing::Logger::Open()
+void OpenTracing::Printer::Open()
 {
     try
     {
+        mtx.lock();
+
         _logFile.open(_reportPath + "/" + _reportName, std::ofstream::out | std::ofstream::app);
         if (_logFile.bad())
         {
             Php::out << "Couldn't open log file" << std::endl;
         }
+
+        mtx.unlock();
     }
     catch (...)
     {
     }
 }
 
-void OpenTracing::Logger::Close()
+void OpenTracing::Printer::Close()
 {
-    _logFile.close();
+    try
+    {
+        mtx.lock();
+
+        _logFile.close();
+
+        mtx.unlock();
+    }
+    catch (...)
+    {
+    }
 }
 
-void OpenTracing::Logger::PrintStart()
+void OpenTracing::Printer::PrintStart()
 {
     if (!_logFile.bad())
     {
@@ -102,7 +136,7 @@ void OpenTracing::Logger::PrintStart()
     }
 }
 
-void OpenTracing::Logger::PrintEnd()
+void OpenTracing::Printer::PrintEnd()
 {
     if (!_logFile.bad())
     {
@@ -123,7 +157,7 @@ void OpenTracing::Logger::PrintEnd()
     }
 }
 
-void OpenTracing::Logger::PrintLine(const std::string& line, bool printTime)
+void OpenTracing::Printer::PrintLine(const std::string& line, bool printTime)
 {
     Open();
 
@@ -139,7 +173,11 @@ void OpenTracing::Logger::PrintLine(const std::string& line, bool printTime)
                 time(&startTime);
                 localtime_r(&startTime, &lTimeinfo);
                 strftime(strDate, 51, "%Y-%m-%d %H:%M:%S", &lTimeinfo);
-                _logFile << std::string(strDate) << " " << this << "\t\t";
+                _logFile <<
+                    std::string(strDate) <<
+                    //" " << 
+                    //this << 
+                    "\t\t";
             }
             _logFile << line << std::endl;
         }
@@ -149,7 +187,5 @@ void OpenTracing::Logger::PrintLine(const std::string& line, bool printTime)
     }
 
     Close();
-
-    //Php::out << line << std::endl;
 }
 

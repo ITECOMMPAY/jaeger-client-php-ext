@@ -29,13 +29,13 @@ JaegerSpan::~JaegerSpan()
     _logs.clear();
 }
 
-void JaegerSpan::addTags(Php::Parameters& params)
+void JaegerSpan::addTags(Php::Parameters& tags)
 {
 #ifdef TRACER_DEBUG
     Php::out << "   ::addTags addr: " << this << std::endl;
 #endif    
 
-    if (!params.empty() > 0)
+    if (!tags.empty())
     {
         //std::map<std::string, std::string> tags = params[0];
         //std::unordered_map<std::string, std::string> tags_unordered;
@@ -43,8 +43,8 @@ void JaegerSpan::addTags(Php::Parameters& params)
 
         //to keep the order of tags
         {
-            Php::Value keys = Php::array_keys(params[0]);
-            Php::Value values = Php::array_values(params[0]);
+            Php::Value keys = Php::array_keys(tags[0]);
+            Php::Value values = Php::array_values(tags[0]);
 
             for (int i = 0; i < keys.size(); i++)
             {
@@ -71,7 +71,7 @@ void JaegerSpan::addLogs(Php::Parameters& logs)
     Php::out << "   JaegerSpan(" << this << ")::addLogs " << std::endl;
 #endif    
 
-    if (!logs.empty() > 0)
+    if (!logs.empty())
     {
         std::vector<Tag*> tags;
 

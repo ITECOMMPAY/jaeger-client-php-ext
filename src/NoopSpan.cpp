@@ -16,7 +16,7 @@ NoopSpan::~NoopSpan()
 #endif
 }
 
-void NoopSpan::addTags(Php::Parameters& params)
+void NoopSpan::addTags(Php::Parameters& tags)
 {
 #ifdef TRACER_DEBUG
     Php::out << "NoopSpan::addTags addr: " << this << std::endl;

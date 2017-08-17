@@ -4,6 +4,7 @@
 #include "Helper.h"
 #include "TextCarrier.h"
 #include "JaegerSpan.h"
+#include "Tracer.h"
 
 #include "thrift-gen/Agent.h"
 #include "thrift-lib/transport/TBufferTransports.h"
@@ -21,6 +22,12 @@ JaegerTracer::~JaegerTracer()
     delete _sampler;
     delete _process;
     clearSpans();
+
+    {
+        std::ostringstream ss;
+        ss << this;
+        Tracer::file_logger.PrintLine("~JaegerTracer " + ss.str() + " destructor");
+    }
 #ifdef TRACER_DEBUG
     Php::out << "~JaegerTracer" << std::endl;
 #endif    
@@ -32,6 +39,11 @@ JaegerTracer::JaegerTracer(IReporter* reporter, ISampler* sampler) :
     _process{ nullptr },
     _isSampled{ false }
 {
+    {
+        std::ostringstream ss;
+        ss << this;
+        Tracer::file_logger.PrintLine("JaegerTracer " + ss.str() + " constructor");
+    }
 #ifdef TRACER_DEBUG
     Php::out << "JaegerTracer::JaegerTracer " << this << std::endl;
 #endif    
@@ -46,7 +58,7 @@ void JaegerTracer::init(const std::string& serviceName)
     this->_process = new Process(serviceName);
 }
 
-ISpan * JaegerTracer::startSpan(const std::string& operationName, const Php::Value& options)
+ISpan* JaegerTracer::startSpan(const std::string& operationName, const Php::Value& options)
 {
     Php::Value refType = nullptr;
     Php::Value parent = nullptr;
@@ -100,13 +112,10 @@ ISpan * JaegerTracer::startSpan(const std::string& operationName, const Php::Val
         {
             flags |= JaegerSpan::SAMPLED_FLAG;
         }
-        /*some workaround*/
-        uint64_t traceId = Helper::generateId();
+
         context = new SpanContext(
-            traceId,
-            traceId,
-            //Helper::generateId(),
-            //Helper::generateId(),
+            Helper::generateId(),
+            Helper::generateId(),
             0,
             flags,
             refType
@@ -124,8 +133,12 @@ ISpan * JaegerTracer::startSpan(const std::string& operationName, const Php::Val
     return span;
 }
 
-ISpan * JaegerTracer::getCurrentSpan()
+ISpan* JaegerTracer::getCurrentSpan()
 {
+    std::ostringstream ss;
+    ss << this;
+    Tracer::file_logger.PrintLine("JaegerTracer " + ss.str() + " getCurrentSpan");
+
     ISpan* span = nullptr;
 
     if (!_activeSpans.empty())
@@ -150,6 +163,11 @@ void JaegerTracer::finishSpan(ISpan* span, const Php::Value& endTime)
             $span = $this->spans[(string)$span->spanId] ?? null;
         }
     */
+
+    std::ostringstream ss;
+    ss << this;
+    Tracer::file_logger.PrintLine("JaegerTracer " + ss.str() + " finishSpan");
+
     JaegerSpan* jaegerSpan = dynamic_cast<JaegerSpan*>(span);
     if (jaegerSpan != nullptr)
     {
@@ -179,6 +197,7 @@ void JaegerTracer::finishSpan(ISpan* span, const Php::Value& endTime)
         }
 #endif
     }
+
 }
 
 void JaegerTracer::inject(const Php::Value& context, const std::string& format, std::string& carrier)
@@ -260,14 +279,18 @@ void JaegerTracer::clearSpans()
 #ifdef TRACER_DEBUG
     Php::out << "\tclearSpans()" << std::endl;
 #endif    
-    //for (auto& iter : _spans)
+    Tracer::file_logger.PrintLine("clearSpans start");
+    for (auto& iter : _spans)
     {
         //issue with PHP ref count, so it will be deleted after script finishes
         //will be handled by PHP __destruct of a JaegerSpan
-        //delete iter.second; 
+        //delete iter.second;
+        iter.second = nullptr;
     }
     _spans.clear();
     _activeSpans.clear();
+    Tracer::file_logger.PrintLine("clearSpans end");
+
 }
 
 const char* JaegerTracer::_name() const

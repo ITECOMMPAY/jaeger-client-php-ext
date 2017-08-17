@@ -4,6 +4,7 @@
 #include "NoopTracer.h"
 #include "JaegerSpan.h"
 #include "JaegerTracer.h"
+#include "PageViewHandler.h"
 
 #include "IReporter.h"
 #include "UdpReporter.h"
@@ -31,12 +32,10 @@ extern "C" {
         // for the entire duration of the process (that's why it's static)
         static Php::Extension extension("tracer-cpp", "1.0");
 
-
-        extension.onStartup(&onInit);
+        extension.onStartup(&onStartup);
         extension.onRequest(&onRequest);
         extension.onIdle(&onIdle);
         extension.onShutdown(&onShutDown);
-        extension.add<&updateCounters>("updateCounters");
 
         // version 1 - static calls to Tracer::
         {
@@ -45,7 +44,7 @@ extern "C" {
                 Php::ByVal("serviceName",Php::Type::String,true),
                 Php::ByVal("settings",Php::Type::Array,false)
             });
-            TracerClass.method<&Tracer::getTracer>("getTracer", Php::Private | Php::Static, {});
+            //TracerClass.method<&Tracer::getTracer>("getTracer", Php::Private | Php::Static, {});
             TracerClass.method<&Tracer::startSpan>("startSpan", Php::Static, {
                 Php::ByVal("operationName",Php::Type::String,true),
                 Php::ByVal("options",Php::Type::Array,false)

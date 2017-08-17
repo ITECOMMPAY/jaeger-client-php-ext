@@ -1,10 +1,19 @@
 #include <iostream>
 #include "NoopTracer.h"
 #include "NoopSpan.h"
+#include "Tracer.h"
 using namespace OpenTracing;
+
+//extern Printer* file_logger;
 
 NoopTracer::~NoopTracer()
 {
+    //if (file_logger != nullptr)
+    {
+        std::ostringstream ss;
+        ss << this;
+        Tracer::file_logger.PrintLine("    ~NoopTracer addr: " + ss.str());
+    }
 #ifdef TRACER_DEBUG
     Php::out << "NoopTracer::~NoopTracer addr: " << this << std::endl;
 #endif
@@ -12,6 +21,13 @@ NoopTracer::~NoopTracer()
 
 NoopTracer::NoopTracer()
 {
+    //if (file_logger != nullptr)
+    {
+        std::ostringstream ss;
+        ss << this;
+        Tracer::file_logger.PrintLine("    NoopTracer addr: " + ss.str());
+    }
+
 #ifdef TRACER_DEBUG
     Php::out << "NoopTracer::NoopTracer" << std::endl;
 #endif
@@ -24,13 +40,13 @@ void NoopTracer::init(const std::string& serviceName)
 #endif
 }
 
-ISpan * NoopTracer::startSpan(const std::string& operationName, const Php::Value& options)
+ISpan* NoopTracer::startSpan(const std::string& operationName, const Php::Value& options)
 {
 #ifdef TRACER_DEBUG
     if (options.isNull())
     {
         Php::out << "options is null" << std::endl;
-    }
+}
     else
     {
         Php::out << "options is NOT null" << std::endl;
@@ -43,7 +59,8 @@ ISpan * NoopTracer::startSpan(const std::string& operationName, const Php::Value
 
 ISpan* NoopTracer::getCurrentSpan()
 {
-    return new NoopSpan();
+    Tracer::file_logger.PrintLine("NoopTracer getCurrentSpan");
+    return nullptr;//new NoopSpan();
 }
 
 void NoopTracer::finishSpan(ISpan* span, const Php::Value& endTime)
@@ -59,6 +76,7 @@ void NoopTracer::inject(const Php::Value& context, const std::string& format, st
 
 SpanContext* NoopTracer::extract(const std::string& format, const std::string& carier) const
 {
+    //return new SpanContext(0, 0, 0, 0);
     return nullptr;
 }
 

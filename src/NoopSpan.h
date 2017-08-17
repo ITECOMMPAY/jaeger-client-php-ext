@@ -10,7 +10,7 @@ namespace OpenTracing
     public:
         NoopSpan();
         ~NoopSpan();
-        void addTags(Php::Parameters& params);
+        void addTags(Php::Parameters& tags);
         void addLogs(Php::Parameters& logs);
         const char* _name() const;
     };

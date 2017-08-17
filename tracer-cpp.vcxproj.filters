@@ -126,7 +126,10 @@
     <ClInclude Include="src\thrift-lib\transport\TVirtualTransport.h">
       <Filter>src\thrift-lib\transport</Filter>
     </ClInclude>
-    <ClInclude Include="src\Logger.h">
+    <ClInclude Include="src\Printer.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\PageViewHandler.h">
       <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>
@@ -206,7 +209,10 @@
     <ClCompile Include="src\thrift-lib\transport\TTransportException.cpp">
       <Filter>src\thrift-lib\transport</Filter>
     </ClCompile>
-    <ClCompile Include="src\Logger.cpp">
+    <ClCompile Include="src\Printer.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\PageViewHandler.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>

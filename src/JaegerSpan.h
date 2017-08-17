@@ -22,7 +22,8 @@ namespace OpenTracing
         JaegerSpan(SpanContext* context, const std::string& operationName, const Php::Value& startTime = nullptr);
         JaegerSpan(const JaegerSpan&) = delete;
         ~JaegerSpan();
-        void addTags(Php::Parameters& params);
+
+        void addTags(Php::Parameters& tags);
         void addLogs(Php::Parameters& logs);
         /*Whether the span is sampled*/
         bool isSampled() const;

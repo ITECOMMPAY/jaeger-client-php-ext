@@ -6,11 +6,8 @@
 #include "NoopTracer.h"
 #include "JaegerTracer.h"
 #include "JaegerSpan.h"
-#include "Logger.h"
-extern OpenTracing::Logger* file_logger;
+#include "Printer.h"
 
-std::random_device rd;
-std::default_random_engine re{ rd() };
 std::uniform_int_distribution<int> dist{ 0, 99 };
 std::uniform_int_distribution<unsigned int> dist_32bit{ 0x00000000, 0xFFFFFFFF };
 std::uniform_int_distribution<uint64_t> dist_64bit{ 0x0000000000000000, 0xFFFFFFFFFFFFFFFF };
@@ -25,11 +22,17 @@ const int64_t OpenTracing::Helper::now()
 
 const uint64_t OpenTracing::Helper::generateId()
 {
+    static std::random_device rd;
+    static std::default_random_engine re{ rd() };
+
     return dist_64bit(re);
 }
 
 const int OpenTracing::Helper::genPercentage()
 {
+    static std::random_device rd;
+    static std::default_random_engine re{ rd() };
+
     return dist(re);
 }
 
@@ -45,8 +48,9 @@ const std::string OpenTracing::Helper::getCurrentIp()
         while (fgets(buf, BUFSIZ, ptr) != NULL);
         pclose(ptr);
     }
+    //buf[strlen(buf) - 1] = '\0';
 
-    return std::string{ buf };
+    return std::string{ buf,strlen(buf) - 1 };
 }
 
 const std::string OpenTracing::Helper::getHostName()
@@ -66,22 +70,24 @@ const ::Batch* OpenTracing::Helper::jaegerizeTracer(const OpenTracing::ITracer* 
     else if (strcmp(tracer->_name(), "JaegerTracer") == 0)
     {
         std::vector<::Span> jaegerSpans;
-        file_logger->PrintLine("batch jaegerizeTracer");
+        //file_logger->PrintLine("batch jaegerizeTracer");
         const JaegerTracer* jaegerTracer = dynamic_cast<const JaegerTracer*>(tracer);
         for (auto& iter : jaegerTracer->_spans)
         {
             if (dynamic_cast<JaegerSpan*>(iter.second) != nullptr)
             {
-                file_logger->PrintLine("batch jaegerSpans");
-
-                if (dynamic_cast<JaegerSpan*>(iter.second)->isSampled())
+                //file_logger->PrintLine("batch jaegerSpans");
+                if (dynamic_cast<JaegerSpan*>(iter.second)->_context != nullptr)
                 {
-                    jaegerSpans.push_back(jaegerizeSpan(iter.second));
+                    if (dynamic_cast<JaegerSpan*>(iter.second)->isSampled())
+                    {
+                        jaegerSpans.push_back(jaegerizeSpan(iter.second));
+                    }
                 }
             }
             else
             {
-                file_logger->PrintLine("batch jaegerizeTracer - no spans");
+                //file_logger->PrintLine("batch jaegerizeTracer - no spans");
             }
         }
 
