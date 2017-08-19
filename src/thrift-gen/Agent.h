@@ -34,24 +34,12 @@ class Agent_emitZipkinBatch_args {
   Agent_emitZipkinBatch_args() {
   }
 
-  virtual ~Agent_emitZipkinBatch_args() throw();
+  virtual ~Agent_emitZipkinBatch_args() noexcept;
   std::vector< ::Span>  spans;
 
   _Agent_emitZipkinBatch_args__isset __isset;
 
   void __set_spans(const std::vector< ::Span> & val);
-
-  bool operator == (const Agent_emitZipkinBatch_args & rhs) const
-  {
-    if (!(spans == rhs.spans))
-      return false;
-    return true;
-  }
-  bool operator != (const Agent_emitZipkinBatch_args &rhs) const {
-    return !(*this == rhs);
-  }
-
-  bool operator < (const Agent_emitZipkinBatch_args & ) const;
 
   uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
   uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
@@ -62,7 +50,7 @@ class Agent_emitZipkinBatch_pargs {
  public:
 
 
-  virtual ~Agent_emitZipkinBatch_pargs() throw();
+  virtual ~Agent_emitZipkinBatch_pargs() noexcept;
   const std::vector< ::Span> * spans;
 
   uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
@@ -82,24 +70,12 @@ class Agent_emitBatch_args {
   Agent_emitBatch_args() {
   }
 
-  virtual ~Agent_emitBatch_args() throw();
+  virtual ~Agent_emitBatch_args() noexcept;
    ::Batch batch;
 
   _Agent_emitBatch_args__isset __isset;
 
   void __set_batch(const  ::Batch& val);
-
-  bool operator == (const Agent_emitBatch_args & rhs) const
-  {
-    if (!(batch == rhs.batch))
-      return false;
-    return true;
-  }
-  bool operator != (const Agent_emitBatch_args &rhs) const {
-    return !(*this == rhs);
-  }
-
-  bool operator < (const Agent_emitBatch_args & ) const;
 
   uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
   uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
@@ -110,7 +86,7 @@ class Agent_emitBatch_pargs {
  public:
 
 
-  virtual ~Agent_emitBatch_pargs() throw();
+  virtual ~Agent_emitBatch_pargs() noexcept;
   const  ::Batch* batch;
 
   uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;

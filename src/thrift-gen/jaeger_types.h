@@ -63,7 +63,7 @@ class Tag : public virtual ::apache::thrift::TBase {
   Tag() : key(), vType((TagType::type)0), vStr(), vDouble(0), vBool(0), vLong(0), vBinary() {
   }
 
-  virtual ~Tag() throw();
+  virtual ~Tag() noexcept;
   std::string key;
   TagType::type vType;
   std::string vStr;
@@ -88,40 +88,6 @@ class Tag : public virtual ::apache::thrift::TBase {
 
   void __set_vBinary(const std::string& val);
 
-  bool operator == (const Tag & rhs) const
-  {
-    if (!(key == rhs.key))
-      return false;
-    if (!(vType == rhs.vType))
-      return false;
-    if (__isset.vStr != rhs.__isset.vStr)
-      return false;
-    else if (__isset.vStr && !(vStr == rhs.vStr))
-      return false;
-    if (__isset.vDouble != rhs.__isset.vDouble)
-      return false;
-    else if (__isset.vDouble && !(vDouble == rhs.vDouble))
-      return false;
-    if (__isset.vBool != rhs.__isset.vBool)
-      return false;
-    else if (__isset.vBool && !(vBool == rhs.vBool))
-      return false;
-    if (__isset.vLong != rhs.__isset.vLong)
-      return false;
-    else if (__isset.vLong && !(vLong == rhs.vLong))
-      return false;
-    if (__isset.vBinary != rhs.__isset.vBinary)
-      return false;
-    else if (__isset.vBinary && !(vBinary == rhs.vBinary))
-      return false;
-    return true;
-  }
-  bool operator != (const Tag &rhs) const {
-    return !(*this == rhs);
-  }
-
-  bool operator < (const Tag & ) const;
-
   uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
   uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
 
@@ -137,27 +103,13 @@ class Log : public virtual ::apache::thrift::TBase {
   Log() : timestamp(0) {
   }
 
-  virtual ~Log() throw();
+  virtual ~Log() noexcept;
   int64_t timestamp;
   std::vector<::Tag>  fields;
 
   void __set_timestamp(const int64_t val);
 
   void __set_fields(const std::vector<::Tag> & val);
-
-  bool operator == (const Log & rhs) const
-  {
-    if (!(timestamp == rhs.timestamp))
-      return false;
-    if (!(fields == rhs.fields))
-      return false;
-    return true;
-  }
-  bool operator != (const Log &rhs) const {
-    return !(*this == rhs);
-  }
-
-  bool operator < (const Log & ) const;
 
   uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
   uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
@@ -174,7 +126,7 @@ class SpanRef : public virtual ::apache::thrift::TBase {
   SpanRef() : refType((SpanRefType::type)0), traceIdLow(0), traceIdHigh(0), spanId(0) {
   }
 
-  virtual ~SpanRef() throw();
+  virtual ~SpanRef() noexcept;
   SpanRefType::type refType;
   int64_t traceIdLow;
   int64_t traceIdHigh;
@@ -228,7 +180,7 @@ class Span : public virtual ::apache::thrift::TBase {
   Span() : traceIdLow(0), traceIdHigh(0), spanId(0), parentSpanId(0), operationName(), flags(0), startTime(0), duration(0) {
   }
 
-  virtual ~Span() throw();
+  virtual ~Span() noexcept;
   int64_t traceIdLow;
   int64_t traceIdHigh;
   int64_t spanId;
@@ -265,44 +217,6 @@ class Span : public virtual ::apache::thrift::TBase {
 
   void __set_logs(const std::vector<::Log> & val);
 
-  bool operator == (const Span & rhs) const
-  {
-    if (!(traceIdLow == rhs.traceIdLow))
-      return false;
-    if (!(traceIdHigh == rhs.traceIdHigh))
-      return false;
-    if (!(spanId == rhs.spanId))
-      return false;
-    if (!(parentSpanId == rhs.parentSpanId))
-      return false;
-    if (!(operationName == rhs.operationName))
-      return false;
-    if (__isset.references != rhs.__isset.references)
-      return false;
-    else if (__isset.references && !(references == rhs.references))
-      return false;
-    if (!(flags == rhs.flags))
-      return false;
-    if (!(startTime == rhs.startTime))
-      return false;
-    if (!(duration == rhs.duration))
-      return false;
-    if (__isset.tags != rhs.__isset.tags)
-      return false;
-    else if (__isset.tags && !(tags == rhs.tags))
-      return false;
-    if (__isset.logs != rhs.__isset.logs)
-      return false;
-    else if (__isset.logs && !(logs == rhs.logs))
-      return false;
-    return true;
-  }
-  bool operator != (const Span &rhs) const {
-    return !(*this == rhs);
-  }
-
-  bool operator < (const Span & ) const;
-
   uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
   uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
 
@@ -323,7 +237,7 @@ class Process : public virtual ::apache::thrift::TBase {
   Process() : serviceName() {
   }
 
-  virtual ~Process() throw();
+  virtual ~Process() noexcept;
   std::string serviceName;
   std::vector<::Tag>  tags;
 
@@ -332,22 +246,6 @@ class Process : public virtual ::apache::thrift::TBase {
   void __set_serviceName(const std::string& val);
 
   void __set_tags(const std::vector<::Tag> & val);
-
-  bool operator == (const Process & rhs) const
-  {
-    if (!(serviceName == rhs.serviceName))
-      return false;
-    if (__isset.tags != rhs.__isset.tags)
-      return false;
-    else if (__isset.tags && !(tags == rhs.tags))
-      return false;
-    return true;
-  }
-  bool operator != (const Process &rhs) const {
-    return !(*this == rhs);
-  }
-
-  bool operator < (const Process & ) const;
 
   uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
   uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
@@ -364,27 +262,13 @@ class Batch : public virtual ::apache::thrift::TBase {
   Batch() {
   }
 
-  virtual ~Batch() throw();
+  virtual ~Batch() noexcept;
   ::Process process;
   std::vector<Span>  spans;
 
   void __set_process(const ::Process& val);
 
   void __set_spans(const std::vector<Span> & val);
-
-  bool operator == (const Batch & rhs) const
-  {
-    if (!(process == rhs.process))
-      return false;
-    if (!(spans == rhs.spans))
-      return false;
-    return true;
-  }
-  bool operator != (const Batch &rhs) const {
-    return !(*this == rhs);
-  }
-
-  bool operator < (const Batch & ) const;
 
   uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
   uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;

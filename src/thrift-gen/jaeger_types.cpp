@@ -37,7 +37,7 @@ const char* _kSpanRefTypeNames[] = {
 const std::map<int, const char*> _SpanRefType_VALUES_TO_NAMES(::apache::thrift::TEnumIterator(2, _kSpanRefTypeValues, _kSpanRefTypeNames), ::apache::thrift::TEnumIterator(-1, NULL, NULL));
 
 
-Tag::~Tag() throw() {
+Tag::~Tag() noexcept {
 }
 
 
@@ -86,9 +86,6 @@ uint32_t Tag::read(::apache::thrift::protocol::TProtocol* iprot) {
 
   using ::apache::thrift::protocol::TProtocolException;
 
-  bool isset_key = false;
-  bool isset_vType = false;
-
   while (true)
   {
     xfer += iprot->readFieldBegin(fname, ftype, fid);
@@ -100,7 +97,6 @@ uint32_t Tag::read(::apache::thrift::protocol::TProtocol* iprot) {
       case 1:
         if (ftype == ::apache::thrift::protocol::T_STRING) {
           xfer += iprot->readString(this->key);
-          isset_key = true;
         } else {
           xfer += iprot->skip(ftype);
         }
@@ -110,7 +106,6 @@ uint32_t Tag::read(::apache::thrift::protocol::TProtocol* iprot) {
           int32_t ecast0;
           xfer += iprot->readI32(ecast0);
           this->vType = (TagType::type)ecast0;
-          isset_vType = true;
         } else {
           xfer += iprot->skip(ftype);
         }
@@ -164,10 +159,6 @@ uint32_t Tag::read(::apache::thrift::protocol::TProtocol* iprot) {
 
   xfer += iprot->readStructEnd();
 
-  if (!isset_key)
-    throw TProtocolException(TProtocolException::INVALID_DATA);
-  if (!isset_vType)
-    throw TProtocolException(TProtocolException::INVALID_DATA);
   return xfer;
 }
 
@@ -248,7 +239,7 @@ Tag& Tag::operator=(const Tag& other2) {
   return *this;
 }
 
-Log::~Log() throw() {
+Log::~Log() noexcept {
 }
 
 
@@ -272,9 +263,6 @@ uint32_t Log::read(::apache::thrift::protocol::TProtocol* iprot) {
 
   using ::apache::thrift::protocol::TProtocolException;
 
-  bool isset_timestamp = false;
-  bool isset_fields = false;
-
   while (true)
   {
     xfer += iprot->readFieldBegin(fname, ftype, fid);
@@ -286,7 +274,6 @@ uint32_t Log::read(::apache::thrift::protocol::TProtocol* iprot) {
       case 1:
         if (ftype == ::apache::thrift::protocol::T_I64) {
           xfer += iprot->readI64(this->timestamp);
-          isset_timestamp = true;
         } else {
           xfer += iprot->skip(ftype);
         }
@@ -306,7 +293,6 @@ uint32_t Log::read(::apache::thrift::protocol::TProtocol* iprot) {
             }
             xfer += iprot->readListEnd();
           }
-          isset_fields = true;
         } else {
           xfer += iprot->skip(ftype);
         }
@@ -320,10 +306,6 @@ uint32_t Log::read(::apache::thrift::protocol::TProtocol* iprot) {
 
   xfer += iprot->readStructEnd();
 
-  if (!isset_timestamp)
-    throw TProtocolException(TProtocolException::INVALID_DATA);
-  if (!isset_fields)
-    throw TProtocolException(TProtocolException::INVALID_DATA);
   return xfer;
 }
 
@@ -369,7 +351,7 @@ Log& Log::operator=(const Log& other10) {
   return *this;
 }
 
-SpanRef::~SpanRef() throw() {
+SpanRef::~SpanRef() noexcept {
 }
 
 
@@ -401,11 +383,6 @@ uint32_t SpanRef::read(::apache::thrift::protocol::TProtocol* iprot) {
 
   using ::apache::thrift::protocol::TProtocolException;
 
-  bool isset_refType = false;
-  bool isset_traceIdLow = false;
-  bool isset_traceIdHigh = false;
-  bool isset_spanId = false;
-
   while (true)
   {
     xfer += iprot->readFieldBegin(fname, ftype, fid);
@@ -419,7 +396,6 @@ uint32_t SpanRef::read(::apache::thrift::protocol::TProtocol* iprot) {
           int32_t ecast11;
           xfer += iprot->readI32(ecast11);
           this->refType = (SpanRefType::type)ecast11;
-          isset_refType = true;
         } else {
           xfer += iprot->skip(ftype);
         }
@@ -427,7 +403,6 @@ uint32_t SpanRef::read(::apache::thrift::protocol::TProtocol* iprot) {
       case 2:
         if (ftype == ::apache::thrift::protocol::T_I64) {
           xfer += iprot->readI64(this->traceIdLow);
-          isset_traceIdLow = true;
         } else {
           xfer += iprot->skip(ftype);
         }
@@ -435,7 +410,6 @@ uint32_t SpanRef::read(::apache::thrift::protocol::TProtocol* iprot) {
       case 3:
         if (ftype == ::apache::thrift::protocol::T_I64) {
           xfer += iprot->readI64(this->traceIdHigh);
-          isset_traceIdHigh = true;
         } else {
           xfer += iprot->skip(ftype);
         }
@@ -443,7 +417,6 @@ uint32_t SpanRef::read(::apache::thrift::protocol::TProtocol* iprot) {
       case 4:
         if (ftype == ::apache::thrift::protocol::T_I64) {
           xfer += iprot->readI64(this->spanId);
-          isset_spanId = true;
         } else {
           xfer += iprot->skip(ftype);
         }
@@ -457,14 +430,6 @@ uint32_t SpanRef::read(::apache::thrift::protocol::TProtocol* iprot) {
 
   xfer += iprot->readStructEnd();
 
-  if (!isset_refType)
-    throw TProtocolException(TProtocolException::INVALID_DATA);
-  if (!isset_traceIdLow)
-    throw TProtocolException(TProtocolException::INVALID_DATA);
-  if (!isset_traceIdHigh)
-    throw TProtocolException(TProtocolException::INVALID_DATA);
-  if (!isset_spanId)
-    throw TProtocolException(TProtocolException::INVALID_DATA);
   return xfer;
 }
 
@@ -516,7 +481,7 @@ SpanRef& SpanRef::operator=(const SpanRef& other13) {
   return *this;
 }
 
-Span::~Span() throw() {
+Span::~Span() noexcept {
 }
 
 
@@ -579,15 +544,6 @@ uint32_t Span::read(::apache::thrift::protocol::TProtocol* iprot) {
 
   using ::apache::thrift::protocol::TProtocolException;
 
-  bool isset_traceIdLow = false;
-  bool isset_traceIdHigh = false;
-  bool isset_spanId = false;
-  bool isset_parentSpanId = false;
-  bool isset_operationName = false;
-  bool isset_flags = false;
-  bool isset_startTime = false;
-  bool isset_duration = false;
-
   while (true)
   {
     xfer += iprot->readFieldBegin(fname, ftype, fid);
@@ -599,7 +555,6 @@ uint32_t Span::read(::apache::thrift::protocol::TProtocol* iprot) {
       case 1:
         if (ftype == ::apache::thrift::protocol::T_I64) {
           xfer += iprot->readI64(this->traceIdLow);
-          isset_traceIdLow = true;
         } else {
           xfer += iprot->skip(ftype);
         }
@@ -607,7 +562,6 @@ uint32_t Span::read(::apache::thrift::protocol::TProtocol* iprot) {
       case 2:
         if (ftype == ::apache::thrift::protocol::T_I64) {
           xfer += iprot->readI64(this->traceIdHigh);
-          isset_traceIdHigh = true;
         } else {
           xfer += iprot->skip(ftype);
         }
@@ -615,7 +569,6 @@ uint32_t Span::read(::apache::thrift::protocol::TProtocol* iprot) {
       case 3:
         if (ftype == ::apache::thrift::protocol::T_I64) {
           xfer += iprot->readI64(this->spanId);
-          isset_spanId = true;
         } else {
           xfer += iprot->skip(ftype);
         }
@@ -623,7 +576,6 @@ uint32_t Span::read(::apache::thrift::protocol::TProtocol* iprot) {
       case 4:
         if (ftype == ::apache::thrift::protocol::T_I64) {
           xfer += iprot->readI64(this->parentSpanId);
-          isset_parentSpanId = true;
         } else {
           xfer += iprot->skip(ftype);
         }
@@ -631,7 +583,6 @@ uint32_t Span::read(::apache::thrift::protocol::TProtocol* iprot) {
       case 5:
         if (ftype == ::apache::thrift::protocol::T_STRING) {
           xfer += iprot->readString(this->operationName);
-          isset_operationName = true;
         } else {
           xfer += iprot->skip(ftype);
         }
@@ -659,7 +610,6 @@ uint32_t Span::read(::apache::thrift::protocol::TProtocol* iprot) {
       case 7:
         if (ftype == ::apache::thrift::protocol::T_I32) {
           xfer += iprot->readI32(this->flags);
-          isset_flags = true;
         } else {
           xfer += iprot->skip(ftype);
         }
@@ -667,7 +617,6 @@ uint32_t Span::read(::apache::thrift::protocol::TProtocol* iprot) {
       case 8:
         if (ftype == ::apache::thrift::protocol::T_I64) {
           xfer += iprot->readI64(this->startTime);
-          isset_startTime = true;
         } else {
           xfer += iprot->skip(ftype);
         }
@@ -675,7 +624,6 @@ uint32_t Span::read(::apache::thrift::protocol::TProtocol* iprot) {
       case 9:
         if (ftype == ::apache::thrift::protocol::T_I64) {
           xfer += iprot->readI64(this->duration);
-          isset_duration = true;
         } else {
           xfer += iprot->skip(ftype);
         }
@@ -729,22 +677,6 @@ uint32_t Span::read(::apache::thrift::protocol::TProtocol* iprot) {
 
   xfer += iprot->readStructEnd();
 
-  if (!isset_traceIdLow)
-    throw TProtocolException(TProtocolException::INVALID_DATA);
-  if (!isset_traceIdHigh)
-    throw TProtocolException(TProtocolException::INVALID_DATA);
-  if (!isset_spanId)
-    throw TProtocolException(TProtocolException::INVALID_DATA);
-  if (!isset_parentSpanId)
-    throw TProtocolException(TProtocolException::INVALID_DATA);
-  if (!isset_operationName)
-    throw TProtocolException(TProtocolException::INVALID_DATA);
-  if (!isset_flags)
-    throw TProtocolException(TProtocolException::INVALID_DATA);
-  if (!isset_startTime)
-    throw TProtocolException(TProtocolException::INVALID_DATA);
-  if (!isset_duration)
-    throw TProtocolException(TProtocolException::INVALID_DATA);
   return xfer;
 }
 
@@ -875,7 +807,7 @@ Span& Span::operator=(const Span& other33) {
   return *this;
 }
 
-Process::~Process() throw() {
+Process::~Process() noexcept {
 }
 
 
@@ -900,8 +832,6 @@ uint32_t Process::read(::apache::thrift::protocol::TProtocol* iprot) {
 
   using ::apache::thrift::protocol::TProtocolException;
 
-  bool isset_serviceName = false;
-
   while (true)
   {
     xfer += iprot->readFieldBegin(fname, ftype, fid);
@@ -913,7 +843,6 @@ uint32_t Process::read(::apache::thrift::protocol::TProtocol* iprot) {
       case 1:
         if (ftype == ::apache::thrift::protocol::T_STRING) {
           xfer += iprot->readString(this->serviceName);
-          isset_serviceName = true;
         } else {
           xfer += iprot->skip(ftype);
         }
@@ -947,8 +876,6 @@ uint32_t Process::read(::apache::thrift::protocol::TProtocol* iprot) {
 
   xfer += iprot->readStructEnd();
 
-  if (!isset_serviceName)
-    throw TProtocolException(TProtocolException::INVALID_DATA);
   return xfer;
 }
 
@@ -998,7 +925,7 @@ Process& Process::operator=(const Process& other41) {
   return *this;
 }
 
-Batch::~Batch() throw() {
+Batch::~Batch() noexcept {
 }
 
 
@@ -1022,9 +949,6 @@ uint32_t Batch::read(::apache::thrift::protocol::TProtocol* iprot) {
 
   using ::apache::thrift::protocol::TProtocolException;
 
-  bool isset_process = false;
-  bool isset_spans = false;
-
   while (true)
   {
     xfer += iprot->readFieldBegin(fname, ftype, fid);
@@ -1036,7 +960,6 @@ uint32_t Batch::read(::apache::thrift::protocol::TProtocol* iprot) {
       case 1:
         if (ftype == ::apache::thrift::protocol::T_STRUCT) {
           xfer += this->process.read(iprot);
-          isset_process = true;
         } else {
           xfer += iprot->skip(ftype);
         }
@@ -1056,7 +979,6 @@ uint32_t Batch::read(::apache::thrift::protocol::TProtocol* iprot) {
             }
             xfer += iprot->readListEnd();
           }
-          isset_spans = true;
         } else {
           xfer += iprot->skip(ftype);
         }
@@ -1070,10 +992,6 @@ uint32_t Batch::read(::apache::thrift::protocol::TProtocol* iprot) {
 
   xfer += iprot->readStructEnd();
 
-  if (!isset_process)
-    throw TProtocolException(TProtocolException::INVALID_DATA);
-  if (!isset_spans)
-    throw TProtocolException(TProtocolException::INVALID_DATA);
   return xfer;
 }
 

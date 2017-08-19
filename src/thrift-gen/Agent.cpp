@@ -6,10 +6,10 @@
  */
 #include "thrift-gen/Agent.h"
 
-Agent_emitZipkinBatch_args::~Agent_emitZipkinBatch_args() throw() {
+Agent_emitZipkinBatch_args::~Agent_emitZipkinBatch_args() noexcept {
 }
 
-Agent_emitZipkinBatch_pargs::~Agent_emitZipkinBatch_pargs() throw() {
+Agent_emitZipkinBatch_pargs::~Agent_emitZipkinBatch_pargs() noexcept {
 }
 
 uint32_t Agent_emitZipkinBatch_pargs::write(::apache::thrift::protocol::TProtocol* oprot) const {
@@ -34,7 +34,7 @@ uint32_t Agent_emitZipkinBatch_pargs::write(::apache::thrift::protocol::TProtoco
   return xfer;
 }
 
-Agent_emitBatch_pargs::~Agent_emitBatch_pargs() throw() {
+Agent_emitBatch_pargs::~Agent_emitBatch_pargs() noexcept {
 }
 
 uint32_t Agent_emitBatch_pargs::write(::apache::thrift::protocol::TProtocol* oprot) const {
@@ -88,4 +88,3 @@ void AgentClient::send_emitBatch(const  ::Batch& batch)
   oprot_->getTransport()->writeEnd();
   oprot_->getTransport()->flush();
 }
-
