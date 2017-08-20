@@ -13,13 +13,17 @@ namespace OpenTracing
 {
     class JaegerTracer : public ITracer
     {
+    private:
+        // store the same _spans, used to increase ref count
+        // so PHP garbage collector will not destroy _spans
+        std::vector<Php::Value> _spans_ref; 
     public:
         IReporter* _reporter;
         ISampler* _sampler;
         Process* _process;
         bool _isSampled;
-        std::unordered_map<uint64_t, ISpan*> _spans;
-        std::vector<uint64_t> _activeSpans;
+        std::unordered_map<int64_t, ISpan*> _spans;
+        std::vector<int64_t> _activeSpans;
 
         ~JaegerTracer();
         JaegerTracer(IReporter* reporter, ISampler* sampler);

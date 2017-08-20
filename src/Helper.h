@@ -16,7 +16,7 @@ namespace OpenTracing
         /*Get current unix timestamp in microseconds*/
         static const int64_t now();
         /*Get random id*/
-        static const uint64_t generateId();
+        static const int64_t generateId();
         /*Get random percentage in [0;100]*/
         static const int genPercentage();
         /*Get current ip*/

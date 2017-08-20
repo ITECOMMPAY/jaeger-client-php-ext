@@ -6,11 +6,12 @@
 #include "NoopTracer.h"
 #include "JaegerTracer.h"
 #include "JaegerSpan.h"
-#include "Printer.h"
+#include "Tracer.h"
 
+std::random_device rd;
 std::uniform_int_distribution<int> dist{ 0, 99 };
 std::uniform_int_distribution<unsigned int> dist_32bit{ 0x00000000, 0xFFFFFFFF };
-std::uniform_int_distribution<uint64_t> dist_64bit{ 0x0000000000000000, 0xFFFFFFFFFFFFFFFF };
+std::uniform_int_distribution<int64_t> dist_64bit{ 0x0000000000000000, INT64_MAX };
 
 const int64_t OpenTracing::Helper::now()
 {
@@ -20,19 +21,15 @@ const int64_t OpenTracing::Helper::now()
     return microsec;
 }
 
-const uint64_t OpenTracing::Helper::generateId()
+const int64_t OpenTracing::Helper::generateId()
 {
-    static std::random_device rd;
     static std::default_random_engine re{ rd() };
-
     return dist_64bit(re);
 }
 
 const int OpenTracing::Helper::genPercentage()
 {
-    static std::random_device rd;
     static std::default_random_engine re{ rd() };
-
     return dist(re);
 }
 
@@ -48,7 +45,6 @@ const std::string OpenTracing::Helper::getCurrentIp()
         while (fgets(buf, BUFSIZ, ptr) != NULL);
         pclose(ptr);
     }
-    //buf[strlen(buf) - 1] = '\0';
 
     return std::string{ buf,strlen(buf) - 1 };
 }
@@ -70,13 +66,31 @@ const ::Batch* OpenTracing::Helper::jaegerizeTracer(const OpenTracing::ITracer* 
     else if (strcmp(tracer->_name(), "JaegerTracer") == 0)
     {
         std::vector<::Span> jaegerSpans;
-        //file_logger->PrintLine("batch jaegerizeTracer");
+
+        std::ostringstream ss;
+        {
+            ss << "\tjaegerizeTracer " << tracer;
+            Tracer::file_logger.PrintLine(ss.str());
+            ss.str("");
+            ss.clear();
+        }
+
         const JaegerTracer* jaegerTracer = dynamic_cast<const JaegerTracer*>(tracer);
+        Tracer::file_logger.PrintLine("\tjaegerizeTracer _spans.size() " + std::to_string(jaegerTracer->_spans.size()));
+
         for (auto& iter : jaegerTracer->_spans)
         {
-            if (dynamic_cast<JaegerSpan*>(iter.second) != nullptr)
+            ss <<
+                "\t\tjaegerTracer->_spans KEY: " << iter.first << "\n" <<
+                "\t\t\t\t\t\t\t\t\t\t\t\tjaegerTracer->_spans VALUE: " << iter.second << "\n" <<
+                "\t\t\t\t\t\t\t\t\t\t\t\tjaegerTracer->_spans->_context: " << dynamic_cast<JaegerSpan*>(iter.second)->_context;
+
+            Tracer::file_logger.PrintLine(ss.str());
+            ss.str("");
+            ss.clear();
+
+            if (iter.second != nullptr)
             {
-                //file_logger->PrintLine("batch jaegerSpans");
                 if (dynamic_cast<JaegerSpan*>(iter.second)->_context != nullptr)
                 {
                     if (dynamic_cast<JaegerSpan*>(iter.second)->isSampled())
@@ -87,10 +101,9 @@ const ::Batch* OpenTracing::Helper::jaegerizeTracer(const OpenTracing::ITracer* 
             }
             else
             {
-                //file_logger->PrintLine("batch jaegerizeTracer - no spans");
+                Tracer::file_logger.PrintLine("\tjaegerizeTracer 0xBAD");
             }
         }
-
         batch->__set_process(jaegerizeProcess(jaegerTracer->_process));
         batch->__set_spans(jaegerSpans);
     }
@@ -190,31 +203,22 @@ const ::Batch* OpenTracing::Helper::jaegerizeTracer(const OpenTracing::ITracer* 
 {
     ::Tag jaegerTag;
     jaegerTag.__set_key(tag->_key);
-    jaegerTag.__set_vType(TagType::type::STRING);
-    jaegerTag.__set_vStr(tag->_value);
+    jaegerTag.__set_vType(tag->_vType);
 
-
-    /*todo - because Tag is <string,string>
-        switch (true) {
-            case is_numeric($tag->value):
-                $vType = Autogen\TagType::DOUBLE;
-                $vKey = 'vDouble';
-                $vVal = (float)$tag->value;
-                break;
-
-            case is_bool($tag->value):
-                $vType = Autogen\TagType::BOOL;
-                $vKey = 'vBool';
-                $vVal = (bool)$tag->value;
-                break;
-
-            default:
-                $vType = Autogen\TagType::STRING;
-                $vKey = 'vStr';
-                $vVal = (string)$tag->value;
-                break;
-        }
-    */
+    switch (tag->_vType)
+    {
+    case TagType::BOOL:
+        jaegerTag.__set_vBool(tag->_vBool);
+        break;
+    case TagType::DOUBLE:
+        jaegerTag.__set_vDouble(tag->_vDouble);
+        break;
+    case TagType::STRING:
+        jaegerTag.__set_vStr(tag->_vStr);
+        break;
+    default:
+        break;
+    }
 
     return jaegerTag;
 }
@@ -224,6 +228,14 @@ const ::Batch* OpenTracing::Helper::jaegerizeTracer(const OpenTracing::ITracer* 
     ::Log jaegerLog;
     std::vector<::Tag> fields;
 
+    std::ostringstream ss;
+    {
+        ss << "jaegerizeLog: " << log->_fields.size();
+        Tracer::file_logger.PrintLine(ss.str());
+        ss.str("");
+        ss.clear();
+    }
+
     for (auto& iter : log->_fields)
     {
         fields.push_back(jaegerizeTag(iter));
@@ -231,5 +243,16 @@ const ::Batch* OpenTracing::Helper::jaegerizeTracer(const OpenTracing::ITracer* 
 
     jaegerLog.__set_timestamp(log->_timestamp);
     jaegerLog.__set_fields(fields);
+
+    {
+
+        ss << "\tjaegerLog.fields.size(): " << jaegerLog.fields.size();
+        for (auto& iter : jaegerLog.fields)
+        {
+            ss << "\niter.key: " << iter.key << " iter.vStr: " << iter.vStr << "\n";
+        }
+        Tracer::file_logger.PrintLine(ss.str());
+
+    }
     return jaegerLog;
 }
