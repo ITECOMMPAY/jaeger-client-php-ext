@@ -1,20 +1,40 @@
 #include <iostream>
 #include "Tag.h"
-using namespace OpenTracing;
 
-const std::string Tag::TAG_TYPE_HOST{ "host" };
-const std::string Tag::TAG_TYPE_IP{ "ip" };
+const std::string OpenTracing::Tag::TAG_TYPE_HOST{ "host" };
+const std::string OpenTracing::Tag::TAG_TYPE_IP{ "ip" };
 
-Tag::Tag(const std::string& key, const std::string& value) :
+OpenTracing::Tag::Tag(const std::string& key, const bool& value):
     _key{ key },
-    _value{ value }
+    _vType{ TagType::BOOL },
+    _vBool{ value },
+    _vDouble{},
+    _vStr{}
+{
+}
+
+OpenTracing::Tag::Tag(const std::string& key, const double& value):
+    _key{ key },
+    _vType{ TagType::DOUBLE },
+    _vBool{},
+    _vDouble{ value },
+    _vStr{}
+{
+}
+
+OpenTracing::Tag::Tag(const std::string& key, const std::string& value) :
+    _key{ key },
+    _vType{ TagType::STRING },
+    _vBool{},
+    _vDouble{},
+    _vStr{ value }
 {
 #ifdef TRACER_DEBUG
     Php::out << "        Tag::Tag addr: " << this << std::endl;
 #endif    
 }
 
-Tag::~Tag()
+OpenTracing::Tag::~Tag()
 {
 #ifdef TRACER_DEBUG
     Php::out << "        ~Tag" << std::endl;

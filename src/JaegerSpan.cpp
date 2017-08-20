@@ -3,6 +3,8 @@
 #include "Helper.h"
 using namespace OpenTracing;
 
+#include "Tracer.h"
+
 JaegerSpan::JaegerSpan(SpanContext* context, const std::string& operationName, const Php::Value& startTime) :
     _operationName{ operationName },
     _startTime{},
@@ -54,7 +56,12 @@ void JaegerSpan::addTags(Php::Parameters& tags)
                 //tags_order.push_back(std::make_pair(key, value));
                 try
                 {
-                    this->_tags.push_back(new Tag(keys[i], values[i]));
+                    if (values.get(i).isBool())
+                        this->_tags.push_back(new Tag(keys[i], values.get(i).boolValue()));
+                    else if (values.get(i).isFloat())
+                        this->_tags.push_back(new Tag(keys[i], values.get(i).floatValue()));
+                    else
+                        this->_tags.push_back(new Tag(keys[i], values.get(i).stringValue()));
                 }
                 catch (...)
                 {
@@ -84,7 +91,12 @@ void JaegerSpan::addLogs(Php::Parameters& logs)
             {
                 try
                 {
-                    tags.push_back(new Tag(keys[i], values[i]));
+                    if (values.get(i).isBool())
+                        tags.push_back(new Tag(keys[i], values.get(i).boolValue()));
+                    else if (values.get(i).isFloat())
+                        tags.push_back(new Tag(keys[i], values.get(i).floatValue()));
+                    else
+                        tags.push_back(new Tag(keys[i], values.get(i).stringValue()));
                 }
                 catch (...)
                 {
@@ -104,7 +116,12 @@ void JaegerSpan::addLogs(Php::Parameters& logs)
         Php::out << "    Log" << ++i << ": " << iter1 << " time : " << iter1->_timestamp << std::endl;
         for (auto& it : iter1->_fields)
         {
-            Php::out << "        " << it->_key << " " << it->_value << std::endl;
+            if (it->_vType == TagType::BOOL)
+                Php::out << "        " << it->_key << " " << it->_vBool << std::endl;
+            if (it->_vType == TagType::DOUBLE)
+                Php::out << "        " << it->_key << " " << it->_vDouble << std::endl;
+            if (it->_vType == TagType::STRING)
+                Php::out << "        " << it->_key << " " << it->_vStr << std::endl;
         }
     }
 #endif
