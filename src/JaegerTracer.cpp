@@ -176,8 +176,9 @@ void JaegerTracer::finishSpan(ISpan* span, const Php::Value& endTime)
 
     {
         std::ostringstream ss;
-        ss << this;
-        Tracer::file_logger.PrintLine("JaegerTracer " + ss.str() + " finishSpan");
+        ss <<
+            "JaegerTracer " << this << " finishSpan " << span;
+        Tracer::file_logger.PrintLine(ss.str());
     }
 
     JaegerSpan* jaegerSpan = dynamic_cast<JaegerSpan*>(span);
