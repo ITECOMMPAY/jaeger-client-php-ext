@@ -187,7 +187,7 @@ private:
   }
 
 public:
-  static const uint32_t defaultSize = 1024;
+  static const uint32_t defaultSize = 32768; //32 Kb
 
   /**
    * This enum specifies how a TMemoryBuffer should treat
