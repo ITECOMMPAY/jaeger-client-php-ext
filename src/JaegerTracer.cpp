@@ -282,21 +282,21 @@ void JaegerTracer::flush()
         }
         Tracer::file_logger.PrintLine("\tdata buffer size (jaegerize): " + std::to_string(data.length()));
 
-    //catch (...)
-    //{
-    //    throw Php::Exception(" emitBatch exception");
-    //}
+        //catch (...)
+        //{
+        //    throw Php::Exception(" emitBatch exception");
+        //}
 
-    /*TSocket implementation*/
-    //std::shared_ptr<TSocket> sock(new TSocket("127.0.0.1", 6832));
-    //std::shared_ptr<TBufferedTransport> trans(new TBufferedTransport(sock));
-    //std::shared_ptr<TBinaryProtocol> proto(new TBinaryProtocol(trans));
-    //std::shared_ptr<AgentConcurrentClient> agent(new AgentConcurrentClient(nullptr, proto));
-    //trans->open();
-    //const ::Batch* batch = Helper::jaegerizeTracer(this);
-    //agent->emitBatch(*batch);
-    //trans->flush();
-    //trans->close();
+        /*TSocket implementation*/
+        //std::shared_ptr<TSocket> sock(new TSocket("127.0.0.1", 6832));
+        //std::shared_ptr<TBufferedTransport> trans(new TBufferedTransport(sock));
+        //std::shared_ptr<TBinaryProtocol> proto(new TBinaryProtocol(trans));
+        //std::shared_ptr<AgentConcurrentClient> agent(new AgentConcurrentClient(nullptr, proto));
+        //trans->open();
+        //const ::Batch* batch = Helper::jaegerizeTracer(this);
+        //agent->emitBatch(*batch);
+        //trans->flush();
+        //trans->close();
     }
     else
         return;
@@ -312,13 +312,19 @@ void JaegerTracer::clearSpans()
     Php::out << "\tclearSpans()" << std::endl;
 #endif    
     Tracer::file_logger.PrintLine("\tclearSpans start");
+
+    // issue with PHP ref count, so it will be deleted after script finishes, or when worker terminates...
+    // but here is a workaround
+    for (uint32_t iter = 0; iter < _spans_ref.size(); ++iter)
+    {
+        _spans_ref[iter].~Value();
+    }
     for (auto& iter : _spans)
     {
-        //issue with PHP ref count, so it will be deleted after script finishes
-        //will be handled by PHP __destruct of a JaegerSpan
-        //delete iter.second;
+        //delete iter.second; // this is handled by _spans_ref.~Value()
         iter.second = nullptr;
     }
+
     _spans.clear();
     _activeSpans.clear();
     Tracer::file_logger.PrintLine("\tclearSpans end");

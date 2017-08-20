@@ -63,11 +63,15 @@ if($span)
             ]);
 }
 
+$span->addTags($x3);
+$span->addTags($x4);
 $publishSpan->addTags($x3);
 Tracer::addTags($x3);
 
                                     echo("\n***addLogs***\n");
-//$span->addLogs($x3);
+$span->addLogs($x3);
+$span->addLogs($x4);
+$span->addLogs($x5);
 Tracer::addLogs($x3);
 Tracer::addLogs($x4);
 $publishSpan->addLogs($x5);
