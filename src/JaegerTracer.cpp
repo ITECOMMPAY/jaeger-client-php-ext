@@ -26,7 +26,7 @@ JaegerTracer::~JaegerTracer()
     {
         std::ostringstream ss;
         ss << this;
-        Tracer::file_logger.PrintLine("~JaegerTracer " + ss.str() + " destructor");
+        Tracer::file_logger.PrintLine("\t~JaegerTracer " + ss.str() + " destructor");
     }
 #ifdef TRACER_DEBUG
     Php::out << "~JaegerTracer" << std::endl;
@@ -42,7 +42,7 @@ JaegerTracer::JaegerTracer(IReporter* reporter, ISampler* sampler) :
     {
         std::ostringstream ss;
         ss << this;
-        Tracer::file_logger.PrintLine("JaegerTracer " + ss.str() + " constructor");
+        Tracer::file_logger.PrintLine("\tJaegerTracer " + ss.str() + " constructor");
     }
 #ifdef TRACER_DEBUG
     Php::out << "JaegerTracer::JaegerTracer " << this << std::endl;
@@ -123,6 +123,7 @@ ISpan* JaegerTracer::startSpan(const std::string& operationName, const Php::Valu
     }
 
     JaegerSpan* span = new JaegerSpan(context, operationName);
+    this->_spans_ref.push_back(Php::Object(span->_name(), span));
 
     this->_spans[span->_context->_spanId] = span;
     this->_activeSpans.push_back(span->_context->_spanId);
@@ -136,8 +137,9 @@ ISpan* JaegerTracer::startSpan(const std::string& operationName, const Php::Valu
 ISpan* JaegerTracer::getCurrentSpan()
 {
     std::ostringstream ss;
-    ss << this;
-    Tracer::file_logger.PrintLine("JaegerTracer " + ss.str() + " getCurrentSpan");
+    {
+        ss << "JaegerTracer " << this << " getCurrentSpan";
+    }
 
     ISpan* span = nullptr;
 
@@ -145,6 +147,14 @@ ISpan* JaegerTracer::getCurrentSpan()
     {
         span = _spans[_activeSpans.back()];
     }
+
+    //{
+    //    ss <<
+    //        " returned: " << span <<
+    //        "\n\t\t\t\t\t\t\t\t\t\t\t\t\t_spans.size(): " << _spans.size() <<
+    //        "\n\t\t\t\t\t\t\t\t\t\t\t\t\t_activeSpans.size(): " << _activeSpans.size();
+    //}
+    //Tracer::file_logger.PrintLine(ss.str());
     return span;
 }
 
@@ -164,9 +174,11 @@ void JaegerTracer::finishSpan(ISpan* span, const Php::Value& endTime)
         }
     */
 
-    std::ostringstream ss;
-    ss << this;
-    Tracer::file_logger.PrintLine("JaegerTracer " + ss.str() + " finishSpan");
+    {
+        std::ostringstream ss;
+        ss << this;
+        Tracer::file_logger.PrintLine("JaegerTracer " + ss.str() + " finishSpan");
+    }
 
     JaegerSpan* jaegerSpan = dynamic_cast<JaegerSpan*>(span);
     if (jaegerSpan != nullptr)
@@ -231,6 +243,11 @@ void JaegerTracer::flush()
 #ifdef TRACER_DEBUG
     Php::out << "JaegerTracer::flush " << std::endl;
 #endif    
+    {
+        std::ostringstream ss;
+        ss << this;
+        Tracer::file_logger.PrintLine("JaegerTracer " + ss.str() + " flush");
+    }
 
     if (!this->_isSampled)
         return;
@@ -253,25 +270,39 @@ void JaegerTracer::flush()
         std::shared_ptr<AgentClient> agent(new AgentClient(nullptr, proto));
 
         const ::Batch* batch = Helper::jaegerizeTracer(this);
-        agent->emitBatch(*batch);
-        data = trans->getBufferAsString();
+        //try
+        {
+            agent->emitBatch(*batch);
+            data = trans->getBufferAsString();
+        }
+        //catch (...)
+        {
+            //throw Php::Exception(" emitBatch exception");
+        }
+        Tracer::file_logger.PrintLine("\tdata buffer size (jaegerize): " + std::to_string(data.length()));
 
-        /*TSocket implementation*/
-        //std::shared_ptr<TSocket> sock(new TSocket("127.0.0.1", 6832));
-        //std::shared_ptr<TBufferedTransport> trans(new TBufferedTransport(sock));
-        //std::shared_ptr<TBinaryProtocol> proto(new TBinaryProtocol(trans));
-        //std::shared_ptr<AgentConcurrentClient> agent(new AgentConcurrentClient(nullptr, proto));
-        //trans->open();
-        //const ::Batch* batch = Helper::jaegerizeTracer(this);
-        //agent->emitBatch(*batch);
-        //trans->flush();
-        //trans->close();
+    //catch (...)
+    //{
+    //    throw Php::Exception(" emitBatch exception");
+    //}
+
+    /*TSocket implementation*/
+    //std::shared_ptr<TSocket> sock(new TSocket("127.0.0.1", 6832));
+    //std::shared_ptr<TBufferedTransport> trans(new TBufferedTransport(sock));
+    //std::shared_ptr<TBinaryProtocol> proto(new TBinaryProtocol(trans));
+    //std::shared_ptr<AgentConcurrentClient> agent(new AgentConcurrentClient(nullptr, proto));
+    //trans->open();
+    //const ::Batch* batch = Helper::jaegerizeTracer(this);
+    //agent->emitBatch(*batch);
+    //trans->flush();
+    //trans->close();
     }
     else
         return;
 
     this->_reporter->flush(data);
     this->clearSpans();
+    Tracer::file_logger.PrintLine("\tflush end");
 }
 
 void JaegerTracer::clearSpans()
@@ -279,7 +310,7 @@ void JaegerTracer::clearSpans()
 #ifdef TRACER_DEBUG
     Php::out << "\tclearSpans()" << std::endl;
 #endif    
-    Tracer::file_logger.PrintLine("clearSpans start");
+    Tracer::file_logger.PrintLine("\tclearSpans start");
     for (auto& iter : _spans)
     {
         //issue with PHP ref count, so it will be deleted after script finishes
@@ -289,7 +320,7 @@ void JaegerTracer::clearSpans()
     }
     _spans.clear();
     _activeSpans.clear();
-    Tracer::file_logger.PrintLine("clearSpans end");
+    Tracer::file_logger.PrintLine("\tclearSpans end");
 
 }
 

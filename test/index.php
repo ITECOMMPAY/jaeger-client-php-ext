@@ -72,11 +72,11 @@ Tracer::addLogs($x3);
 Tracer::addLogs($x4);
 $publishSpan->addLogs($x5);
 
- //                                   echo("\n***inject***\n");
- //$key = "32adb6254e9f7b89a65b79145cf5d0e0a945e9ba-666c4a71a461eb4f02d3b6788d4ab89944da2d9f";
- //var_dump($key);
- //Tracer::inject($publishSpan,'format - not used',$key);
- //var_dump($key);
+                                    echo("\n***inject***\n");
+ $key = "32adb6254e9f7b89a65b79145cf5d0e0a945e9ba-666c4a71a461eb4f02d3b6788d4ab89944da2d9f";
+ var_dump($key);
+ Tracer::inject($publishSpan,'format - not used',$key);
+ var_dump($key);
 
  //$key_parse = "32adb6254e9f7b89a65b79145cf5d0e0a945e9ba-666c4a71a461eb4f02d3b6788d4ab89944da2d9f|142573106:3223346672:2865357473:1";
  //$context = Tracer::extract('test',$key_parse);

@@ -175,8 +175,8 @@ void OpenTracing::Printer::PrintLine(const std::string& line, bool printTime)
                 strftime(strDate, 51, "%Y-%m-%d %H:%M:%S", &lTimeinfo);
                 _logFile <<
                     std::string(strDate) <<
-                    //" " << 
-                    //this << 
+                    " " << 
+                    this << 
                     "\t\t";
             }
             _logFile << line << std::endl;

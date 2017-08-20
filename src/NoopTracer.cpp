@@ -4,33 +4,28 @@
 #include "Tracer.h"
 using namespace OpenTracing;
 
-//extern Printer* file_logger;
-
 NoopTracer::~NoopTracer()
 {
-    //if (file_logger != nullptr)
-    {
-        std::ostringstream ss;
-        ss << this;
-        Tracer::file_logger.PrintLine("    ~NoopTracer addr: " + ss.str());
-    }
 #ifdef TRACER_DEBUG
     Php::out << "NoopTracer::~NoopTracer addr: " << this << std::endl;
 #endif
+    {
+        std::ostringstream ss;
+        ss << this;
+        Tracer::file_logger.PrintLine("\t~NoopTracer " + ss.str() + " destructor");
+    }
 }
 
 NoopTracer::NoopTracer()
 {
-    //if (file_logger != nullptr)
-    {
-        std::ostringstream ss;
-        ss << this;
-        Tracer::file_logger.PrintLine("    NoopTracer addr: " + ss.str());
-    }
-
 #ifdef TRACER_DEBUG
     Php::out << "NoopTracer::NoopTracer" << std::endl;
 #endif
+    {
+        std::ostringstream ss;
+        ss << this;
+        Tracer::file_logger.PrintLine("\tNoopTracer " + ss.str() + " constructor");
+    }
 }
 
 void NoopTracer::init(const std::string& serviceName)
@@ -38,6 +33,11 @@ void NoopTracer::init(const std::string& serviceName)
 #ifdef TRACER_DEBUG
     Php::out << "NoopTracer::init" << std::endl;
 #endif
+    {
+        std::ostringstream ss;
+        ss << this;
+        Tracer::file_logger.PrintLine("NoopTracer " + ss.str() + " init, serviceName = " + serviceName);
+    }
 }
 
 ISpan* NoopTracer::startSpan(const std::string& operationName, const Php::Value& options)
@@ -46,7 +46,7 @@ ISpan* NoopTracer::startSpan(const std::string& operationName, const Php::Value&
     if (options.isNull())
     {
         Php::out << "options is null" << std::endl;
-}
+    }
     else
     {
         Php::out << "options is NOT null" << std::endl;
@@ -54,12 +54,22 @@ ISpan* NoopTracer::startSpan(const std::string& operationName, const Php::Value&
     }
     Php::out << "NoopTracer::startSpan, operationName = " << operationName << std::endl;
 #endif
+    {
+        std::ostringstream ss;
+        ss << this;
+        Tracer::file_logger.PrintLine("NoopTracer " + ss.str() + " startSpan, operationName = " + operationName);
+    }
     return new NoopSpan();
 }
 
 ISpan* NoopTracer::getCurrentSpan()
 {
-    Tracer::file_logger.PrintLine("NoopTracer getCurrentSpan");
+    {
+        std::ostringstream ss;
+        ss << this;
+        Tracer::file_logger.PrintLine("NoopTracer " + ss.str() + " getCurrentSpan");
+    }
+
     return nullptr;//new NoopSpan();
 }
 
@@ -67,21 +77,40 @@ void NoopTracer::finishSpan(ISpan* span, const Php::Value& endTime)
 {
 #ifdef TRACER_DEBUG
     Php::out << "NoopTracer::finishSpan " << span->_name() << std::endl;
-#endif    
+#endif
+    {
+        std::ostringstream ss;
+        ss << this;
+        Tracer::file_logger.PrintLine("NoopTracer " + ss.str() + " finishSpan");
+    }
 }
 
 void NoopTracer::inject(const Php::Value& context, const std::string& format, std::string& carrier)
 {
+    {
+        std::ostringstream ss;
+        ss << this;
+        Tracer::file_logger.PrintLine("NoopTracer " + ss.str() + " inject, carrier = " + carrier);
+    }
 }
 
 SpanContext* NoopTracer::extract(const std::string& format, const std::string& carier) const
 {
-    //return new SpanContext(0, 0, 0, 0);
+    {
+        std::ostringstream ss;
+        ss << this;
+        Tracer::file_logger.PrintLine("NoopTracer " + ss.str() + " inject, carier = " + carier);
+    }
     return nullptr;
 }
 
 void NoopTracer::flush()
 {
+    {
+        std::ostringstream ss;
+        ss << this;
+        Tracer::file_logger.PrintLine("NoopTracer " + ss.str() + " flush");
+    }
 }
 
 const char* NoopTracer::_name() const

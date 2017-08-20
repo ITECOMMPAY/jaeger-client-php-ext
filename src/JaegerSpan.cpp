@@ -88,9 +88,8 @@ void JaegerSpan::addLogs(Php::Parameters& logs)
                 }
                 catch (...)
                 {
-                    throw Php::Exception("  ::addTags - wrong parameters, check it to be a [string=>string,]");
+                    throw Php::Exception("  ::addLogs - wrong parameters, check it to be a [string=>string,]");
                 }
-
             }
         }
 

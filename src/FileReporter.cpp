@@ -23,7 +23,7 @@ FileReporter::FileReporter(const Php::Value& params)
         $this->options = array_merge($defaults, $options);
 
         if (!is_dir($this->options['path'])) {
-            throw new \Exception('Directory doesn\'t not exist');
+            throw Php::Exception("Directory doesn\'t not exist");
         }
     */
 }

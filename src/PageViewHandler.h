@@ -8,7 +8,6 @@ void onStartup();
 void onRequest();
 void onIdle();
 void onShutDown();
-void GlobalInit();
 
 #endif /* PAGEVIEWHANDLER_H */
 

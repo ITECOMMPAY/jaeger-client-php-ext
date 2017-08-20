@@ -8,7 +8,7 @@ ITracer::~ITracer()
     {
         std::ostringstream ss;
         ss << this;
-        Tracer::file_logger.PrintLine("    ~ITracer addr: " + ss.str());
+        Tracer::file_logger.PrintLine("\t\t~ITracer addr: " + ss.str());
     }
 #ifdef TRACER_DEBUG
     Php::out << "    ~ITracer addr: " << this << std::endl;
