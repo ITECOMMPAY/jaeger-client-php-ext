@@ -10,33 +10,6 @@
 #include <ostream>
 
 
-int _kTagTypeValues[] = {
-  TagType::STRING,
-  TagType::DOUBLE,
-  TagType::BOOL,
-  TagType::LONG,
-  TagType::BINARY
-};
-const char* _kTagTypeNames[] = {
-  "STRING",
-  "DOUBLE",
-  "BOOL",
-  "LONG",
-  "BINARY"
-};
-const std::map<int, const char*> _TagType_VALUES_TO_NAMES(::apache::thrift::TEnumIterator(5, _kTagTypeValues, _kTagTypeNames), ::apache::thrift::TEnumIterator(-1, NULL, NULL));
-
-int _kSpanRefTypeValues[] = {
-  SpanRefType::CHILD_OF,
-  SpanRefType::FOLLOWS_FROM
-};
-const char* _kSpanRefTypeNames[] = {
-  "CHILD_OF",
-  "FOLLOWS_FROM"
-};
-const std::map<int, const char*> _SpanRefType_VALUES_TO_NAMES(::apache::thrift::TEnumIterator(2, _kSpanRefTypeValues, _kSpanRefTypeNames), ::apache::thrift::TEnumIterator(-1, NULL, NULL));
-
-
 Tag::~Tag() noexcept {
 }
 
@@ -83,8 +56,6 @@ uint32_t Tag::read(::apache::thrift::protocol::TProtocol* iprot) {
   int16_t fid;
 
   xfer += iprot->readStructBegin(fname);
-
-  using ::apache::thrift::protocol::TProtocolException;
 
   while (true)
   {
@@ -261,8 +232,6 @@ uint32_t Log::read(::apache::thrift::protocol::TProtocol* iprot) {
 
   xfer += iprot->readStructBegin(fname);
 
-  using ::apache::thrift::protocol::TProtocolException;
-
   while (true)
   {
     xfer += iprot->readFieldBegin(fname, ftype, fid);
@@ -380,8 +349,6 @@ uint32_t SpanRef::read(::apache::thrift::protocol::TProtocol* iprot) {
   int16_t fid;
 
   xfer += iprot->readStructBegin(fname);
-
-  using ::apache::thrift::protocol::TProtocolException;
 
   while (true)
   {
@@ -541,8 +508,6 @@ uint32_t Span::read(::apache::thrift::protocol::TProtocol* iprot) {
   int16_t fid;
 
   xfer += iprot->readStructBegin(fname);
-
-  using ::apache::thrift::protocol::TProtocolException;
 
   while (true)
   {
@@ -830,8 +795,6 @@ uint32_t Process::read(::apache::thrift::protocol::TProtocol* iprot) {
 
   xfer += iprot->readStructBegin(fname);
 
-  using ::apache::thrift::protocol::TProtocolException;
-
   while (true)
   {
     xfer += iprot->readFieldBegin(fname, ftype, fid);
@@ -946,8 +909,6 @@ uint32_t Batch::read(::apache::thrift::protocol::TProtocol* iprot) {
   int16_t fid;
 
   xfer += iprot->readStructBegin(fname);
-
-  using ::apache::thrift::protocol::TProtocolException;
 
   while (true)
   {

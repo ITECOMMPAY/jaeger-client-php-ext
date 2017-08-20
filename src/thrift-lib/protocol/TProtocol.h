@@ -26,7 +26,6 @@
 #endif
 
 #include "thrift-lib/transport/TTransport.h"
-#include "thrift-lib/protocol/TProtocolException.h"
 
 #include <memory>
 
@@ -276,107 +275,86 @@ public:
   uint32_t writeMessageBegin(const std::string& name,
                              const TMessageType messageType,
                              const int32_t seqid) {
-    T_VIRTUAL_CALL();
     return writeMessageBegin_virt(name, messageType, seqid);
   }
 
   uint32_t writeMessageEnd() {
-    T_VIRTUAL_CALL();
     return writeMessageEnd_virt();
   }
 
   uint32_t writeStructBegin(const char* name) {
-    T_VIRTUAL_CALL();
     return writeStructBegin_virt(name);
   }
 
   uint32_t writeStructEnd() {
-    T_VIRTUAL_CALL();
     return writeStructEnd_virt();
   }
 
   uint32_t writeFieldBegin(const char* name, const TType fieldType, const int16_t fieldId) {
-    T_VIRTUAL_CALL();
     return writeFieldBegin_virt(name, fieldType, fieldId);
   }
 
   uint32_t writeFieldEnd() {
-    T_VIRTUAL_CALL();
     return writeFieldEnd_virt();
   }
 
   uint32_t writeFieldStop() {
-    T_VIRTUAL_CALL();
     return writeFieldStop_virt();
   }
 
   uint32_t writeMapBegin(const TType keyType, const TType valType, const uint32_t size) {
-    T_VIRTUAL_CALL();
     return writeMapBegin_virt(keyType, valType, size);
   }
 
   uint32_t writeMapEnd() {
-    T_VIRTUAL_CALL();
     return writeMapEnd_virt();
   }
 
   uint32_t writeListBegin(const TType elemType, const uint32_t size) {
-    T_VIRTUAL_CALL();
     return writeListBegin_virt(elemType, size);
   }
 
   uint32_t writeListEnd() {
-    T_VIRTUAL_CALL();
     return writeListEnd_virt();
   }
 
   uint32_t writeSetBegin(const TType elemType, const uint32_t size) {
-    T_VIRTUAL_CALL();
     return writeSetBegin_virt(elemType, size);
   }
 
   uint32_t writeSetEnd() {
-    T_VIRTUAL_CALL();
     return writeSetEnd_virt();
   }
 
   uint32_t writeBool(const bool value) {
-    T_VIRTUAL_CALL();
     return writeBool_virt(value);
   }
 
   uint32_t writeByte(const int8_t byte) {
-    T_VIRTUAL_CALL();
     return writeByte_virt(byte);
   }
 
   uint32_t writeI16(const int16_t i16) {
-    T_VIRTUAL_CALL();
     return writeI16_virt(i16);
   }
 
   uint32_t writeI32(const int32_t i32) {
-    T_VIRTUAL_CALL();
     return writeI32_virt(i32);
   }
 
   uint32_t writeI64(const int64_t i64) {
-    T_VIRTUAL_CALL();
     return writeI64_virt(i64);
   }
 
   uint32_t writeDouble(const double dub) {
-    T_VIRTUAL_CALL();
     return writeDouble_virt(dub);
   }
 
   uint32_t writeString(const std::string& str) {
-    T_VIRTUAL_CALL();
     return writeString_virt(str);
   }
 
   uint32_t writeBinary(const std::string& str) {
-    T_VIRTUAL_CALL();
     return writeBinary_virt(str);
   }
 
@@ -429,102 +407,82 @@ public:
   virtual uint32_t readBinary_virt(std::string& str) = 0;
 
   uint32_t readMessageBegin(std::string& name, TMessageType& messageType, int32_t& seqid) {
-    T_VIRTUAL_CALL();
     return readMessageBegin_virt(name, messageType, seqid);
   }
 
   uint32_t readMessageEnd() {
-    T_VIRTUAL_CALL();
     return readMessageEnd_virt();
   }
 
   uint32_t readStructBegin(std::string& name) {
-    T_VIRTUAL_CALL();
     return readStructBegin_virt(name);
   }
 
   uint32_t readStructEnd() {
-    T_VIRTUAL_CALL();
     return readStructEnd_virt();
   }
 
   uint32_t readFieldBegin(std::string& name, TType& fieldType, int16_t& fieldId) {
-    T_VIRTUAL_CALL();
     return readFieldBegin_virt(name, fieldType, fieldId);
   }
 
   uint32_t readFieldEnd() {
-    T_VIRTUAL_CALL();
     return readFieldEnd_virt();
   }
 
   uint32_t readMapBegin(TType& keyType, TType& valType, uint32_t& size) {
-    T_VIRTUAL_CALL();
     return readMapBegin_virt(keyType, valType, size);
   }
 
   uint32_t readMapEnd() {
-    T_VIRTUAL_CALL();
     return readMapEnd_virt();
   }
 
   uint32_t readListBegin(TType& elemType, uint32_t& size) {
-    T_VIRTUAL_CALL();
     return readListBegin_virt(elemType, size);
   }
 
   uint32_t readListEnd() {
-    T_VIRTUAL_CALL();
     return readListEnd_virt();
   }
 
   uint32_t readSetBegin(TType& elemType, uint32_t& size) {
-    T_VIRTUAL_CALL();
     return readSetBegin_virt(elemType, size);
   }
 
   uint32_t readSetEnd() {
-    T_VIRTUAL_CALL();
     return readSetEnd_virt();
   }
 
   uint32_t readBool(bool& value) {
-    T_VIRTUAL_CALL();
     return readBool_virt(value);
   }
 
   uint32_t readByte(int8_t& byte) {
-    T_VIRTUAL_CALL();
     return readByte_virt(byte);
   }
 
   uint32_t readI16(int16_t& i16) {
-    T_VIRTUAL_CALL();
     return readI16_virt(i16);
   }
 
   uint32_t readI32(int32_t& i32) {
-    T_VIRTUAL_CALL();
     return readI32_virt(i32);
   }
 
   uint32_t readI64(int64_t& i64) {
-    T_VIRTUAL_CALL();
     return readI64_virt(i64);
   }
 
   uint32_t readDouble(double& dub) {
-    T_VIRTUAL_CALL();
     return readDouble_virt(dub);
   }
 
   uint32_t readString(std::string& str) {
-    T_VIRTUAL_CALL();
     return readString_virt(str);
   }
 
   uint32_t readBinary(std::string& str) {
-    T_VIRTUAL_CALL();
     return readBinary_virt(str);
   }
 
@@ -534,7 +492,6 @@ public:
    * to work with std::vector<bool>.
    */
   uint32_t readBool(std::vector<bool>::reference value) {
-    T_VIRTUAL_CALL();
     return readBool_virt(value);
   }
 
@@ -542,7 +499,6 @@ public:
    * Method to arbitrarily skip over data.
    */
   uint32_t skip(TType type) {
-    T_VIRTUAL_CALL();
     return skip_virt(type);
   }
   virtual uint32_t skip_virt(TType type);
@@ -558,14 +514,14 @@ public:
   // can be used concurrently for both input and output.
   void incrementInputRecursionDepth() {
     if (recursion_limit_ < ++input_recursion_depth_) {
-      throw TProtocolException(TProtocolException::DEPTH_LIMIT);
+        throw Php::Exception("TProtocolException::DEPTH_LIMIT: TProtocolException: (Invalid exception type)");
     }
   }
   void decrementInputRecursionDepth() { --input_recursion_depth_; }
 
   void incrementOutputRecursionDepth() {
     if (recursion_limit_ < ++output_recursion_depth_) {
-      throw TProtocolException(TProtocolException::DEPTH_LIMIT);
+        throw Php::Exception("TProtocolException::DEPTH_LIMIT: TProtocolException: (Invalid exception type)");
     }
   }
   void decrementOutputRecursionDepth() { --output_recursion_depth_; }
@@ -586,31 +542,6 @@ private:
   uint32_t output_recursion_depth_;
   uint32_t recursion_limit_;
 };
-
-/**
- * Constructs input and output protocol objects given transports.
- */
-class TProtocolFactory {
-public:
-  TProtocolFactory() {}
-
-  virtual ~TProtocolFactory();
-
-  virtual std::shared_ptr<TProtocol> getProtocol(std::shared_ptr<TTransport> trans) = 0;
-  virtual std::shared_ptr<TProtocol> getProtocol(std::shared_ptr<TTransport> inTrans,
-						   std::shared_ptr<TTransport> outTrans) {
-    (void)outTrans;
-    return getProtocol(inTrans);
-  }
-};
-
-/**
- * Dummy protocol class.
- *
- * This class does nothing, and should never be instantiated.
- * It is used only by the generator code.
- */
-class TDummyProtocol : public TProtocol {};
 
 // On most systems, this will be a bit faster than TNetworkBigEndian
 struct TNetworkLittleEndian

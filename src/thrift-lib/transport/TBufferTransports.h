@@ -167,7 +167,7 @@ private:
       assert(owner);
       buf = (uint8_t*)std::malloc(size);
       if (buf == NULL) {
-        throw std::bad_alloc();
+          throw Php::Exception("std::bad_alloc()");
       }
     }
 
@@ -224,37 +224,6 @@ public:
    * @param sz  The initial size of the buffer.
    */
   TMemoryBuffer(uint32_t sz) { initCommon(NULL, sz, true, 0); }
-
-  ///**
-  // * Construct a TMemoryBuffer with buf as its initial contents.
-  // *
-  // * @param buf    The initial contents of the buffer.
-  // *               Note that, while buf is a non-const pointer,
-  // *               TMemoryBuffer will not write to it if policy == OBSERVE,
-  // *               so it is safe to const_cast<uint8_t*>(whatever).
-  // * @param sz     The size of @c buf.
-  // * @param policy See @link MemoryPolicy @endlink .
-  // */
-  //TMemoryBuffer(uint8_t* buf, uint32_t sz, MemoryPolicy policy = OBSERVE) {
-  //  if (buf == NULL && sz != 0) {
-  //    throw TTransportException(TTransportException::BAD_ARGS,
-  //                              "TMemoryBuffer given null buffer with non-zero size.");
-  //  }
-
-  //  switch (policy) {
-  //  case OBSERVE:
-  //  case TAKE_OWNERSHIP:
-  //    initCommon(buf, sz, policy == TAKE_OWNERSHIP, sz);
-  //    break;
-  //  case COPY:
-  //    initCommon(NULL, sz, true, 0);
-  //    this->write(buf, sz);
-  //    break;
-  //  default:
-  //    throw TTransportException(TTransportException::BAD_ARGS,
-  //                              "Invalid MemoryPolicy for TMemoryBuffer");
-  //  }
-  //}
 
   ~TMemoryBuffer() {
     if (owner_) {

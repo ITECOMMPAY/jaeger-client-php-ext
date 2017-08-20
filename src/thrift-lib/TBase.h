@@ -20,7 +20,6 @@
 #ifndef _THRIFT_TBASE_H_
 #define _THRIFT_TBASE_H_ 1
 
-#include "thrift-lib/Thrift.h"
 #include "thrift-lib/protocol/TProtocol.h"
 
 namespace apache {

@@ -69,12 +69,52 @@ uint32_t TMemoryBuffer::readAppendToString(std::string& str, uint32_t len) {
   return give;
 }
 
+void TMemoryBuffer::ensureCanWrite(uint32_t len) {
+    // Check available space
+    uint32_t avail = available_write();
+    if (len <= avail) {
+        return;
+    }
+
+    if (!owner_) {
+        throw Php::Exception("TTransportException: Unknown transport exception: Insufficient space in external MemoryBuffer");
+    }
+
+    // Grow the buffer as necessary.
+    uint32_t new_size = bufferSize_;
+    while (len > avail) {
+        new_size = new_size > 0 ? new_size * 2 : 1;
+        avail = available_write() + (new_size - bufferSize_);
+    }
+
+    // Allocate into a new pointer so we don't bork ours if it fails.
+    uint8_t* new_buffer = static_cast<uint8_t*>(std::realloc(buffer_, new_size));
+    if (new_buffer == NULL) {
+        throw Php::Exception("std::bad_alloc()");
+    }
+
+    rBase_ = new_buffer + (rBase_ - buffer_);
+    rBound_ = new_buffer + (rBound_ - buffer_);
+    wBase_ = new_buffer + (wBase_ - buffer_);
+    wBound_ = new_buffer + new_size;
+    buffer_ = new_buffer;
+    bufferSize_ = new_size;
+}
+
 void TMemoryBuffer::writeSlow(const uint8_t* buf, uint32_t len) {
   ensureCanWrite(len);
 
   // Copy into the buffer and increment wBase_.
   memcpy(wBase_, buf, len);
   wBase_ += len;
+}
+
+void TMemoryBuffer::wroteBytes(uint32_t len) {
+    uint32_t avail = available_write();
+    if (len > avail) {
+        throw Php::Exception("TTransportException: Unknown transport exception: Client wrote more bytes than size of buffer.");
+    }
+    wBase_ += len;
 }
 
 const uint8_t* TMemoryBuffer::borrowSlow(uint8_t* buf, uint32_t* len) {

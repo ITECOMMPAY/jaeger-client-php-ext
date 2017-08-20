@@ -139,9 +139,7 @@ SOURCES				=	\
 						src/thrift-gen/Agent.cpp \
 						src/thrift-gen/jaeger_types.cpp \
 						src/thrift-lib/protocol/TProtocol.cpp \
-						src/thrift-lib/transport/TBufferTransports.cpp \
-						src/thrift-lib/transport/TTransportException.cpp \
-						src/thrift-lib/TOutput.cpp 
+						src/thrift-lib/transport/TBufferTransports.cpp
 OBJECTS				=	$(SOURCES:%.cpp=%.o)
 
 

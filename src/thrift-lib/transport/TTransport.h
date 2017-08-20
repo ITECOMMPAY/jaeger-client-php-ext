@@ -20,8 +20,8 @@
 #ifndef _THRIFT_TRANSPORT_TTRANSPORT_H_
 #define _THRIFT_TRANSPORT_TTRANSPORT_H_ 1
 
-#include "thrift-lib/Thrift.h"
-#include "thrift-lib/transport/TTransportException.h"
+#include <phpcpp.h>
+#include <cassert>
 #include <string>
 
 namespace apache {
@@ -39,7 +39,7 @@ uint32_t readAll(Transport_& trans, uint8_t* buf, uint32_t len) {
   while (have < len) {
     get = trans.read(buf + have, len - have);
     if (get <= 0) {
-      throw TTransportException(TTransportException::END_OF_FILE, "No more data to read.");
+        throw Php::Exception("TTransportException::END_OF_FILE: TTransportException: End of file - No more data to read.");
     }
     have += get;
   }
@@ -76,19 +76,17 @@ public:
 
   /**
    * Opens the transport for communications.
-   *
    * @return bool Whether the transport was successfully opened
-   * @throws TTransportException if opening failed
    */
   virtual void open() {
-    throw TTransportException(TTransportException::NOT_OPEN, "Cannot open base TTransport.");
+      throw Php::Exception("TTransportException::NOT_OPEN: TTransportException: Transport not open - Cannot open base TTransport.");
   }
 
   /**
    * Closes the transport.
    */
   virtual void close() {
-    throw TTransportException(TTransportException::NOT_OPEN, "Cannot close base TTransport.");
+      throw Php::Exception("TTransportException::NOT_OPEN: TTransportException: Transport not open - Cannot close base TTransport.");
   }
 
   /**
@@ -97,14 +95,12 @@ public:
    * @param buf  Reference to the location to write the data
    * @param len  How many bytes to read
    * @return How many bytes were actually read
-   * @throws TTransportException If an error occurs
    */
   uint32_t read(uint8_t* buf, uint32_t len) {
-    T_VIRTUAL_CALL();
     return read_virt(buf, len);
   }
   virtual uint32_t read_virt(uint8_t* /* buf */, uint32_t /* len */) {
-    throw TTransportException(TTransportException::NOT_OPEN, "Base TTransport cannot read.");
+      throw Php::Exception("TTransportException::NOT_OPEN: TTransportException: Transport not open - Base TTransport cannot read.");
   }
 
   /**
@@ -113,10 +109,8 @@ public:
    * @param s     Reference to location for read data
    * @param len   How many bytes to read
    * @return How many bytes read, which must be equal to size
-   * @throws TTransportException If insufficient data was read
    */
   uint32_t readAll(uint8_t* buf, uint32_t len) {
-    T_VIRTUAL_CALL();
     return readAll_virt(buf, len);
   }
   virtual uint32_t readAll_virt(uint8_t* buf, uint32_t len) {
@@ -145,14 +139,12 @@ public:
    * discarded.
    *
    * @param buf  The data to write out
-   * @throws TTransportException if an error occurs
    */
   void write(const uint8_t* buf, uint32_t len) {
-    T_VIRTUAL_CALL();
     write_virt(buf, len);
   }
   virtual void write_virt(const uint8_t* /* buf */, uint32_t /* len */) {
-    throw TTransportException(TTransportException::NOT_OPEN, "Base TTransport cannot write.");
+      throw Php::Exception("TTransportException::NOT_OPEN: TTransportException: Transport not open - Base TTransport cannot write.");
   }
 
   /**
@@ -170,8 +162,6 @@ public:
   /**
    * Flushes any pending data to be written. Typically used with buffered
    * transport mechanisms.
-   *
-   * @throws TTransportException if an error occurs
    */
   virtual void flush() {
     // default behaviour is to do nothing
@@ -202,10 +192,8 @@ public:
    * @return If the borrow succeeds, return a pointer to the borrowed data.
    *         This might be equal to \c buf, or it might be a pointer into
    *         the transport's internal buffers.
-   * @throws TTransportException if an error occurs
    */
   const uint8_t* borrow(uint8_t* buf, uint32_t* len) {
-    T_VIRTUAL_CALL();
     return borrow_virt(buf, len);
   }
   virtual const uint8_t* borrow_virt(uint8_t* /* buf */, uint32_t* /* len */) { return NULL; }
@@ -217,14 +205,12 @@ public:
    * consume, or that would require a buffer to dump the consumed data?
    *
    * @param len  How many bytes to consume
-   * @throws TTransportException If an error occurs
    */
   void consume(uint32_t len) {
-    T_VIRTUAL_CALL();
     consume_virt(len);
   }
   virtual void consume_virt(uint32_t /* len */) {
-    throw TTransportException(TTransportException::NOT_OPEN, "Base TTransport cannot consume.");
+      throw Php::Exception("TTransportException::NOT_OPEN: TTransportException: Transport not open - Base TTransport cannot consume.");
   }
 
   /**

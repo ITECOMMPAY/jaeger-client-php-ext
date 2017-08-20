@@ -90,37 +90,19 @@
     <ClInclude Include="src\thrift-lib\TBase.h">
       <Filter>src\thrift-lib</Filter>
     </ClInclude>
-    <ClInclude Include="src\thrift-lib\Thrift.h">
-      <Filter>src\thrift-lib</Filter>
-    </ClInclude>
-    <ClInclude Include="src\thrift-lib\TLogging.h">
-      <Filter>src\thrift-lib</Filter>
-    </ClInclude>
-    <ClInclude Include="src\thrift-lib\TOutput.h">
-      <Filter>src\thrift-lib</Filter>
-    </ClInclude>
     <ClInclude Include="src\thrift-lib\protocol\TCompactProtocol.h">
       <Filter>src\thrift-lib\protocol</Filter>
     </ClInclude>
     <ClInclude Include="src\thrift-lib\protocol\TProtocol.h">
       <Filter>src\thrift-lib\protocol</Filter>
     </ClInclude>
-    <ClInclude Include="src\thrift-lib\protocol\TProtocolException.h">
-      <Filter>src\thrift-lib\protocol</Filter>
-    </ClInclude>
     <ClInclude Include="src\thrift-lib\protocol\TVirtualProtocol.h">
       <Filter>src\thrift-lib\protocol</Filter>
-    </ClInclude>
-    <ClInclude Include="src\thrift-lib\transport\PlatformSocket.h">
-      <Filter>src\thrift-lib\transport</Filter>
     </ClInclude>
     <ClInclude Include="src\thrift-lib\transport\TBufferTransports.h">
       <Filter>src\thrift-lib\transport</Filter>
     </ClInclude>
     <ClInclude Include="src\thrift-lib\transport\TTransport.h">
-      <Filter>src\thrift-lib\transport</Filter>
-    </ClInclude>
-    <ClInclude Include="src\thrift-lib\transport\TTransportException.h">
       <Filter>src\thrift-lib\transport</Filter>
     </ClInclude>
     <ClInclude Include="src\thrift-lib\transport\TVirtualTransport.h">
@@ -197,16 +179,10 @@
     <ClCompile Include="src\SpanContext.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\thrift-lib\TOutput.cpp">
-      <Filter>src\thrift-lib</Filter>
-    </ClCompile>
     <ClCompile Include="src\thrift-lib\protocol\TProtocol.cpp">
       <Filter>src\thrift-lib\protocol</Filter>
     </ClCompile>
     <ClCompile Include="src\thrift-lib\transport\TBufferTransports.cpp">
-      <Filter>src\thrift-lib\transport</Filter>
-    </ClCompile>
-    <ClCompile Include="src\thrift-lib\transport\TTransportException.cpp">
       <Filter>src\thrift-lib\transport</Filter>
     </ClCompile>
     <ClCompile Include="src\Printer.cpp">
