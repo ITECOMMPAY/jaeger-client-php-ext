@@ -16,5 +16,5 @@ OpenTracing::Log::~Log()
 
 #ifdef TRACER_DEBUG
     Php::out << "    ~Log" << std::endl;
-#endif    
+#endif
 }

@@ -140,7 +140,7 @@ Php::Value Tracer::startSpan(Php::Parameters& params)
 {
 #ifdef TRACER_DEBUG
     Php::out << "Tracer::startSpan" << std::endl;
-#endif    
+#endif
 
     std::string operationName = params[0];
     Php::Value options = nullptr;

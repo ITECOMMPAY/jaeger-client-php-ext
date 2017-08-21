@@ -10,7 +10,7 @@ OpenTracing::SpanContext::SpanContext(const int64_t& traceId, const int64_t& spa
 {
 #ifdef TRACER_DEBUG
     Php::out << "    SpanContext: " << _traceId << " " << _spanId << " " << _parentId << " " << _flags << " " << std::endl;
-#endif    
+#endif
 }
 
 const char* OpenTracing::SpanContext::_name() const

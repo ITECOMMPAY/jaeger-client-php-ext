@@ -9,9 +9,9 @@ OpenTracing::Process::Process(const std::string& serviceName) :
 {
 #ifdef TRACER_DEBUG
     Php::out << "    Process::Process addr: " << this << std::endl;
-#endif    
+#endif
 
-    _tags.push_back(new Tag(Tag::TAG_TYPE_HOST, Helper::getHostName()));    
+    _tags.push_back(new Tag(Tag::TAG_TYPE_HOST, Helper::getHostName()));
     _tags.push_back(new Tag(Tag::TAG_TYPE_IP, Helper::getCurrentIp()));
 }
 
@@ -23,5 +23,5 @@ OpenTracing::Process::~Process()
 
 #ifdef TRACER_DEBUG
     Php::out << "    ~Process" << std::endl;
-#endif    
+#endif
 }

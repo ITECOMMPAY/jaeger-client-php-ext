@@ -6,14 +6,14 @@ FileReporter::~FileReporter()
 {
 #ifdef TRACER_DEBUG
     Php::out << "~FileReporter" << std::endl;
-#endif    
+#endif
 }
 
 FileReporter::FileReporter(const Php::Value& params)
 {
 #ifdef TRACER_DEBUG
     Php::out << "FileReporter::FileReporter" << std::endl;
-#endif    
+#endif
     /*
         $defaults = [
             'path' => 'tmp' . DIRECTORY_SEPARATOR,
@@ -32,7 +32,7 @@ void FileReporter::flush(const std::string& data) const
 {
 #ifdef TRACER_DEBUG
     Php::out << "    FileReporter::flush addr: " << std::endl;
-#endif    
+#endif
     /*
         file_put_contents(
             $this->options['path'] . DIRECTORY_SEPARATOR . $this->options['file'],

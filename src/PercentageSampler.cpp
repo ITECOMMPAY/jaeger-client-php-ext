@@ -7,7 +7,7 @@ PercentageSampler::~PercentageSampler()
 {
 #ifdef TRACER_DEBUG
     Php::out << "~PercentageSampler " << this << std::endl;
-#endif    
+#endif
 }
 
 PercentageSampler::PercentageSampler(const Php::Value& params) :
@@ -15,7 +15,7 @@ PercentageSampler::PercentageSampler(const Php::Value& params) :
 {
 #ifdef TRACER_DEBUG
     Php::out << "PercentageSampler::PercentageSampler" << std::endl;
-#endif    
+#endif
     if (!params.isNull())
     {
         _value = params["percents"];
@@ -29,6 +29,6 @@ bool PercentageSampler::isSampled()
 {
 #ifdef TRACER_DEBUG
     Php::out << "    PercentageSampler::isSampled" << std::endl;
-#endif    
+#endif
     return Helper::genPercentage() < this->_value;
 }

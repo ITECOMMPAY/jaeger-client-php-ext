@@ -30,7 +30,7 @@ JaegerTracer::~JaegerTracer()
     }
 #ifdef TRACER_DEBUG
     Php::out << "~JaegerTracer" << std::endl;
-#endif    
+#endif
 }
 
 JaegerTracer::JaegerTracer(IReporter* reporter, ISampler* sampler) :
@@ -46,7 +46,7 @@ JaegerTracer::JaegerTracer(IReporter* reporter, ISampler* sampler) :
     }
 #ifdef TRACER_DEBUG
     Php::out << "JaegerTracer::JaegerTracer " << this << std::endl;
-#endif    
+#endif
 }
 
 void JaegerTracer::init(const std::string& serviceName)
@@ -82,7 +82,7 @@ ISpan* JaegerTracer::startSpan(const std::string& operationName, const Php::Valu
         {
 #ifdef TRACER_DEBUG
             Php::out << "-received SpanContext" << std::endl;
-#endif    
+#endif
             paramContext = (SpanContext*)parent.implementation();
         }
         else if (parent.instanceOf("ISpan"))
@@ -90,7 +90,7 @@ ISpan* JaegerTracer::startSpan(const std::string& operationName, const Php::Valu
             // allow span to be passed as reference, not just SpanContext
 #ifdef TRACER_DEBUG
             Php::out << "-received Span" << std::endl;
-#endif    
+#endif
             ISpan* span = (ISpan*)parent.implementation();
             paramContext = dynamic_cast<JaegerSpan*>(span)->_context;
         }
@@ -243,7 +243,7 @@ void JaegerTracer::flush()
 {
 #ifdef TRACER_DEBUG
     Php::out << "JaegerTracer::flush " << std::endl;
-#endif    
+#endif
     {
         std::ostringstream ss;
         ss << this;
@@ -264,7 +264,7 @@ void JaegerTracer::flush()
     {
 #ifdef TRACER_DEBUG
         Php::out << "*** " << std::endl;
-#endif    
+#endif
         /*TMemoryBuffer implementation*/
         std::shared_ptr<TMemoryBuffer> trans(new TMemoryBuffer());
         std::shared_ptr<TCompactProtocol> proto(new TCompactProtocol(trans));
@@ -310,7 +310,7 @@ void JaegerTracer::clearSpans()
 {
 #ifdef TRACER_DEBUG
     Php::out << "\tclearSpans()" << std::endl;
-#endif    
+#endif
     Tracer::file_logger.PrintLine("\tclearSpans start");
 
     // issue with PHP ref count, so it will be deleted after script finishes, or when worker terminates...
