@@ -112,10 +112,11 @@ ISpan* JaegerTracer::startSpan(const std::string& operationName, const Php::Valu
         {
             flags |= JaegerSpan::SAMPLED_FLAG;
         }
-
+        // root traceID and spanID should match
+		int64_t _id = Helper::generateId();
         context = new SpanContext(
-            Helper::generateId(),
-            Helper::generateId(),
+            _id,
+            _id,
             0,
             flags,
             refType
