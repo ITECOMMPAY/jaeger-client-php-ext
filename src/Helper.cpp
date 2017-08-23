@@ -69,21 +69,21 @@ const ::Batch* OpenTracing::Helper::jaegerizeTracer(const OpenTracing::ITracer* 
 
         std::ostringstream ss;
         {
-            ss << "\tjaegerizeTracer " << tracer;
+            ss << "\tjaegerize - Tracer " << tracer;
             Tracer::file_logger.PrintLine(ss.str());
             ss.str("");
             ss.clear();
         }
 
         const JaegerTracer* jaegerTracer = dynamic_cast<const JaegerTracer*>(tracer);
-        Tracer::file_logger.PrintLine("\tjaegerizeTracer _spans.size() " + std::to_string(jaegerTracer->_spans.size()));
+        Tracer::file_logger.PrintLine("\tjaegerize - Tracer _spans.size() " + std::to_string(jaegerTracer->_spans.size()));
 
         for (auto& iter : jaegerTracer->_spans)
         {
             ss <<
-                "\t\tjaegerTracer->_spans KEY: " << iter.first << "\n" <<
-                "\t\t\t\t\t\t\t\t\t\t\t\tjaegerTracer->_spans VALUE: " << iter.second << "\n" <<
-                "\t\t\t\t\t\t\t\t\t\t\t\tjaegerTracer->_spans->_context: " << dynamic_cast<JaegerSpan*>(iter.second)->_context;
+                "\t\tjaegerize - Tracer->_spans KEY: " << iter.first << "\n" <<
+                "\t\t\t\t\t\t\t\t\t\t\t\tjaegerize - Tracer->_spans VALUE: " << iter.second << "\n" <<
+                "\t\t\t\t\t\t\t\t\t\t\t\tjaegerize - Tracer->_spans->_context: " << dynamic_cast<JaegerSpan*>(iter.second)->_context;
 
             Tracer::file_logger.PrintLine(ss.str());
             ss.str("");
@@ -126,7 +126,7 @@ const ::Batch* OpenTracing::Helper::jaegerizeTracer(const OpenTracing::ITracer* 
         }
         jaegerSpan.__set_tags(tags);
     }
-
+    
     if (_span->_logs.size() > 0)
     {
         std::vector<::Log> logs;
@@ -138,18 +138,35 @@ const ::Batch* OpenTracing::Helper::jaegerizeTracer(const OpenTracing::ITracer* 
             }
         }
 
+        std::ostringstream ss;
+        {
+            ss << "jaegerize - Log count: " << logs.size();
+            Tracer::file_logger.PrintLine(ss.str());
+            ss.str("");
+            ss.clear();
+        }
+
         // the first one log will usually contain useful data, let's include it explicitly, if omitted
         if (logs.size() >= Log::LOGS_THRESHOLD && _span->_logs.size() > 0)
         {
-            logs.push_back(jaegerizeLog(*_span->_logs.begin()));
-
-            std::vector<Tag*> tags{ new Tag("info", "<---Too many logs, some were omitted in order to fit udp package size--->") };
-            OpenTracing::Log* log = new OpenTracing::Log(tags, logs.back().timestamp);
-
-            logs.push_back(jaegerizeLog(log));
-            delete log;
-            for (auto& iter : tags)
-                delete iter;
+//            logs.push_back(jaegerizeLog(*_span->_logs.begin()));
+//
+//            std::vector<Tag*> tags{ new Tag("info", "<---Too many logs, some were omitted in order to fit udp package size--->") };
+//            OpenTracing::Log* log = new OpenTracing::Log(tags, logs.back().timestamp);
+//
+//            {
+//                std::ostringstream ss;
+//                ss << "\tjaegerize - Tracer " << tracer;
+//                Tracer::file_logger.PrintLine(ss.str());
+//                ss.str("");
+//                ss.clear();
+//            }
+//            Tracer::file_logger.PrintLine("<---Too many logs");
+//
+//            logs.push_back(jaegerizeLog(log));
+//            delete log;
+//            for (auto& iter : tags)
+//                delete iter;
         }
 
         jaegerSpan.__set_logs(logs);
@@ -228,13 +245,13 @@ const ::Batch* OpenTracing::Helper::jaegerizeTracer(const OpenTracing::ITracer* 
     ::Log jaegerLog;
     std::vector<::Tag> fields;
 
-    std::ostringstream ss;
-    {
-        ss << "jaegerizeLog: " << log->_fields.size();
-        Tracer::file_logger.PrintLine(ss.str());
-        ss.str("");
-        ss.clear();
-    }
+    //std::ostringstream ss;
+    //{
+    //    ss << "jaegerize - Log fields size: " << log->_fields.size();
+    //    Tracer::file_logger.PrintLine(ss.str());
+    //    ss.str("");
+    //    ss.clear();
+    //}
 
     for (auto& iter : log->_fields)
     {
@@ -244,15 +261,14 @@ const ::Batch* OpenTracing::Helper::jaegerizeTracer(const OpenTracing::ITracer* 
     jaegerLog.__set_timestamp(log->_timestamp);
     jaegerLog.__set_fields(fields);
 
-    {
-
-        ss << "\tjaegerLog.fields.size(): " << jaegerLog.fields.size();
-        for (auto& iter : jaegerLog.fields)
-        {
-            ss << "\niter.key: " << iter.key << " iter.vStr: " << iter.vStr << "\n";
-        }
-        Tracer::file_logger.PrintLine(ss.str());
-
-    }
+//    {
+//        ss << "\tjaegerLog.fields.size(): " << jaegerLog.fields.size();
+//        for (auto& iter : jaegerLog.fields)
+//        {
+//            ss << "\niter.key: " << iter.key << " iter.vStr: " << iter.vStr << "\n";
+//        }
+//        Tracer::file_logger.PrintLine(ss.str());
+//    }
+	
     return jaegerLog;
 }

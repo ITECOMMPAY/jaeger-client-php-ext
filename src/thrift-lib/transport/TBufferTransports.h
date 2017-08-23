@@ -24,6 +24,10 @@
 #include <cstring>
 #include <limits>
 #include <sys/types.h>
+//#define TBinary
+#ifdef TBinary
+#  include <boost/scoped_array.hpp>
+#endif
 
 #include "thrift-lib/transport/TTransport.h"
 #include "thrift-lib/transport/TVirtualTransport.h"
@@ -157,6 +161,7 @@ protected:
 * stored to an in memory buffer before being written out.
 *
 */
+#ifdef TBinary
 class TBufferedTransport : public TVirtualTransport<TBufferedTransport, TBufferBase> {
 public:
     static const int DEFAULT_BUFFER_SIZE = 512;
@@ -369,11 +374,12 @@ protected:
 
     uint32_t rBufSize_;
     uint32_t wBufSize_;
-    std::scoped_array<uint8_t> rBuf_;
-    std::scoped_array<uint8_t> wBuf_;
+    boost::scoped_array<uint8_t> rBuf_;
+    boost::scoped_array<uint8_t> wBuf_;
     uint32_t bufReclaimThresh_;
     uint32_t maxFrameSize_;
 };
+#endif
 
 /**
  * A memory buffer is a tranpsort that simply reads from and writes to an

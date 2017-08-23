@@ -1,3 +1,6 @@
+#define TMemory
+//#define TBinary
+
 #include <iostream>
 #include <algorithm>
 #include "JaegerTracer.h"
@@ -8,9 +11,9 @@
 
 #include "thrift-gen/Agent.h"
 #include "thrift-lib/transport/TBufferTransports.h"
-//#include <thrift/transport/TSocket.h>
+#include "thrift-lib/transport/TSocket.h"
 #include "thrift-lib/protocol/TCompactProtocol.h"
-//#include <thrift/protocol/TBinaryProtocol.h>
+#include "thrift-lib/protocol/TBinaryProtocol.h"
 
 using namespace OpenTracing;
 using namespace ::apache::thrift::transport;
@@ -113,7 +116,7 @@ ISpan* JaegerTracer::startSpan(const std::string& operationName, const Php::Valu
             flags |= JaegerSpan::SAMPLED_FLAG;
         }
         // root traceID and spanID should match
-		int64_t _id = Helper::generateId();
+        int64_t _id = Helper::generateId();
         context = new SpanContext(
             _id,
             _id,
@@ -266,38 +269,46 @@ void JaegerTracer::flush()
 #ifdef TRACER_DEBUG
         Php::out << "*** " << std::endl;
 #endif
+
+#ifdef TMemory
         /*TMemoryBuffer implementation*/
         std::shared_ptr<TMemoryBuffer> trans(new TMemoryBuffer());
         std::shared_ptr<TCompactProtocol> proto(new TCompactProtocol(trans));
+        //std::shared_ptr<TBinaryProtocol> proto(new TBinaryProtocol(trans));
         std::shared_ptr<AgentClient> agent(new AgentClient(nullptr, proto));
 
         const ::Batch* batch = Helper::jaegerizeTracer(this);
-        //try
+        try
         {
             agent->emitBatch(*batch);
             data = trans->getBufferAsString();
         }
-        //catch (...)
+        catch (...)
         {
-            //throw Php::Exception(" emitBatch exception");
+            throw Php::Exception(" emitBatch exception");
         }
         Tracer::file_logger.PrintLine("\tdata buffer size (jaegerize): " + std::to_string(data.length()));
+        delete batch;
+#endif
 
-        //catch (...)
-        //{
-        //    throw Php::Exception(" emitBatch exception");
-        //}
-
+#ifdef TBinary
         /*TSocket implementation*/
-        //std::shared_ptr<TSocket> sock(new TSocket("127.0.0.1", 6832));
+        std::shared_ptr<TSocket> sock(new TSocket("127.0.0.1", 6832));
         //std::shared_ptr<TBufferedTransport> trans(new TBufferedTransport(sock));
-        //std::shared_ptr<TBinaryProtocol> proto(new TBinaryProtocol(trans));
-        //std::shared_ptr<AgentConcurrentClient> agent(new AgentConcurrentClient(nullptr, proto));
-        //trans->open();
-        //const ::Batch* batch = Helper::jaegerizeTracer(this);
-        //agent->emitBatch(*batch);
-        //trans->flush();
-        //trans->close();
+        std::shared_ptr<TFramedTransport> trans(new TFramedTransport(sock));
+        //std::shared_ptr<TCompactProtocol> proto(new TCompactProtocol(trans));
+        std::shared_ptr<TBinaryProtocol> proto(new TBinaryProtocol(trans));
+        //std::shared_ptr<TLEBinaryProtocol> proto(new TLEBinaryProtocol(trans));
+        std::shared_ptr<AgentClient> agent(new AgentClient(nullptr, proto));
+        trans->open();
+
+        const ::Batch* batch = Helper::jaegerizeTracer(this);
+        agent->emitBatch(*batch);
+        
+        trans->flush();
+        trans->close();
+        delete batch;
+#endif
     }
     else
         return;
@@ -328,6 +339,7 @@ void JaegerTracer::clearSpans()
 
     _spans.clear();
     _activeSpans.clear();
+    _spans_ref.clear();
     Tracer::file_logger.PrintLine("\tclearSpans end");
 
 }

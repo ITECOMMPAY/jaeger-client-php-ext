@@ -114,6 +114,12 @@
     <ClInclude Include="src\PageViewHandler.h">
       <Filter>src</Filter>
     </ClInclude>
+    <ClInclude Include="src\thrift-lib\protocol\TBinaryProtocol.h">
+      <Filter>src\thrift-lib\protocol</Filter>
+    </ClInclude>
+    <ClInclude Include="src\thrift-lib\transport\TSocket.h">
+      <Filter>src\thrift-lib\transport</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\JaegerTracer.cpp">
@@ -191,6 +197,9 @@
     <ClCompile Include="src\PageViewHandler.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\thrift-lib\transport\TSocket.cpp">
+      <Filter>src\thrift-lib\transport</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Makefile" />
@@ -212,6 +221,9 @@
     </None>
     <None Include="test\request.http">
       <Filter>test</Filter>
+    </None>
+    <None Include="src\thrift-lib\protocol\TBinaryProtocol.tcc">
+      <Filter>src\thrift-lib\protocol</Filter>
     </None>
   </ItemGroup>
 </Project>

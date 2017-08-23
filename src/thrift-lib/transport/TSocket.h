@@ -25,8 +25,6 @@
 
 #include "thrift-lib/transport/TTransport.h"
 #include "thrift-lib/transport/TVirtualTransport.h"
-//#include <thrift/transport/TServerSocket.h>
-//#include <thrift/transport/PlatformSocket.h>
 
 #  define THRIFT_GET_SOCKET_ERROR errno
 #  define THRIFT_ERRNO errno
@@ -311,9 +309,6 @@ protected:
 
   /** Port number to connect on */
   int port_;
-
-  /** UNIX domain socket path */
-  std::string path_;
 
   /** Underlying socket handle */
   THRIFT_SOCKET socket_;

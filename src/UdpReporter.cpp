@@ -1,13 +1,14 @@
 #include <iostream>
 #include <string>
-#include "UdpReporter.h"
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <netinet/ip.h>
 #include <arpa/inet.h>
 #include <unistd.h>
-
 #include <sstream>
+#include "UdpReporter.h"
+#include "Tracer.h"
+
 using namespace OpenTracing;
 
 UdpReporter::~UdpReporter()
@@ -25,7 +26,8 @@ UdpReporter::UdpReporter(const Php::Value& params)
 
     Php::Value defaults;
     defaults["addr"] = "localhost";
-    defaults["port"] = 6831;
+    defaults["port"] = 6831; //TCompact
+    //defaults["port"] = 6832; //TBinary
 
     if (!params.isNull())
     {
@@ -56,15 +58,14 @@ void UdpReporter::flush(const std::string& data) const
     int _socket = socket(AF_INET, SOCK_DGRAM, 0);
     if (_socket != -1)
     {
-        //sendto(_socket, (data + '\n').c_str(), data.length() + 1, 0, (sockaddr*)&_addr, sizeof(_addr));
-        sendto(_socket, (data).c_str(), data.length(), 0, (sockaddr*)&_addr, sizeof(_addr));
-#ifdef TRACER_DEBUG
-        ssize_t num_send = {};
+        ssize_t num_send = sendto(_socket, data.c_str(), data.length(), 0, (sockaddr*)&_addr, sizeof(_addr));
+
         if (num_send != -1)
-            Php::out << "    num_send: " << num_send << std::endl;
+        {
+            Tracer::file_logger.PrintLine("UdpReporter num_send: " + std::to_string(num_send));
+        }
         else
-            Php::out << "    nothing sent, some error occures" << std::endl;
-#endif
+            Tracer::file_logger.PrintLine("UdpReporter num_send: nothing sent");
         close(_socket);
     }
 }
