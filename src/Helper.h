@@ -24,9 +24,9 @@ namespace OpenTracing
         /*Get Host name*/
         static const std::string getHostName();
         /*Get jaeger version of the Tracer*/
-        static const ::Batch* jaegerizeTracer(const OpenTracing::ITracer* tracer);
+        static ::Batch* jaegerizeTracer(const OpenTracing::ITracer* tracer, const OpenTracing::ISpan* span = nullptr, LogCount logLimit = LogCount::WHOLE);
         /*Get jaeger version of the Span*/
-        static ::Span jaegerizeSpan(const OpenTracing::ISpan* span);
+        static ::Span jaegerizeSpan(const OpenTracing::ISpan* span, LogCount logLimit = LogCount::WHOLE);
         /*Get jaeger version of the Process*/
         static ::Process jaegerizeProcess(const OpenTracing::Process* process);
         /*Get jaeger version of the Tag*/

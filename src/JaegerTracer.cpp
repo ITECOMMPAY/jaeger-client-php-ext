@@ -257,7 +257,7 @@ void JaegerTracer::flush()
     if (!this->_isSampled)
         return;
 
-    std::string data{};
+    std::vector<std::string> data;
     if (strcmp(this->_reporter->_name(), "FileReporter") == 0)
     {
         /*
@@ -277,18 +277,37 @@ void JaegerTracer::flush()
         //std::shared_ptr<TBinaryProtocol> proto(new TBinaryProtocol(trans));
         std::shared_ptr<AgentClient> agent(new AgentClient(nullptr, proto));
 
-        const ::Batch* batch = Helper::jaegerizeTracer(this);
+        const int MAX_PACKET_SIZE = 65000;
+        const int EMIT_BATCH_OVERHEAD = 33;
+        const int MAXSPANBYTES = MAX_PACKET_SIZE - EMIT_BATCH_OVERHEAD;
+
         try
         {
-            agent->emitBatch(*batch);
-            data = trans->getBufferAsString();
+            for (auto& iter : dynamic_cast<const JaegerTracer*>(this)->_spans)
+            {
+                std::string batchData{};
+                LogCount incLogs{ LogCount::WHOLE };
+                do
+                {
+                    ::Batch* batch = Helper::jaegerizeTracer(this, iter.second, incLogs);
+                    agent->emitBatch(*batch);
+                    batchData = trans->getBufferAsString();
+
+                    trans->resetBuffer();
+                    delete batch;
+                    incLogs = static_cast<LogCount>(static_cast<int>(incLogs) - 1);
+                    Tracer::file_logger.PrintLine("    ---batchData.length() " + std::to_string(batchData.length()));
+                    if (incLogs == LogCount::WHOLE)
+                        break; //here maybe signal some error
+                } while (batchData.length() > MAXSPANBYTES);
+
+                data.push_back(batchData);
+            }
         }
         catch (...)
         {
             throw Php::Exception(" emitBatch exception");
         }
-        Tracer::file_logger.PrintLine("\tdata buffer size (jaegerize): " + std::to_string(data.length()));
-        delete batch;
 #endif
 
 #ifdef TBinary
@@ -304,7 +323,7 @@ void JaegerTracer::flush()
 
         const ::Batch* batch = Helper::jaegerizeTracer(this);
         agent->emitBatch(*batch);
-        
+
         trans->flush();
         trans->close();
         delete batch;
@@ -313,7 +332,9 @@ void JaegerTracer::flush()
     else
         return;
 
-    this->_reporter->flush(data);
+    for (auto& iter : data)
+        this->_reporter->flush(iter);
+    data.clear();
     this->clearSpans();
     Tracer::file_logger.PrintLine("\tflush end");
 }

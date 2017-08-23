@@ -6,12 +6,19 @@
 
 namespace OpenTracing
 {
+    enum class LogCount {
+        NOTHING = 0,
+        QUATER = 1,
+        HALF = 2,
+        THREEQUATERS = 3,
+        WHOLE = 4,
+    };
+
     class Log
     {
     public:
         int64_t _timestamp;
         std::vector<Tag*> _fields;
-        static const int LOGS_THRESHOLD = 50;
 
         Log(std::vector<Tag*>& logs, const Php::Value& timestamp = nullptr);
         Log(const Log&) = delete;
