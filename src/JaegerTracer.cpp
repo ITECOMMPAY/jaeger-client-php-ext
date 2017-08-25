@@ -21,6 +21,7 @@ using namespace ::apache::thrift::protocol;
 
 JaegerTracer::~JaegerTracer()
 {
+    flush();
     delete _reporter;
     delete _sampler;
     delete _process;
@@ -297,8 +298,8 @@ void JaegerTracer::flush()
                     delete batch;
                     incLogs = static_cast<LogCount>(static_cast<int>(incLogs) - 1);
                     Tracer::file_logger.PrintLine("    ---batchData.length() " + std::to_string(batchData.length()));
-                    if (incLogs == LogCount::WHOLE)
-                        break; //here maybe signal some error
+                    if (incLogs == LogCount::ERROR)
+                        break;
                 } while (batchData.length() > MAXSPANBYTES);
 
                 data.push_back(batchData);
@@ -348,19 +349,19 @@ void JaegerTracer::clearSpans()
 
     // issue with PHP ref count, so it will be deleted after script finishes, or when worker terminates...
     // but here is a workaround
-    for (uint32_t iter = 0; iter < _spans_ref.size(); ++iter)
-    {
-        _spans_ref[iter].~Value();
-    }
+    //for (uint32_t iter = 0; iter < _spans_ref.size(); ++iter)
+    //{
+    //    _spans_ref[iter].~Value();
+    //}
     for (auto& iter : _spans)
     {
         //delete iter.second; // this is handled by _spans_ref.~Value()
         iter.second = nullptr;
     }
 
+    _spans_ref.clear();
     _spans.clear();
     _activeSpans.clear();
-    _spans_ref.clear();
     Tracer::file_logger.PrintLine("\tclearSpans end");
 
 }

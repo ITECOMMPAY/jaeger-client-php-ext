@@ -98,7 +98,7 @@ void JaegerSpan::addLogs(Php::Parameters& logs)
                 {
                     if (values.get(i).isBool())
                         tags.push_back(new Tag(keys[i], values.get(i).boolValue()));
-                    else if (values.get(i).isFloat())
+                    else if (values.get(i).isFloat() || values.get(i).isNumeric())
                         tags.push_back(new Tag(keys[i], values.get(i).floatValue()));
                     else
                         tags.push_back(new Tag(keys[i], values.get(i).stringValue()));

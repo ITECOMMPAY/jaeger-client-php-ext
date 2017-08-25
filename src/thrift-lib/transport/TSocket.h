@@ -82,12 +82,6 @@ namespace transport {
  */
 class TSocket : public TVirtualTransport<TSocket> {
 public:
-  /**
-   * Constructs a new socket. Note that this does NOT actually connect the
-   * socket.
-   *
-   */
-  TSocket();
 
   /**
    * Constructs a new socket. Note that this does NOT actually connect the
@@ -97,14 +91,6 @@ public:
    * @param port The port to connect on
    */
   TSocket(const std::string& host, int port);
-
-  /**
-   * Constructs a new Unix domain socket.
-   * Note that this does NOT actually connect the socket.
-   *
-   * @param path The Unix domain socket e.g. "/tmp/ThriftTest.binary.thrift"
-   */
-  TSocket(const std::string& path);
 
   /**
    * Destroyes the socket object, closing it if necessary.
@@ -362,7 +348,6 @@ protected:
   static bool useLowMinRto_;
 
 private:
-  void unix_open();
   void local_open();
 };
 }

@@ -69,7 +69,7 @@ const std::string OpenTracing::Helper::getHostName()
 
         std::ostringstream ss;
         {
-            ss << "\tjaegerize - Tracer " << tracer;
+            ss << "--- jaegerize - Tracer " << tracer;
             Tracer::file_logger.PrintLine(ss.str());
             ss.str("");
             ss.clear();
@@ -143,48 +143,40 @@ const std::string OpenTracing::Helper::getHostName()
 
     if (_span->_logs.size() > 0)
     {
-        std::ostringstream ss;
-        {
-            ss << "---logLimit " << static_cast<int>(logLimit) << " _span->_logs " << _span->_logs.size();
-            Tracer::file_logger.PrintLine(ss.str());
-            ss.str("");
-            ss.clear();
-        }
-
         std::vector<::Log> logs;
         for (auto iter = _span->_logs.rbegin(); iter != _span->_logs.rend(); iter++)
         {
             if ((logLimit == LogCount::WHOLE) ||
-                (logLimit != LogCount::WHOLE && logs.size() < (_span->_logs.size() / 4 * static_cast<size_t>(logLimit))))
+                (logLimit != LogCount::WHOLE && logs.size() < (_span->_logs.size() / static_cast<size_t>(LogCount::WHOLE) * static_cast<size_t>(logLimit))))
             {
                 logs.push_back(jaegerizeLog(*iter));
             }
         }
 
-
-
         // the first one log will usually contain useful data, let's include it explicitly, if omitted
-        if (logLimit != LogCount::WHOLE && logs.size() >= (_span->_logs.size() / 4 * static_cast<size_t>(logLimit)))
+        if (logLimit != LogCount::WHOLE && logs.size() == /*>=*/ (_span->_logs.size() / static_cast<size_t>(LogCount::WHOLE) * static_cast<size_t>(logLimit)))
         {
-            Tracer::file_logger.PrintLine("---Too many logs");
-
             logs.push_back(jaegerizeLog(*_span->_logs.begin()));
+            // there could be logs with log.level=1 tags in ommited ones, so let's include them also
+            for (size_t iter = 1, iter_bound = _span->_logs.size() - logs.size() + 1; iter < iter_bound; iter++)
+            {
+                for (auto& iter_tags : _span->_logs[iter]->_fields)
+                {
+                    if (iter_tags->_key == "log.level" && iter_tags->_vType == TagType::DOUBLE && iter_tags->_vDouble == 1)
+                    {
+                        logs.push_back(jaegerizeLog(_span->_logs[iter]));
+                    }
+                }
+            }
 
             std::vector<Tag*> tags;
-            tags.push_back(new Tag(std::string{ "info" }, std::string{ "<---Too many logs, some were omitted in order to fit udp package size--->" }));
+            tags.push_back(new Tag(std::string{ "info" }, std::string{ "<---Too many logs, some were omitted in order to fit UDP packet size--->" }));
             OpenTracing::Log* log = new OpenTracing::Log(tags, logs.back().timestamp);
 
             logs.push_back(jaegerizeLog(log));
             delete log;
             for (auto& iter : tags)
                 delete iter;
-        }
-
-        {
-            ss << "---log count: " << logs.size();
-            Tracer::file_logger.PrintLine(ss.str());
-            ss.str("");
-            ss.clear();
         }
 
         jaegerSpan.__set_logs(logs);

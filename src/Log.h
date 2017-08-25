@@ -7,6 +7,7 @@
 namespace OpenTracing
 {
     enum class LogCount {
+        ERROR = -1,
         NOTHING = 0,
         QUATER = 1,
         HALF = 2,
