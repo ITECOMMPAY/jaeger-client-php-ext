@@ -103,7 +103,7 @@
     <None Include="src\thrift\jaeger.thrift" />
     <None Include="src\thrift\zipkincore.thrift" />
     <None Include="test\index.php" />
-    <None Include="test\request.http" />
+    <None Include="test\request.rest" />
     <None Include="tracer-cpp.ini" />
   </ItemGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">

@@ -219,11 +219,11 @@
     <None Include="test\index.php">
       <Filter>test</Filter>
     </None>
-    <None Include="test\request.http">
-      <Filter>test</Filter>
-    </None>
     <None Include="src\thrift-lib\protocol\TBinaryProtocol.tcc">
       <Filter>src\thrift-lib\protocol</Filter>
+    </None>
+    <None Include="test\request.rest">
+      <Filter>test</Filter>
     </None>
   </ItemGroup>
 </Project>
