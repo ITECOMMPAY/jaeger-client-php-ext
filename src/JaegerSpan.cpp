@@ -134,7 +134,12 @@ void JaegerSpan::addLogs(Php::Parameters& logs)
 
 bool JaegerSpan::isSampled() const
 {
-    return _context->_flags & SAMPLED_FLAG;
+    return (_context->_flags & SAMPLED_FLAG) == SAMPLED_FLAG;
+}
+
+bool JaegerSpan::isDebug() const
+{
+    return (_context->_flags & DEBUG_FLAG) == DEBUG_FLAG;
 }
 
 const char* JaegerSpan::_name() const

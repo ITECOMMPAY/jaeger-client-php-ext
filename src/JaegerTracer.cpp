@@ -132,7 +132,7 @@ ISpan* JaegerTracer::startSpan(const std::string& operationName, const Php::Valu
 
     this->_spans[span->_context->_spanId] = span;
     this->_activeSpans.push_back(span->_context->_spanId);
-    if (!this->_isSampled && span->isSampled())
+    if ((!this->_isSampled && span->isSampled()) || span->isDebug())
     {
         this->_isSampled = true;
     }
@@ -253,7 +253,7 @@ SpanContext* JaegerTracer::extract(const Php::Value& carrier) const
         const std::map<std::string, std::string> mapCarrier = carrier;
         return TextCarrier::extract(mapCarrier);
     }
-    
+
     return TextCarrier::extract(carrier.stringValue());
 }
 

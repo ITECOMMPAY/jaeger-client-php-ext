@@ -17,6 +17,7 @@ namespace OpenTracing
         std::vector<Tag*> _tags;
         std::vector<Log*> _logs;
         static const int SAMPLED_FLAG = 0x01;
+        static const int DEBUG_FLAG = 0x02;
         SpanContext* _context;
 
         JaegerSpan(SpanContext* context, const std::string& operationName, const Php::Value& startTime = nullptr);
@@ -27,6 +28,8 @@ namespace OpenTracing
         void addLogs(Php::Parameters& logs);
         /*Whether the span is sampled*/
         bool isSampled() const;
+        /*Whether the span is debug*/
+        bool isDebug() const;
         const char* _name() const;
     };
 }

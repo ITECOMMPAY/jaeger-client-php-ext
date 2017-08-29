@@ -82,7 +82,7 @@ const std::string OpenTracing::Helper::getHostName()
         {
             if (dynamic_cast<const JaegerSpan*>(span)->_context != nullptr)
             {
-                if (dynamic_cast<const JaegerSpan*>(span)->isSampled())
+                if (dynamic_cast<const JaegerSpan*>(span)->isDebug() || dynamic_cast<const JaegerSpan*>(span)->isSampled())
                 {
                     jaegerSpans.push_back(jaegerizeSpan(span, logLimit));
                 }
@@ -106,7 +106,7 @@ const std::string OpenTracing::Helper::getHostName()
                 {
                     if (dynamic_cast<JaegerSpan*>(iter.second)->_context != nullptr)
                     {
-                        if (dynamic_cast<JaegerSpan*>(iter.second)->isSampled())
+                        if (dynamic_cast<const JaegerSpan*>(iter.second)->isDebug() || dynamic_cast<const JaegerSpan*>(iter.second)->isSampled())
                         {
                             jaegerSpans.push_back(jaegerizeSpan(iter.second));
                         }

@@ -2,10 +2,10 @@ POST http://gate.dev/v2/payment/card/payout HTTP/1.1
 user-agent: vscode-restclient
 cookie: XDEBUG_SESSION=PHPSTORM
 content-type: application/json
-x-b3-traceid: 1
-x-b3-spanid: 2
-x-b3-parentspanid: 3
-x-b3-sampled: 4
+x-b3-traceid: 109
+x-b3-spanid: 222
+x-b3-parentspanid: 333
+x-b3-sampled: 1
 
 {
   "general": {
