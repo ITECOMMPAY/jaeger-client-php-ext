@@ -7,12 +7,16 @@ const std::string TextCarrier::OTR_DELIMITER = ":";
 
 void TextCarrier::inject(const SpanContext* context, std::string& carrier)
 {
-    std::ostringstream ss;
-    ss << context->_traceId << TextCarrier::OTR_DELIMITER <<
+    size_t delimPos = carrier.find(TextCarrier::KFK_DELIMITER);
+    std::ostringstream ss{ carrier.substr(0, delimPos != std::string::npos ? delimPos : carrier.length()) + TextCarrier::KFK_DELIMITER, std::ios::ate };
+
+    ss <<
+        context->_traceId << TextCarrier::OTR_DELIMITER <<
         context->_spanId << TextCarrier::OTR_DELIMITER <<
         context->_parentId << TextCarrier::OTR_DELIMITER <<
         context->_flags;
-    carrier += TextCarrier::KFK_DELIMITER + ss.str();
+
+    carrier = ss.str();
 }
 
 void OpenTracing::TextCarrier::inject(const SpanContext* context, Php::Value& carrier)
