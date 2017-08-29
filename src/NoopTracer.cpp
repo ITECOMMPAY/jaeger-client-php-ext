@@ -85,21 +85,21 @@ void NoopTracer::finishSpan(ISpan* span, const Php::Value& endTime)
     }
 }
 
-void NoopTracer::inject(const Php::Value& context, const std::string& format, std::string& carrier)
+void NoopTracer::inject(const Php::Value& context, Php::Value& carrier)
 {
     {
         std::ostringstream ss;
         ss << this;
-        Tracer::file_logger.PrintLine("NoopTracer " + ss.str() + " inject, carrier = " + carrier);
+        Tracer::file_logger.PrintLine("NoopTracer " + ss.str() + " inject, carrier = ");// +carrier);
     }
 }
 
-SpanContext* NoopTracer::extract(const std::string& format, const std::string& carier) const
+SpanContext* NoopTracer::extract(const Php::Value& carrier) const
 {
     {
         std::ostringstream ss;
         ss << this;
-        Tracer::file_logger.PrintLine("NoopTracer " + ss.str() + " inject, carier = " + carier);
+        Tracer::file_logger.PrintLine("NoopTracer " + ss.str() + " inject, carrier = ");// +carrier);
     }
     return nullptr;
 }

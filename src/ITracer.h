@@ -21,9 +21,9 @@ namespace OpenTracing
         /*Finish span*/
         virtual void finishSpan(ISpan* span, const Php::Value& endTime = nullptr) = 0;
         /*Inject context into carrier*/
-        virtual void inject(const Php::Value& context, const std::string& format, std::string& carrier) = 0;
+        virtual void inject(const Php::Value& context, Php::Value& carrier) = 0;
         /*Extract context from the carrier*/
-        virtual OpenTracing::SpanContext* extract(const std::string& format, const std::string& carier) const = 0;
+        virtual OpenTracing::SpanContext* extract(const Php::Value& carrier) const = 0;
         /*Flush everything via reporter*/
         virtual void flush() = 0;
         /*Name of a class to pass in Php::Object*/

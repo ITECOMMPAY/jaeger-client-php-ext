@@ -33,8 +33,8 @@ namespace OpenTracing
         ISpan* startSpan(const std::string& operationName, const Php::Value& options = nullptr);
         ISpan* getCurrentSpan();
         void finishSpan(ISpan* span, const Php::Value& endTime = nullptr);
-        void inject(const Php::Value& context, const std::string& format, std::string& carrier);
-        SpanContext* extract(const std::string& format, const std::string& carier) const;
+        void inject(const Php::Value& context, Php::Value& carrier);
+        SpanContext* extract(const Php::Value& carrier) const;
         void flush();
 
         void clearSpans();

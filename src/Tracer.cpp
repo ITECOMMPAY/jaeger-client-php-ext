@@ -88,7 +88,7 @@ void Tracer::init(Php::Parameters& params)
     defaults["sampler"]["options"]["percents"] = 1;
 
     std::string serviceName = params[0];
-    Php::Value settings;
+    Php::Value settings = nullptr;
 
     if (params.size() == 1)
     {
@@ -228,23 +228,24 @@ void Tracer::finishSpan(Php::Parameters& params)
     }
 }
 
-void Tracer::inject(Php::Parameters& params)
+Php::Value Tracer::inject(Php::Parameters& params)
 {
-    Php::Value context = params[0];
-    std::string format = params[1];
-    std::string carrier = params[2];
+    const Php::Value& context = params[0];
+    Php::Value& carrier = params[1];
 
     std::ostringstream ss;
     {
-        ss << "Tracer::inject start  " << global_tracer << ", carrier = " << carrier << "\n";
+        if (carrier.isString())
+            ss << "Tracer::inject start  " << global_tracer << ", carrier = " << carrier << "\n";
+        else
+            ss << "Tracer::inject start  " << global_tracer;
     }
 
     if (!context.isNull())
     {
         if (global_tracer != nullptr)
         {
-            global_tracer->inject(context, format, carrier);
-            params[2] = carrier;
+            global_tracer->inject(context, carrier);
         }
 
         {
@@ -269,24 +270,28 @@ void Tracer::inject(Php::Parameters& params)
         }
     }
 
-    ss << "Tracer::inject end    " << global_tracer << ", carrier = " << carrier;
+    ss << "Tracer::inject end    ";// << global_tracer << ", carrier = " << carrier;
     file_logger.PrintLine(ss.str());
+
+    return carrier;
 }
 
 Php::Value Tracer::extract(Php::Parameters& params)
 {
-    const std::string& format = params[0];
-    const std::string& carrier = params[1];
+    const Php::Value& carrier = params[0];
 
     std::ostringstream ss;
     {
-        ss << "Tracer::extract start " << global_tracer << ", carrier = " << carrier;
+        if (carrier.isString())
+            ss << "Tracer::extract start " << global_tracer << ", carrier = " << carrier;
+        else
+            ss << "Tracer::extract start " << global_tracer;
     }
 
     SpanContext* context = nullptr;
     if (global_tracer != nullptr)
     {
-        context = global_tracer->extract(format, carrier);
+        context = global_tracer->extract(carrier);
     }
 
     {
@@ -307,7 +312,10 @@ Php::Value Tracer::extract(Php::Parameters& params)
         ss.clear();
     }
 
-    ss << "Tracer::extract end   " << global_tracer << ", carrier = " << carrier;
+    if (carrier.isString())
+        ss << "Tracer::extract end   " << global_tracer << ", carrier = " << carrier;
+    else
+        ss << "Tracer::extract end   " << global_tracer;
     file_logger.PrintLine(ss.str());
 
     return context == nullptr ? static_cast<Php::Value>(nullptr) : Php::Object(context->_name(), context);
@@ -347,7 +355,6 @@ void Tracer::addLogs(Php::Parameters& params)
             {
                 span->addLogs(params);
             }
-
         }
         //std::ostringstream ss;
         //ISpan* span1 = nullptr;

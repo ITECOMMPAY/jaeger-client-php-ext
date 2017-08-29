@@ -1,11 +1,16 @@
 POST http://gate.dev/v2/payment/card/payout HTTP/1.1
+user-agent: vscode-restclient
+cookie: XDEBUG_SESSION=PHPSTORM
 content-type: application/json
-Cookie: XDEBUG_SESSION=PHPSTORM
+x-b3-traceid: 1
+x-b3-spanid: 2
+x-b3-parentspanid: 3
+x-b3-sampled: 4
 
 {
   "general": {
     "project_id": 3,
-    "payment_id": "ORDER_ID_C00540_0710_100",
+    "payment_id": "ORDER_ID_C00540_0710_106",
     "signature": "9u4mQ15z8hUzg7Z1a69ooshSphgJQ4bSmvHP1OhV\/1tTOddXafaJ902Ry2XnRDHpSY0Lw7gCp4Cls7YDr388\/w=="
   },
   "card": {
@@ -29,9 +34,4 @@ Cookie: XDEBUG_SESSION=PHPSTORM
 GET http://gate.dev/
 Cookie: XDEBUG_SESSION=PHPSTORM
 
-###
-POST http://gate.dev/v2/payment/card/payout HTTP/1.1
-${header name}: ${header value}
-
-content
 

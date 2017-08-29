@@ -29,6 +29,19 @@ $arr1=[
         ]
     ];
 
+$request=[
+    'Connection'=>'keep-alive',
+    'Content-Length'=>'481',
+    'Accept-Encoding'=>'gzip, deflate',
+    'Host'=>'gate.dev',
+    'X-B3-Sampled'=>'4',
+    'X-B3-Parentspanid'=>'3',
+    'X-B3-Spanid'=>'2',
+    'X-B3-Traceid'=>'1',
+    'Content-Type'=>'application/json',
+    'Cookie'=>'XDEBUG_SESSION=PHPSTORM',
+    'User-Agent'=>'vscode-restclient',
+];
                                     echo("\n***init***\n");
 Tracer::init('gate',$arr1);
 
@@ -54,6 +67,7 @@ $x5 = [
                                     echo("\n***startSpan***\n");
 $span = Tracer::startSpan($x1);
 $span_cur = Tracer::getCurrentSpan();
+
 var_dump($span);
 if($span)
 {
@@ -77,14 +91,22 @@ Tracer::addLogs($x4);
 $publishSpan->addLogs($x5);
 
                                     echo("\n***inject***\n");
- $key = "32adb6254e9f7b89a65b79145cf5d0e0a945e9ba-666c4a71a461eb4f02d3b6788d4ab89944da2d9f";
- var_dump($key);
- Tracer::inject($publishSpan,'format - not used',$key);
- var_dump($key);
+$key = "32adb6254e9f7b89a65b79145cf5d0e0a945e9ba-666c4a71a461eb4f02d3b6788d4ab89944da2d9f";
+var_dump($key);
+Tracer::inject($publishSpan, $key);
+var_dump($key);
 
- //$key_parse = "32adb6254e9f7b89a65b79145cf5d0e0a945e9ba-666c4a71a461eb4f02d3b6788d4ab89944da2d9f|142573106:3223346672:2865357473:1";
- //$context = Tracer::extract('test',$key_parse);
- //Tracer::inject($context,'test',$key);
+$key_parse = "32adb6254e9f7b89a65b79145cf5d0e0a945e9ba-666c4a71a461eb4f02d3b6788d4ab89944da2d9f|142573106:3223346672:2865357473:1";
+$context = Tracer::extract($request);
+
+echo("\n");
+echo("\nTest_work_with_array\n");
+
+$x_ref = &$x4;
+$x4=Tracer::inject($publishSpan, $x_ref);
+echo("\n");
+
+var_dump($x4);
  //if ($context)
  //{
  //    $span_new = Tracer::startSpan('handle', [

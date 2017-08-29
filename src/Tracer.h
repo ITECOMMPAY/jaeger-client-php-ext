@@ -29,7 +29,7 @@ namespace OpenTracing
         /*Pass finishSpan call to the tracer*/
         static void finishSpan(Php::Parameters& params);
         /*Pass inject call to the tracer*/
-        static void inject(Php::Parameters& params);
+        static Php::Value inject(Php::Parameters& params);
         /*Pass extract call to the tracer*/
         static Php::Value extract(Php::Parameters& params);
         /*Pass flush call to the tracer*/
