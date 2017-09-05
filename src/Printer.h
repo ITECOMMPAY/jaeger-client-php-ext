@@ -24,15 +24,15 @@ namespace OpenTracing
 
     public:
         Printer(const std::string& reportPath, bool printFooters);
-
         ~Printer();
+        void PrintLine(const std::string& line, bool printTime = true);
 
+    private:
         void Open();
         void Close();
 
         void PrintStart();
         void PrintEnd();
-        void PrintLine(const std::string& line, bool printTime = true);
     };
 }
 

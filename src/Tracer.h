@@ -43,6 +43,10 @@ namespace OpenTracing
         static IReporter* buildReporter(const Php::Value& settings);
         /*Build sampler*/
         static ISampler* buildSampler(const Php::Value& settings);
+
+        /*Debug Output*/
+        /* usage e.g. \Tracer::print('---'.print_r($_SERVER['SCRIPT_NAME'],true));*/
+        static void print(Php::Parameters& params);
     };
 }
 #endif /* TRACER_H */

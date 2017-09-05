@@ -10,7 +10,7 @@ x-b3-sampled: 1
 {
   "general": {
     "project_id": 3,
-    "payment_id": "ORDER_ID_C00540_0710_106",
+    "payment_id": "ORDER_ID_C00540_0710_005",
     "signature": "9u4mQ15z8hUzg7Z1a69ooshSphgJQ4bSmvHP1OhV\/1tTOddXafaJ902Ry2XnRDHpSY0Lw7gCp4Cls7YDr388\/w=="
   },
   "card": {
@@ -31,7 +31,94 @@ x-b3-sampled: 1
 }
 
 ###
+POST http://gate.dev/v2/payment/card/payout HTTP/1.1
+Cookie: XDEBUG_SESSION=PHPSTORM
+content-type: application/json
+
+{
+  "general": {
+    "project_id": 16,
+    "payment_id": "lol_526",
+    "signature": "9u4mQ15z8hUzg7Z1a69ooshSphgJQ4bSmvHP1OhV\/1tTOddXafaJ902Ry2XnRDHpSY0Lw7gCp4Cls7YDr388\/w=="
+  },
+  "card": {
+    "pan": "4000000000000002",
+    "year": 2020,
+    "month": 1
+  },
+  "user": {
+    "id": "USER ID",
+    "country": "RU",
+    "ip_address": "1.2.3.4"
+  },
+  "order": {
+    "amount": 780,
+    "currency": "RUB",
+    "description": "CreditPilot"
+  }
+}
+
+###
+POST http://plus.dev/gate/ HTTP/1.1
+Cookie: XDEBUG_SESSION=PHPSTORM
+content-type: application/json
+
+{
+  "name": "CardViaPayBox",
+  "type": "purchase",
+  "operation_id": 1,
+  "merchant_params": {
+    "merchant_id": 9975,
+    "merchant_password": "vygasudecywykiry",
+    "gateway_url": "http://mock.dev/paybox/z/sagan/g2g/payment",
+    "paymentacs_url": "http://mock.dev/paybox/z/sagan/api/paymentAcs",
+    "status_url": "http://mock.dev/paybox/z/sagan/api/status"
+  },
+  "gate_id": "eco_dev",
+  "amount": 5900,
+  "currency": "KZT",
+  "client_params": {
+    "order_id": "2",
+    "account": "4405645000006150",
+    "cardholder": "John",
+    "security_code": "653",
+    "expiration": "2025-09-01T00:00:00+00:00"
+  }
+}
+
+###
 GET http://gate.dev/
 Cookie: XDEBUG_SESSION=PHPSTORM
 
+###
 
+#last yar
+POST http://gate.dev/v2/payment/card/sale HTTP/1.1
+Cookie: XDEBUG_SESSION=PHPSTORM
+content-type: application/json
+
+{
+  "general": {
+    "project_id": 31,
+    "payment_id": "ORDER_ID_C00400_1504594378",
+    "signature": "6YA1m06cnT2YsM3VfvkGsjwM6bQff/njD0KL7uk/1ZxZm8EpdVoNRcxkZkE/K3Xb5NskLEDakrqjLcs8y0OWoQ=="
+  },
+  "card": {
+    "pan": "4200778272290595",
+    "year": 2021,
+    "month": 12,
+    "card_holder": "HOLLY WARREN",
+    "cvv": "101",
+    "save": true
+  },
+  "user": {
+    "id": "Kvadratych",
+    "country": "RU",
+    "ip_address": "1.2.3.4"
+  },
+  "order": {
+    "amount": 1010,
+    "currency": "RUB",
+    "description": "alalala"
+  }
+}

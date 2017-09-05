@@ -62,6 +62,9 @@ extern "C" {
         TracerClass.method<&Tracer::addLogs>("addLogs", Php::Static, {
             Php::ByVal("logs",Php::Type::Array,true),
         });
+        TracerClass.method<&Tracer::print>("print", Php::Static, {
+            Php::ByVal("str",Php::Type::String,true),
+        });
         extension.add(std::move(TracerClass));
 
         Php::Class<SpanContext> SpanContextClass("SpanContext");
