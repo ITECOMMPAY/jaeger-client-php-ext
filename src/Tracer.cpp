@@ -5,9 +5,12 @@
 #include "PercentageSampler.h"
 #include "NoopTracer.h"
 #include "JaegerTracer.h"
-using namespace OpenTracing;
 
 #include "JaegerSpan.h"
+#include "NoopSpan.h"
+
+using namespace OpenTracing;
+
 
 Tracer::~Tracer()
 {
@@ -97,7 +100,8 @@ void Tracer::init(Php::Parameters& params)
     else
     {
         settings = params[1];
-        settings = Php::call("array_merge", defaults, settings);
+        if(settings.isArray())
+            settings = Php::call("array_merge", defaults, settings);
     }
 
     std::ostringstream ss;
@@ -168,12 +172,15 @@ Php::Value Tracer::startSpan(Php::Parameters& params)
         {
             std::ostringstream ss;
             ss <<
-                "--- tracer " << global_tracer << "\n\t\t\t\t\t\t\t\t\t\t    startSpan returned: " << span <<
-                " (SpanContext: " << dynamic_cast<JaegerSpan*>(span)->_context << " )" <<
-                " total spans: " << dynamic_cast<JaegerTracer*>(global_tracer)->_spans.size() <<
-                " " << dynamic_cast<JaegerTracer*>(global_tracer)->_process->_serviceName <<
-                " " << dynamic_cast<JaegerSpan*>(span)->_operationName;
-
+                "--- tracer " << global_tracer << "\n\t\t\t\t\t\t\t\t\t\t    startSpan returned: " << span;
+            if (strcmp(span->_name(), "JaegerSpan") == 0)
+            {
+                ss <<
+                    " (SpanContext: " << dynamic_cast<JaegerSpan*>(span)->_context << " )" <<
+                    " total spans: " << dynamic_cast<JaegerTracer*>(global_tracer)->_spans.size() <<
+                    " " << dynamic_cast<JaegerTracer*>(global_tracer)->_process->_serviceName <<
+                    " " << dynamic_cast<JaegerSpan*>(span)->_operationName;
+            }
             file_logger.PrintLine(ss.str());
             ss.str("");
             ss.clear();
@@ -200,7 +207,14 @@ Php::Value Tracer::startSpan(Php::Parameters& params)
         }
     }
 
-    return span == nullptr ? static_cast<Php::Value>(nullptr) : Php::Object(span->_name(), span);
+    {
+        std::ostringstream ss;
+        ss <<
+            "--- tracer " << global_tracer;
+        file_logger.PrintLine(ss.str());
+    }
+
+    return span == nullptr ? Php::Object("NoopSpan", new NoopSpan()) : Php::Object(span->_name(), span);
 }
 
 Php::Value Tracer::getCurrentSpan()
@@ -238,8 +252,10 @@ Php::Value Tracer::inject(Php::Parameters& params)
     {
         if (carrier.isString())
             ss << "Tracer::inject start  " << global_tracer << ", carrier = " << carrier << "\n";
-        else
+        else if (carrier.isArray())
             ss << "Tracer::inject start  " << global_tracer << ", carrier = [array]" << "\n";
+        else if (carrier.isNull())
+            ss << "Tracer::inject start  " << global_tracer << ", carrier = [NULL]" << "\n";
     }
 
     if (!context.isNull())
@@ -256,36 +272,46 @@ Php::Value Tracer::inject(Php::Parameters& params)
             else if (context.instanceOf("ISpan"))
             {
                 ISpan* span = (ISpan*)context.implementation();
-                paramContext = dynamic_cast<JaegerSpan*>(span)->_context;
+                if (strcmp(span->_name(), "JaegerSpan") == 0)
+                    paramContext = dynamic_cast<JaegerSpan*>(span)->_context;
+                else if (strcmp(span->_name(), "NoopSpan") == 0)
+                    paramContext = nullptr;
             }
 
             ss <<
-                "\t\t\t\t\t\t\t\t\t\tcontext (SpanContext): " << paramContext << "\n" <<
-                "\t\t\t\t\t\t\t\t\t\t\t_traceId: " << paramContext->_traceId << "\n" <<
-                "\t\t\t\t\t\t\t\t\t\t\t\t_spanId: " << paramContext->_spanId << "\n" <<
-                "\t\t\t\t\t\t\t\t\t\t\t\t_parentId: " << paramContext->_parentId << "\n" <<
-                "\t\t\t\t\t\t\t\t\t\t\t\t_flags: " << paramContext->_flags;
+                "\t\t\t\t\t\t\t\t\t\tcontext (SpanContext): " << paramContext << "\n";
+            if (paramContext != nullptr)
+            {
+                ss <<
+                    "\t\t\t\t\t\t\t\t\t\t\t_traceId: " << paramContext->_traceId << "\n" <<
+                    "\t\t\t\t\t\t\t\t\t\t\t\t_spanId: " << paramContext->_spanId << "\n" <<
+                    "\t\t\t\t\t\t\t\t\t\t\t\t_parentId: " << paramContext->_parentId << "\n" <<
+                    "\t\t\t\t\t\t\t\t\t\t\t\t_flags: " << paramContext->_flags;
+            }
             file_logger.PrintLine(ss.str());
             ss.str("");
             ss.clear();
         }
     }
 
-    if (carrier.isString())
-        ss << "Tracer::inject end    " << global_tracer << ", carrier = " << carrier;
-    else
-        ss << "Tracer::inject end    " << global_tracer << ", carrier = [array]" << "\n";
-    file_logger.PrintLine(ss.str());
-    ss.str("");
-    ss.clear();
+    {
+        if (carrier.isString())
+            ss << "Tracer::inject end    " << global_tracer << ", carrier = " << carrier;
+        else if (carrier.isArray())
+            ss << "Tracer::inject end    " << global_tracer << ", carrier = [array]" << "\n";
+        else if (carrier.isNull())
+            ss << "Tracer::inject end    " << global_tracer << ", carrier = [NULL]" << "\n";
+        file_logger.PrintLine(ss.str());
+        ss.str("");
+        ss.clear();
 
-
-    if (!carrier.isString())
-        for (auto& iter : carrier)
-        {
-            ss << iter.first.stringValue() << " " << iter.second.stringValue() << std::endl;
-        }
-    file_logger.PrintLine(ss.str());
+        if (carrier.isArray())
+            for (auto& iter : carrier)
+            {
+                ss << iter.first.stringValue() << " " << iter.second.stringValue() << std::endl;
+            }
+        file_logger.PrintLine(ss.str());
+    }
 
     return carrier;
 }

@@ -70,7 +70,7 @@ ISpan* NoopTracer::getCurrentSpan()
         Tracer::file_logger.PrintLine("NoopTracer " + ss.str() + " getCurrentSpan");
     }
 
-    return nullptr;//new NoopSpan();
+    return new NoopSpan();
 }
 
 void NoopTracer::finishSpan(ISpan* span, const Php::Value& endTime)

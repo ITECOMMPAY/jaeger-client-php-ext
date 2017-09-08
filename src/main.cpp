@@ -37,7 +37,7 @@ extern "C" {
         Php::Class<Tracer> TracerClass("Tracer");
         TracerClass.method<&Tracer::init>("init", Php::Static, {
             Php::ByVal("serviceName",Php::Type::String,true),
-            Php::ByVal("settings",Php::Type::Array,false)
+            Php::ByVal("settings",Php::Type::Null,false)
         });
         TracerClass.method<&Tracer::getTracer>("getTracer", Php::Private | Php::Static, {});
         TracerClass.method<&Tracer::startSpan>("startSpan", Php::Static, {
