@@ -2,6 +2,16 @@
 
 use \Tracer as Tracer;
 
+function inject($context, &$carrier)
+{
+    if (!method_exists('\Tracer', 'inject')) {
+        return;
+    }
+
+    $carrier = \Tracer::inject($context, $carrier);
+}
+
+
 function Start()
 {
    //Tracer::getTracer();
@@ -93,8 +103,19 @@ $publishSpan->addLogs($x5);
                                     echo("\n***inject***\n");
 $key = "32adb6254e9f7b89a65b79145cf5d0e0a945e9ba-666c4a71a461eb4f02d3b6788d4ab89944da2d9f";
 var_dump($key);
-Tracer::inject($publishSpan, $key);
+//Tracer::inject($publishSpan, $key);
+inject($publishSpan,$key);
 var_dump($key);
+inject($publishSpan,$key);
+//Tracer::inject($publishSpan, $key);
+var_dump($key);
+inject($publishSpan,$key);
+//Tracer::inject($publishSpan, $key);
+var_dump($key);
+inject($publishSpan,$key);
+//Tracer::inject($publishSpan, $key);
+var_dump($key);
+die();
 
 $key_parse = "32adb6254e9f7b89a65b79145cf5d0e0a945e9ba-666c4a71a461eb4f02d3b6788d4ab89944da2d9f|142573106:3223346672:2865357473:1";
 $context = Tracer::extract($request);
@@ -103,7 +124,8 @@ echo("\n");
 echo("\nTest_work_with_array\n");
 
 $x_ref = &$x4;
-$x4=Tracer::inject($publishSpan, $x_ref);
+inject($publishSpan,$x4);
+//$x4=Tracer::inject($publishSpan, $x_ref);
 echo("\n");
 
 var_dump($x4);

@@ -1,4 +1,5 @@
 #include <sstream>
+#include <algorithm>
 #include "TextCarrier.h"
 using namespace OpenTracing;
 
@@ -64,13 +65,23 @@ SpanContext* TextCarrier::extract(const std::string& carrier)
 SpanContext* OpenTracing::TextCarrier::extract(const std::map<std::string, std::string>& carrier)
 {
     std::stringstream ss;
+
+    //make lowercase keys
+    std::map<std::string, std::string> carrier_lowercase;
+    for (auto& iter : carrier)
+    {
+        std::string key{ iter.first };
+        std::transform(key.begin(), key.end(), key.begin(), ::tolower);
+        carrier_lowercase[key] = iter.second;
+    }
+
     try
     {
         ss <<
-            carrier.at("X-B3-Traceid") << ":" <<
-            carrier.at("X-B3-Spanid") << ":" <<
-            (carrier.count("X-B3-Parentspanid") > 0 ? carrier.at("X-B3-Parentspanid") : 0) << ":" <<
-            carrier.at("X-B3-Sampled");
+            carrier_lowercase.at("x-b3-traceid") << ":" <<
+            carrier_lowercase.at("x-b3-spanid") << ":" <<
+            (carrier_lowercase.count("x-b3-parentspanid") > 0 ? carrier_lowercase.at("x-b3-parentspanid") : 0) << ":" <<
+            carrier_lowercase.at("x-b3-sampled");
     }
     catch (const std::out_of_range& e)
     {
