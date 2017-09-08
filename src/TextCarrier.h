@@ -12,11 +12,8 @@ namespace OpenTracing
         static const std::string KFK_DELIMITER;
         static const std::string OTR_DELIMITER;
 
-        //Inject context into text carrier
-        //carrier e.g. 1-30-1499218504
-        static void inject(const SpanContext* context, std::string& carrier);
-
-        //Inject context into text map carrier
+        //Inject context into carrier - string (key) or array (headers)
+        //carrier key e.g. 1-30-1499218504
         static void inject(const SpanContext* context, Php::Value& carrier);
 
         //Extract context from the text carrier

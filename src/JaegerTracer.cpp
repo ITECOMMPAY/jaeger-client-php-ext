@@ -233,17 +233,8 @@ void JaegerTracer::inject(const Php::Value& context, Php::Value& carrier)
     }
     else
         throw Php::Exception("JaegerTracer::startSpan - no SpanContext nor ISpan passed");
-
-    if (carrier.isArray())
-    {
+    if(carrier.isArray() || carrier.isString())
         TextCarrier::inject(paramContext, carrier);
-    }
-    else
-    {
-        std::string retVal = carrier.stringValue();
-        TextCarrier::inject(paramContext, retVal);
-        carrier = retVal;
-    }
 }
 
 SpanContext* JaegerTracer::extract(const Php::Value& carrier) const

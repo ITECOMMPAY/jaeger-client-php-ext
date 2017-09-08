@@ -50,7 +50,7 @@ extern "C" {
         });
         TracerClass.method<&Tracer::inject>("inject", Php::Static, {
             Php::ByVal("context",Php::Type::Object,true),
-            Php::ByRef("carrier",Php::Type::Null,true),
+            Php::ByVal("carrier",Php::Type::Null,true),
         });
         TracerClass.method<&Tracer::extract>("extract", Php::Static, {
             Php::ByVal("carrier",Php::Type::Null,true),

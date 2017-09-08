@@ -5,26 +5,29 @@ using namespace OpenTracing;
 const std::string TextCarrier::KFK_DELIMITER = "|";
 const std::string TextCarrier::OTR_DELIMITER = ":";
 
-void TextCarrier::inject(const SpanContext* context, std::string& carrier)
-{
-    size_t delimPos = carrier.find(TextCarrier::KFK_DELIMITER);
-    std::ostringstream ss{ carrier.substr(0, delimPos != std::string::npos ? delimPos : carrier.length()) + TextCarrier::KFK_DELIMITER, std::ios::ate };
-
-    ss <<
-        context->_traceId << TextCarrier::OTR_DELIMITER <<
-        context->_spanId << TextCarrier::OTR_DELIMITER <<
-        context->_parentId << TextCarrier::OTR_DELIMITER <<
-        context->_flags;
-
-    carrier = ss.str();
-}
-
 void OpenTracing::TextCarrier::inject(const SpanContext* context, Php::Value& carrier)
 {
-    carrier["X-B3-Traceid"] = std::to_string(context->_traceId);
-    carrier["X-B3-Spanid"] = std::to_string(context->_spanId);
-    carrier["X-B3-Parentspanid"] = std::to_string(context->_parentId);
-    carrier["X-B3-Sampled"] = std::to_string(context->_flags);
+    if (carrier.isArray())
+    {
+
+        carrier["X-B3-Traceid"] = std::to_string(context->_traceId);
+        carrier["X-B3-Spanid"] = std::to_string(context->_spanId);
+        carrier["X-B3-Parentspanid"] = std::to_string(context->_parentId);
+        carrier["X-B3-Sampled"] = std::to_string(context->_flags);
+    }
+    else if (carrier.isString())
+    {
+        size_t delimPos = carrier.stringValue().find(TextCarrier::KFK_DELIMITER);
+        std::ostringstream ss{ carrier.stringValue().substr(0, delimPos != std::string::npos ? delimPos : carrier.length()) + TextCarrier::KFK_DELIMITER, std::ios::ate };
+
+        ss <<
+            context->_traceId << TextCarrier::OTR_DELIMITER <<
+            context->_spanId << TextCarrier::OTR_DELIMITER <<
+            context->_parentId << TextCarrier::OTR_DELIMITER <<
+            context->_flags;
+
+        carrier = ss.str();
+    }
 }
 
 SpanContext* TextCarrier::extract(const std::string& carrier)

@@ -165,15 +165,14 @@ Php::Value Tracer::startSpan(Php::Parameters& params)
     {
         span = global_tracer->startSpan(operationName, options);
 
-#ifdef TRACER_DEBUG
-        Php::out << "    total spans: " << dynamic_cast<JaegerTracer*>(global_tracer)->_spans.size() << std::endl;
-#endif
         {
             std::ostringstream ss;
-            ss << 
+            ss <<
                 "--- tracer " << global_tracer << "\n\t\t\t\t\t\t\t\t\t\t    startSpan returned: " << span <<
                 " (SpanContext: " << dynamic_cast<JaegerSpan*>(span)->_context << " )" <<
-                " _spans.size() " << dynamic_cast<JaegerTracer*>(global_tracer)->_spans.size();
+                " total spans: " << dynamic_cast<JaegerTracer*>(global_tracer)->_spans.size() <<
+                " " << dynamic_cast<JaegerTracer*>(global_tracer)->_process->_serviceName <<
+                " " << dynamic_cast<JaegerSpan*>(span)->_operationName;
 
             file_logger.PrintLine(ss.str());
             ss.str("");
@@ -233,7 +232,7 @@ void Tracer::finishSpan(Php::Parameters& params)
 Php::Value Tracer::inject(Php::Parameters& params)
 {
     const Php::Value& context = params[0];
-    Php::Value& carrier = params[1];
+    Php::Value carrier = params[1];
 
     std::ostringstream ss;
     {
@@ -276,6 +275,16 @@ Php::Value Tracer::inject(Php::Parameters& params)
         ss << "Tracer::inject end    " << global_tracer << ", carrier = " << carrier;
     else
         ss << "Tracer::inject end    " << global_tracer << ", carrier = [array]" << "\n";
+    file_logger.PrintLine(ss.str());
+    ss.str("");
+    ss.clear();
+
+
+    if (!carrier.isString())
+        for (auto& iter : carrier)
+        {
+            ss << iter.first.stringValue() << " " << iter.second.stringValue() << std::endl;
+        }
     file_logger.PrintLine(ss.str());
 
     return carrier;
