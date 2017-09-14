@@ -10,7 +10,6 @@ void OpenTracing::TextCarrier::inject(const SpanContext* context, Php::Value& ca
 {
     if (carrier.isArray())
     {
-
         carrier["X-B3-Traceid"] = std::to_string(context->_traceId);
         carrier["X-B3-Spanid"] = std::to_string(context->_spanId);
         carrier["X-B3-Parentspanid"] = std::to_string(context->_parentId);
@@ -78,10 +77,11 @@ SpanContext* OpenTracing::TextCarrier::extract(const std::map<std::string, std::
     try
     {
         ss <<
-            carrier_lowercase.at("x-b3-traceid") << ":" <<
-            carrier_lowercase.at("x-b3-spanid") << ":" <<
-            (carrier_lowercase.count("x-b3-parentspanid") > 0 ? carrier_lowercase.at("x-b3-parentspanid") : 0) << ":" <<
-            carrier_lowercase.at("x-b3-sampled");
+            (carrier_lowercase.count("x-b3-traceid") > 0 ? carrier_lowercase.at("x-b3-traceid") : "") << ":" <<
+            (carrier_lowercase.count("x-b3-spanid") > 0 ? carrier_lowercase.at("x-b3-spanid") : "") << ":" <<
+            (carrier_lowercase.count("x-b3-parentspanid") > 0 ? carrier_lowercase.at("x-b3-parentspanid") : "") << ":" <<
+            (carrier_lowercase.count("x-b3-sampled") > 0 ? carrier_lowercase.at("x-b3-sampled") : "");
+        Tracer::headerFlag = std::stoul(carrier_lowercase.at("x-b3-sampled"));
     }
     catch (const std::out_of_range& e)
     {

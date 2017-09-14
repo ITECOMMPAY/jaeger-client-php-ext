@@ -94,11 +94,15 @@ content-type: application/json
 POST http://gate.dev/v2/payment/card/sale HTTP/1.1
 Cookie: XDEBUG_SESSION=PHPSTORM
 content-type: application/json
+x-b3-traceid: 109
+x-b3-spanid: 222
+x-b3-parentspanid: 333
+x-b3-sampled: 3
 
 {
   "general": {
     "project_id": 31,
-    "payment_id": "ORDER_ID_C00400_1504594406",
+    "payment_id": "ORDER_ID_C00400_1504594434",
     "signature": "6YA1m06cnT2YsM3VfvkGsjwM6bQff/njD0KL7uk/1ZxZm8EpdVoNRcxkZkE/K3Xb5NskLEDakrqjLcs8y0OWoQ=="
   },
   "card": {
@@ -124,3 +128,5 @@ content-type: application/json
 ###
 GET http://gate.dev/
 Cookie: XDEBUG_SESSION=PHPSTORM
+x-b3-sampled: 3
+
