@@ -1,19 +1,16 @@
 #include <iostream>
 #include "FileReporter.h"
+#include "Tracer.h"
 using namespace OpenTracing;
 
 FileReporter::~FileReporter()
 {
-#ifdef TRACER_DEBUG
-    Php::out << "~FileReporter" << std::endl;
-#endif
+    Tracer::file_logger.PrintLine("~FileReporter", true);
 }
 
 FileReporter::FileReporter(const Php::Value& params)
 {
-#ifdef TRACER_DEBUG
-    Php::out << "FileReporter::FileReporter" << std::endl;
-#endif
+    Tracer::file_logger.PrintLine("FileReporter::FileReporter", true);
     /*
         $defaults = [
             'path' => 'tmp' . DIRECTORY_SEPARATOR,
@@ -30,9 +27,7 @@ FileReporter::FileReporter(const Php::Value& params)
 
 void FileReporter::flush(const std::string& data) const
 {
-#ifdef TRACER_DEBUG
-    Php::out << "    FileReporter::flush addr: " << std::endl;
-#endif
+    Tracer::file_logger.PrintLine("    FileReporter::flush addr: ", true);
     /*
         file_put_contents(
             $this->options['path'] . DIRECTORY_SEPARATOR . $this->options['file'],

@@ -119,7 +119,8 @@
       <ThreadSafeStatics />
       <ExceptionHandling />
       <RuntimeTypeInfo />
-      <PreprocessorDefinitions>TRACER_DEBUG_</PreprocessorDefinitions>
+      <PreprocessorDefinitions>
+      </PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <LibraryDependencies>phpcpp</LibraryDependencies>

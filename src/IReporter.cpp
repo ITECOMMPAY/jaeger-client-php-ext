@@ -1,11 +1,14 @@
 #include <iostream>
 #include "IReporter.h"
+#include "Tracer.h"
 using namespace OpenTracing;
 
 IReporter::~IReporter()
 {
-#ifdef TRACER_DEBUG
-    Php::out << "    ~IReporter addr: " << this << std::endl;
-#endif
+    {
+        std::ostringstream ss;
+        ss << "    ~IReporter addr: " << this;
+        Tracer::file_logger.PrintLine(ss.str(), true);
+    }
 }
 

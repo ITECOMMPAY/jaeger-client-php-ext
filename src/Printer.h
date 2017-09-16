@@ -15,24 +15,21 @@ namespace OpenTracing
         std::string _reportPath;
         std::string _reportName;
         std::ofstream _logFile;
+        bool _printFooters;
+        time_t _startTime;
+        time_t _stopTime;
 
-        time_t startTime;
-        time_t stopTime;
-        int durationTime;
-
-        bool _flag;
+        void Open();
+        void Close();
+        void PrintStart();
+        void PrintEnd();
 
     public:
         Printer(const std::string& reportPath, bool printFooters);
         ~Printer();
-        void PrintLine(const std::string& line, bool printTime = true);
 
-    private:
-        void Open();
-        void Close();
-
-        void PrintStart();
-        void PrintEnd();
+        bool _enabled;
+        void PrintLine(const std::string& line, bool skip = false, bool printTime = true);
     };
 }
 

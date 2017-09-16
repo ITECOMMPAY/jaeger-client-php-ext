@@ -32,9 +32,6 @@ JaegerTracer::~JaegerTracer()
         ss << this;
         Tracer::file_logger.PrintLine("\t~JaegerTracer " + ss.str() + " destructor");
     }
-#ifdef TRACER_DEBUG
-    Php::out << "~JaegerTracer" << std::endl;
-#endif
 }
 
 JaegerTracer::JaegerTracer(IReporter* reporter, ISampler* sampler) :
@@ -48,9 +45,6 @@ JaegerTracer::JaegerTracer(IReporter* reporter, ISampler* sampler) :
         ss << this;
         Tracer::file_logger.PrintLine("\tJaegerTracer " + ss.str() + " constructor");
     }
-#ifdef TRACER_DEBUG
-    Php::out << "JaegerTracer::JaegerTracer " << this << std::endl;
-#endif
 }
 
 void JaegerTracer::init(const std::string& serviceName)
@@ -84,17 +78,13 @@ ISpan* JaegerTracer::startSpan(const std::string& operationName, const Php::Valu
         SpanContext* paramContext = nullptr;
         if (parent.instanceOf("SpanContext"))
         {
-#ifdef TRACER_DEBUG
-            Php::out << "-received SpanContext" << std::endl;
-#endif
+            Tracer::file_logger.PrintLine("-received SpanContext", true);
             paramContext = (SpanContext*)parent.implementation();
         }
         else if (parent.instanceOf("ISpan"))
         {
             // allow span to be passed as reference, not just SpanContext
-#ifdef TRACER_DEBUG
-            Php::out << "-received Span" << std::endl;
-#endif
+            Tracer::file_logger.PrintLine("-received Span", true);
             ISpan* span = (ISpan*)parent.implementation();
             paramContext = dynamic_cast<JaegerSpan*>(span)->_context;
         }
@@ -114,8 +104,8 @@ ISpan* JaegerTracer::startSpan(const std::string& operationName, const Php::Valu
         int flags = 0;
         if (this->_sampler->isSampled())
             flags |= JaegerSpan::SAMPLED_FLAG;
-        if (Tracer::headerFlag != 0)
-            flags = Tracer::headerFlag;
+        if (Tracer::header_flag != 0)
+            flags = Tracer::header_flag;
         // root traceID and spanID should match
         int64_t _id = Helper::generateId();
         context = new SpanContext(
@@ -153,34 +143,32 @@ ISpan* JaegerTracer::getCurrentSpan()
         span = _spans[_activeSpans.back()];
     }
 
-    //{
-    //    ss <<
-    //        " returned: " << span <<
-    //        "\n\t\t\t\t\t\t\t\t\t\t\t\t\t_spans.size(): " << _spans.size() <<
-    //        "\n\t\t\t\t\t\t\t\t\t\t\t\t\t_activeSpans.size(): " << _activeSpans.size();
-    //}
-    //Tracer::file_logger.PrintLine(ss.str());
     return span;
 }
 
 void JaegerTracer::finishSpan(ISpan* span, const Php::Value& endTime)
 {
-#ifdef TRACER_DEBUG
-    Php::out << "JaegerTracer(" << span << ")::finishSpan " << std::endl;
-    Php::out << "    _spans count:" << this->_spans.size() << std::endl;
-    Php::out << "    time: " << dynamic_cast<JaegerSpan*>(span)->_endTime << std::endl;
-    Php::out << "    spanid: " << dynamic_cast<JaegerSpan*>(span)->_context->_spanId << std::endl;
-    Php::out << "    _logs.size: " << dynamic_cast<JaegerSpan*>(span)->_logs.size() << std::endl;
-    Php::out << "    _tags.size: " << dynamic_cast<JaegerSpan*>(span)->_tags.size() << std::endl;
-#endif
     /*
         if ($span instanceof SpanContext) {
             $span = $this->spans[(string)$span->spanId] ?? null;
         }
     */
 
+    if (0)
     {
         std::ostringstream ss;
+        ss <<
+            "JaegerTracer(" << span << ")::finishSpan " << std::endl <<
+            "    _spans count:" << this->_spans.size() << std::endl <<
+            "    time: " << dynamic_cast<JaegerSpan*>(span)->_endTime << std::endl <<
+            "    spanid: " << dynamic_cast<JaegerSpan*>(span)->_context->_spanId << std::endl <<
+            "    _logs.size: " << dynamic_cast<JaegerSpan*>(span)->_logs.size() << std::endl <<
+            "    _tags.size: " << dynamic_cast<JaegerSpan*>(span)->_tags.size() << std::endl;
+
+        Tracer::file_logger.PrintLine(ss.str(), true);
+        ss.str("");
+        ss.clear();
+
         ss <<
             "JaegerTracer " << this << " finishSpan " << span;
         Tracer::file_logger.PrintLine(ss.str());
@@ -191,14 +179,23 @@ void JaegerTracer::finishSpan(ISpan* span, const Php::Value& endTime)
     {
         jaegerSpan->_endTime = !endTime.isNull() ? static_cast<int64_t>(endTime) : Helper::now();
 
-#ifdef TRACER_DEBUG
-        Php::out << "    span to remove: " << jaegerSpan->_context->_spanId << std::endl;
-        Php::out << "    _activeSpans BEFORE(size: " << this->_activeSpans.size() << "): " << std::endl;
-        for (auto& iter : this->_activeSpans)
+        if (0)
         {
-            Php::out << "        " << iter << std::endl;
+            std::ostringstream ss;
+            ss <<
+                "    span to remove: " << jaegerSpan->_context->_spanId << std::endl <<
+                "    _activeSpans BEFORE(size: " << this->_activeSpans.size() << "): " << std::endl;
+
+            Tracer::file_logger.PrintLine(ss.str(), true);
+            ss.str("");
+            ss.clear();
+
+            for (auto& iter : this->_activeSpans)
+                ss << "        " << iter << std::endl;
+
+            Tracer::file_logger.PrintLine(ss.str());
         }
-#endif
+
 
         if (!_activeSpans.empty())
         {
@@ -207,15 +204,17 @@ void JaegerTracer::finishSpan(ISpan* span, const Php::Value& endTime)
                 _activeSpans.erase(findSpanId);
         }
 
-#ifdef TRACER_DEBUG
-        Php::out << "    _activeSpans AFTER(size: " << this->_activeSpans.size() << "): " << std::endl;
-        for (auto& iter : this->_activeSpans)
-        {
-            Php::out << "        " << iter << std::endl;
-        }
-#endif
-    }
 
+        if (0)
+        {
+            std::ostringstream ss;
+            ss << "    _activeSpans AFTER(size: " << this->_activeSpans.size() << "): " << std::endl;
+            for (auto& iter : this->_activeSpans)
+                ss << "        " << iter << std::endl;
+
+            Tracer::file_logger.PrintLine(ss.str(), true);
+        }
+    }
 }
 
 void JaegerTracer::inject(const Php::Value& context, Php::Value& carrier)
@@ -233,7 +232,7 @@ void JaegerTracer::inject(const Php::Value& context, Php::Value& carrier)
     }
     else
         throw Php::Exception("JaegerTracer::startSpan - no SpanContext nor ISpan passed");
-    if(carrier.isArray() || carrier.isString())
+    if (carrier.isArray() || carrier.isString())
         TextCarrier::inject(paramContext, carrier);
 }
 
@@ -250,9 +249,6 @@ SpanContext* JaegerTracer::extract(const Php::Value& carrier) const
 
 void JaegerTracer::flush()
 {
-#ifdef TRACER_DEBUG
-    Php::out << "JaegerTracer::flush " << std::endl;
-#endif
     {
         std::ostringstream ss;
         ss << this;
@@ -271,9 +267,6 @@ void JaegerTracer::flush()
     }
     else if (strcmp(this->_reporter->_name(), "UdpReporter") == 0)
     {
-#ifdef TRACER_DEBUG
-        Php::out << "*** " << std::endl;
-#endif
 
 #ifdef TMemory
         /*TMemoryBuffer implementation*/
@@ -342,13 +335,10 @@ void JaegerTracer::flush()
     data.clear();
     this->clearSpans();
     Tracer::file_logger.PrintLine("\tflush end");
-}
+    }
 
 void JaegerTracer::clearSpans()
 {
-#ifdef TRACER_DEBUG
-    Php::out << "\tclearSpans()" << std::endl;
-#endif
     Tracer::file_logger.PrintLine("\tclearSpans start");
 
     // issue with PHP ref count, so it will be deleted after script finishes, or when worker terminates...

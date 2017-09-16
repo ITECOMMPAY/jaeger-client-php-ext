@@ -5,9 +5,6 @@ using namespace OpenTracing;
 
 NoopSpan::NoopSpan()
 {
-#ifdef TRACER_DEBUG
-    Php::out << "NoopSpan::NoopSpan addr: " << this << std::endl;
-#endif
     {
         std::ostringstream ss;
         ss << this;
@@ -17,9 +14,6 @@ NoopSpan::NoopSpan()
 
 NoopSpan::~NoopSpan()
 {
-#ifdef TRACER_DEBUG
-    Php::out << "~NoopSpan addr: " << this << std::endl;
-#endif
     {
         std::ostringstream ss;
         ss << this;
@@ -29,9 +23,6 @@ NoopSpan::~NoopSpan()
 
 void NoopSpan::addTags(Php::Parameters& tags)
 {
-#ifdef TRACER_DEBUG
-    Php::out << "NoopSpan::addTags addr: " << this << std::endl;
-#endif
     {
         std::ostringstream ss;
         ss << this;
@@ -41,9 +32,6 @@ void NoopSpan::addTags(Php::Parameters& tags)
 
 void NoopSpan::addLogs(Php::Parameters& logs)
 {
-#ifdef TRACER_DEBUG
-    Php::out << "NoopSpan::addLogs addr: " << this << std::endl;
-#endif
     {
         std::ostringstream ss;
         ss << this;

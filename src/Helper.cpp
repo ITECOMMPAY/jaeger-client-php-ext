@@ -67,12 +67,10 @@ const std::string OpenTracing::Helper::getHostName()
     {
         std::vector<::Span> jaegerSpans;
 
-        std::ostringstream ss;
         {
+            std::ostringstream ss;
             ss << "--- jaegerize - Tracer " << tracer;
             Tracer::file_logger.PrintLine(ss.str());
-            ss.str("");
-            ss.clear();
         }
 
         const JaegerTracer* jaegerTracer = dynamic_cast<const JaegerTracer*>(tracer);
@@ -93,14 +91,14 @@ const std::string OpenTracing::Helper::getHostName()
             //all spans in one Batch
             for (auto& iter : jaegerTracer->_spans)
             {
-                ss <<
-                    "\t\tjaegerize - Tracer->_spans KEY: " << iter.first << "\n" <<
-                    "\t\t\t\t\t\t\t\t\t\t\t\tjaegerize - Tracer->_spans VALUE: " << iter.second << "\n" <<
-                    "\t\t\t\t\t\t\t\t\t\t\t\tjaegerize - Tracer->_spans->_context: " << dynamic_cast<JaegerSpan*>(iter.second)->_context;
-
-                Tracer::file_logger.PrintLine(ss.str());
-                ss.str("");
-                ss.clear();
+                {
+                    std::ostringstream ss;
+                    ss <<
+                        "\t\tjaegerize - Tracer->_spans KEY: " << iter.first << "\n" <<
+                        "\t\t\t\t\t\t\t\t\t\t\t\tjaegerize - Tracer->_spans VALUE: " << iter.second << "\n" <<
+                        "\t\t\t\t\t\t\t\t\t\t\t\tjaegerize - Tracer->_spans->_context: " << dynamic_cast<JaegerSpan*>(iter.second)->_context;
+                    Tracer::file_logger.PrintLine(ss.str());
+                }
 
                 if (iter.second != nullptr)
                 {
@@ -255,13 +253,13 @@ const std::string OpenTracing::Helper::getHostName()
     ::Log jaegerLog;
     std::vector<::Tag> fields;
 
-    //std::ostringstream ss;
-    //{
-    //    ss << "jaegerize - Log fields size: " << log->_fields.size();
-    //    Tracer::file_logger.PrintLine(ss.str());
-    //    ss.str("");
-    //    ss.clear();
-    //}
+    std::ostringstream ss;
+    {
+        ss << "jaegerize - Log fields size: " << log->_fields.size();
+        Tracer::file_logger.PrintLine(ss.str(), true);
+        ss.str("");
+        ss.clear();
+    }
 
     for (auto& iter : log->_fields)
     {
@@ -271,14 +269,14 @@ const std::string OpenTracing::Helper::getHostName()
     jaegerLog.__set_timestamp(log->_timestamp);
     jaegerLog.__set_fields(fields);
 
-    //    {
-    //        ss << "\tjaegerLog.fields.size(): " << jaegerLog.fields.size();
-    //        for (auto& iter : jaegerLog.fields)
-    //        {
-    //            ss << "\niter.key: " << iter.key << " iter.vStr: " << iter.vStr << "\n";
-    //        }
-    //        Tracer::file_logger.PrintLine(ss.str());
-    //    }
+    {
+        ss << "\tjaegerLog.fields.size(): " << jaegerLog.fields.size();
+        for (auto& iter : jaegerLog.fields)
+        {
+            ss << "\niter.key: " << iter.key << " iter.vStr: " << iter.vStr << "\n";
+        }
+        Tracer::file_logger.PrintLine(ss.str(), true);
+    }
 
     return jaegerLog;
 }

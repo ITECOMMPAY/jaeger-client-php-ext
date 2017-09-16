@@ -1,34 +1,37 @@
 #include <iostream>
 #include "PercentageSampler.h"
 #include "Helper.h"
+#include "Tracer.h"
 using namespace OpenTracing;
 
 PercentageSampler::~PercentageSampler()
 {
-#ifdef TRACER_DEBUG
-    Php::out << "~PercentageSampler " << this << std::endl;
-#endif
+    {
+        std::ostringstream ss;
+        ss << "~PercentageSampler " << this;
+        Tracer::file_logger.PrintLine(ss.str(), true);
+    }
 }
 
 PercentageSampler::PercentageSampler(const Php::Value& params) :
     _value{ 50 }
 {
-#ifdef TRACER_DEBUG
-    Php::out << "PercentageSampler::PercentageSampler" << std::endl;
-#endif
+
     if (!params.isNull())
-    {
         _value = params["percents"];
-#ifdef TRACER_DEBUG
-        Php::out << "PercentageSampler::_value " << _value << std::endl;
-#endif
+
+    {
+        std::ostringstream ss;
+        ss <<
+            "PercentageSampler::PercentageSampler " <<
+            "_value " << _value;
+        Tracer::file_logger.PrintLine(ss.str(), true);
     }
 }
 
 bool PercentageSampler::isSampled()
 {
-#ifdef TRACER_DEBUG
-    Php::out << "    PercentageSampler::isSampled" << std::endl;
-#endif
+    Tracer::file_logger.PrintLine("    PercentageSampler::isSampled", true);
+
     return Helper::genPercentage() < this->_value;
 }

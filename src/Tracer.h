@@ -17,7 +17,7 @@ namespace OpenTracing
 
         static Printer file_logger;
         static ITracer* global_tracer;
-        static int headerFlag;
+        static int header_flag;
 
         /*Create tracer instance and call its init method*/
         static void init(Php::Parameters& params);

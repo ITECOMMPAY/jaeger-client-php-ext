@@ -1,5 +1,6 @@
 #include <iostream>
 #include "Tag.h"
+#include "Tracer.h"
 
 const std::string OpenTracing::Tag::TAG_TYPE_HOST{ "host" };
 const std::string OpenTracing::Tag::TAG_TYPE_IP{ "ip" };
@@ -29,14 +30,18 @@ OpenTracing::Tag::Tag(const std::string& key, const std::string& value) :
     _vDouble{},
     _vStr{ value }
 {
-#ifdef TRACER_DEBUG
-    Php::out << "        Tag::Tag addr: " << this << std::endl;
-#endif
+    {
+        std::ostringstream ss;
+        ss << "        Tag::Tag addr: " << this;
+        Tracer::file_logger.PrintLine(ss.str(), true);
+    }
 }
 
 OpenTracing::Tag::~Tag()
 {
-#ifdef TRACER_DEBUG
-    Php::out << "        ~Tag" << std::endl;
-#endif
+    {
+        std::ostringstream ss;
+        ss << "        ~Tag";
+        Tracer::file_logger.PrintLine(ss.str(), true);
+    }
 }

@@ -8,21 +8,16 @@
 #include <sstream>
 #include "UdpReporter.h"
 #include "Tracer.h"
-
 using namespace OpenTracing;
 
 UdpReporter::~UdpReporter()
 {
-#ifdef TRACER_DEBUG
-    Php::out << "~UdpReporter" << std::endl;
-#endif
+    Tracer::file_logger.PrintLine("~UdpReporter", true);
 }
 
 UdpReporter::UdpReporter(const Php::Value& params)
 {
-#ifdef TRACER_DEBUG
-    Php::out << "UdpReporter::UdpReporter" << std::endl;
-#endif
+    Tracer::file_logger.PrintLine("UdpReporter::UdpReporter", true);
 
     Php::Value defaults;
     defaults["addr"] = "localhost";
@@ -42,9 +37,7 @@ UdpReporter::UdpReporter(const Php::Value& params)
 
 void UdpReporter::flush(const std::string& data) const
 {
-#ifdef TRACER_DEBUG
-    Php::out << "    UdpReporter::flush" << std::endl;
-#endif
+    Tracer::file_logger.PrintLine("    UdpReporter::flush", true);
 
     sockaddr_in _addr;
     _addr.sin_family = AF_INET;

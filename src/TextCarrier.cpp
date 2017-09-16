@@ -42,10 +42,13 @@ SpanContext* TextCarrier::extract(const std::string& carrier)
     if (parse.size() != 4)
         return nullptr;
 
-#ifdef TRACER_DEBUG
-    for (auto& iter : parse)
-        Php::out << iter << ": size " << iter.size() << std::endl;
-#endif
+    if (0)
+    {
+        std::ostringstream ss;
+        for (auto& iter : parse)
+            ss << iter << ": size " << iter.size() << std::endl;
+        Tracer::file_logger.PrintLine(ss.str(), true);
+    }
 
     try
     {
@@ -82,7 +85,7 @@ SpanContext* OpenTracing::TextCarrier::extract(const std::map<std::string, std::
             (carrier_lowercase.count("x-b3-spanid") > 0 ? carrier_lowercase.at("x-b3-spanid") : "") << ":" <<
             (carrier_lowercase.count("x-b3-parentspanid") > 0 ? carrier_lowercase.at("x-b3-parentspanid") : "") << ":" <<
             (carrier_lowercase.count("x-b3-sampled") > 0 ? carrier_lowercase.at("x-b3-sampled") : "");
-        Tracer::headerFlag = std::stoul(carrier_lowercase.at("x-b3-sampled"));
+        Tracer::header_flag = std::stoul(carrier_lowercase.at("x-b3-sampled"));
     }
     catch (const std::out_of_range& e)
     {

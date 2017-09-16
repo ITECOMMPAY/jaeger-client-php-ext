@@ -6,9 +6,6 @@ using namespace OpenTracing;
 
 NoopTracer::~NoopTracer()
 {
-#ifdef TRACER_DEBUG
-    Php::out << "NoopTracer::~NoopTracer addr: " << this << std::endl;
-#endif
     {
         std::ostringstream ss;
         ss << this;
@@ -18,9 +15,6 @@ NoopTracer::~NoopTracer()
 
 NoopTracer::NoopTracer()
 {
-#ifdef TRACER_DEBUG
-    Php::out << "NoopTracer::NoopTracer" << std::endl;
-#endif
     {
         std::ostringstream ss;
         ss << this;
@@ -30,9 +24,6 @@ NoopTracer::NoopTracer()
 
 void NoopTracer::init(const std::string& serviceName)
 {
-#ifdef TRACER_DEBUG
-    Php::out << "NoopTracer::init" << std::endl;
-#endif
     {
         std::ostringstream ss;
         ss << this;
@@ -42,18 +33,6 @@ void NoopTracer::init(const std::string& serviceName)
 
 ISpan* NoopTracer::startSpan(const std::string& operationName, const Php::Value& options)
 {
-#ifdef TRACER_DEBUG
-    if (options.isNull())
-    {
-        Php::out << "options is null" << std::endl;
-    }
-    else
-    {
-        Php::out << "options is NOT null" << std::endl;
-
-    }
-    Php::out << "NoopTracer::startSpan, operationName = " << operationName << std::endl;
-#endif
     {
         std::ostringstream ss;
         ss << this;
@@ -69,15 +48,11 @@ ISpan* NoopTracer::getCurrentSpan()
         ss << this;
         Tracer::file_logger.PrintLine("NoopTracer " + ss.str() + " getCurrentSpan");
     }
-
     return new NoopSpan();
 }
 
 void NoopTracer::finishSpan(ISpan* span, const Php::Value& endTime)
 {
-#ifdef TRACER_DEBUG
-    Php::out << "NoopTracer::finishSpan " << span->_name() << std::endl;
-#endif
     {
         std::ostringstream ss;
         ss << this;
@@ -90,7 +65,7 @@ void NoopTracer::inject(const Php::Value& context, Php::Value& carrier)
     {
         std::ostringstream ss;
         ss << this;
-        Tracer::file_logger.PrintLine("NoopTracer " + ss.str() + " inject, carrier = ");// +carrier);
+        Tracer::file_logger.PrintLine("NoopTracer " + ss.str() + " inject, carrier = ");
     }
 }
 
@@ -99,7 +74,7 @@ SpanContext* NoopTracer::extract(const Php::Value& carrier) const
     {
         std::ostringstream ss;
         ss << this;
-        Tracer::file_logger.PrintLine("NoopTracer " + ss.str() + " inject, carrier = ");// +carrier);
+        Tracer::file_logger.PrintLine("NoopTracer " + ss.str() + " inject, carrier = ");
     }
     return nullptr;
 }

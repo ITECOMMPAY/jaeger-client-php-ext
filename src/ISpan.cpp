@@ -10,7 +10,4 @@ ISpan::~ISpan()
         ss << this;
         Tracer::file_logger.PrintLine("    ~ISpan addr: " + ss.str());
     }
-    #ifdef TRACER_DEBUG
-        Php::out << "    ~ISpan addr: " << this << std::endl;
-    #endif
 }

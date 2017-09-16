@@ -1,9 +1,8 @@
 #include <iostream>
 #include "JaegerSpan.h"
 #include "Helper.h"
-using namespace OpenTracing;
-
 #include "Tracer.h"
+using namespace OpenTracing;
 
 JaegerSpan::JaegerSpan(SpanContext* context, const std::string& operationName, const Php::Value& startTime) :
     _operationName{ operationName },
@@ -11,17 +10,16 @@ JaegerSpan::JaegerSpan(SpanContext* context, const std::string& operationName, c
     _endTime{},
     _context{ context }
 {
-#ifdef TRACER_DEBUG
-    Php::out << "    JaegerSpan::JaegerSpan addr: " << this << std::endl;
-#endif
+    {
+        std::ostringstream ss;
+        ss << "    JaegerSpan::JaegerSpan addr: " << this;
+        Tracer::file_logger.PrintLine(ss.str(), true);
+    }
     _startTime = !startTime.isNull() ? static_cast<int64_t>(startTime) : Helper::now();
 }
 
 JaegerSpan::~JaegerSpan()
 {
-#ifdef TRACER_DEBUG
-    Php::out << "    ~JaegerSpan addr: " << this << std::endl;
-#endif
     {
         std::ostringstream ss;
         ss << this;
@@ -38,9 +36,11 @@ JaegerSpan::~JaegerSpan()
 
 void JaegerSpan::addTags(Php::Parameters& tags)
 {
-#ifdef TRACER_DEBUG
-    Php::out << "   ::addTags addr: " << this << std::endl;
-#endif
+    {
+        std::ostringstream ss;
+        ss << "   ::addTags addr: " << this;
+        Tracer::file_logger.PrintLine(ss.str(), true);
+    }
 
     if (!tags.empty())
     {
@@ -57,7 +57,7 @@ void JaegerSpan::addTags(Php::Parameters& tags)
             {
                 //std::string key = keys[i];
                 //std::string value = values[i];
-                //Php::out << key << "-" << value << std::endl;
+                //std::cout << key << "-" << value << std::endl;
                 //tags_order.push_back(std::make_pair(key, value));
                 try
                 {
@@ -79,9 +79,11 @@ void JaegerSpan::addTags(Php::Parameters& tags)
 
 void JaegerSpan::addLogs(Php::Parameters& logs)
 {
-#ifdef TRACER_DEBUG
-    Php::out << "   JaegerSpan(" << this << ")::addLogs " << std::endl;
-#endif
+    {
+        std::ostringstream ss;
+        ss << "   JaegerSpan(" << this << ")::addLogs ";
+        Tracer::file_logger.PrintLine(ss.str(), true);
+    }
 
     if (!logs.empty())
     {
@@ -112,24 +114,27 @@ void JaegerSpan::addLogs(Php::Parameters& logs)
 
         this->_logs.push_back(new Log(tags));
     }
-#ifdef TRACER_DEBUG
-    JaegerSpan* temp = dynamic_cast<JaegerSpan*>(this);
-    int i = 0;
-    Php::out << "    Log count: " << temp->_logs.size() << std::endl;
-    for (auto& iter1 : temp->_logs)
+
+    if (0)
     {
-        Php::out << "    Log" << ++i << ": " << iter1 << " time : " << iter1->_timestamp << std::endl;
-        for (auto& it : iter1->_fields)
+        std::ostringstream ss;
+        int i = 0;
+        ss << "    Log count: " << this->_logs.size() << std::endl;
+        for (auto& iter : this->_logs)
         {
-            if (it->_vType == TagType::BOOL)
-                Php::out << "        " << it->_key << " " << it->_vBool << std::endl;
-            if (it->_vType == TagType::DOUBLE)
-                Php::out << "        " << it->_key << " " << it->_vDouble << std::endl;
-            if (it->_vType == TagType::STRING)
-                Php::out << "        " << it->_key << " " << it->_vStr << std::endl;
+            ss << "    Log" << ++i << ": " << iter << " time : " << iter->_timestamp << std::endl;
+            for (auto& it : iter->_fields)
+            {
+                if (it->_vType == TagType::BOOL)
+                    ss << "        " << it->_key << " " << it->_vBool << std::endl;
+                if (it->_vType == TagType::DOUBLE)
+                    ss << "        " << it->_key << " " << it->_vDouble << std::endl;
+                if (it->_vType == TagType::STRING)
+                    ss << "        " << it->_key << " " << it->_vStr << std::endl;
+            }
         }
+        Tracer::file_logger.PrintLine(ss.str(), true);
     }
-#endif
 }
 
 bool JaegerSpan::isSampled() const

@@ -1,6 +1,7 @@
 #include <iostream>
 #include "Log.h"
 #include "Helper.h"
+#include "Tracer.h"
 
 OpenTracing::Log::Log(std::vector<OpenTracing::Tag*>& logs, const Php::Value& timestamp) :
     _fields{ std::move(logs) }
@@ -14,7 +15,5 @@ OpenTracing::Log::~Log()
         delete iter;
     _fields.clear();
 
-#ifdef TRACER_DEBUG
-    Php::out << "    ~Log" << std::endl;
-#endif
+    Tracer::file_logger.PrintLine("    ~Log", true);
 }

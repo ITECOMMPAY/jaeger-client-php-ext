@@ -10,7 +10,4 @@ ITracer::~ITracer()
         ss << this;
         Tracer::file_logger.PrintLine("\t\t~ITracer addr: " + ss.str());
     }
-#ifdef TRACER_DEBUG
-    Php::out << "    ~ITracer addr: " << this << std::endl;
-#endif
 }
