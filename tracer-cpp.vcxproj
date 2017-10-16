@@ -1,0 +1,141 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{67de862e-0bad-45f8-925e-51963c896c26}</ProjectGuid>
+    <Keyword>Linux</Keyword>
+    <RootNamespace>tracer_cpp</RootNamespace>
+    <MinimumVisualStudioVersion>15.0</MinimumVisualStudioVersion>
+    <ApplicationType>Linux</ApplicationType>
+    <ApplicationTypeRevision>1.0</ApplicationTypeRevision>
+    <TargetLinuxPlatform>Generic</TargetLinuxPlatform>
+    <LinuxProjectType>{2238F9CD-F817-4ECC-BD14-2524D2669B35}</LinuxProjectType>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <RemoteRootDir>~/_work</RemoteRootDir>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings" />
+  <ImportGroup Label="Shared" />
+  <ImportGroup Label="PropertySheets" />
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>$(ProjectDir)</OutDir>
+    <TargetName>$(ProjectName)</TargetName>
+    <TargetExt>.so</TargetExt>
+    <IntDir>$(ProjectDir)src\</IntDir>
+    <RemoteLinkLocalCopyOutput>false</RemoteLinkLocalCopyOutput>
+  </PropertyGroup>
+  <ItemGroup>
+    <ClInclude Include="src\Helper.h" />
+    <ClInclude Include="src\ISampler.h" />
+    <ClInclude Include="src\FileReporter.h" />
+    <ClInclude Include="src\IReporter.h" />
+    <ClInclude Include="src\ISpan.h" />
+    <ClInclude Include="src\ITracer.h" />
+    <ClInclude Include="src\JaegerSpan.h" />
+    <ClInclude Include="src\JaegerTracer.h" />
+    <ClInclude Include="src\Log.h" />
+    <ClInclude Include="src\PageViewHandler.h" />
+    <ClInclude Include="src\Printer.h" />
+    <ClInclude Include="src\NoopSpan.h" />
+    <ClInclude Include="src\NoopTracer.h" />
+    <ClInclude Include="src\PercentageSampler.h" />
+    <ClInclude Include="src\Process.h" />
+    <ClInclude Include="src\SpanContext.h" />
+    <ClInclude Include="src\Tag.h" />
+    <ClInclude Include="src\TextCarrier.h" />
+    <ClInclude Include="src\thrift-gen\Agent.h" />
+    <ClInclude Include="src\thrift-gen\jaeger_types.h" />
+    <ClInclude Include="src\thrift-lib\protocol\TBinaryProtocol.h" />
+    <ClInclude Include="src\thrift-lib\protocol\TCompactProtocol.h" />
+    <ClInclude Include="src\thrift-lib\protocol\TProtocol.h" />
+    <ClInclude Include="src\thrift-lib\protocol\TVirtualProtocol.h" />
+    <ClInclude Include="src\thrift-lib\TBase.h" />
+    <ClInclude Include="src\thrift-lib\transport\TBufferTransports.h" />
+    <ClInclude Include="src\thrift-lib\transport\TSocket.h" />
+    <ClInclude Include="src\thrift-lib\transport\TTransport.h" />
+    <ClInclude Include="src\thrift-lib\transport\TVirtualTransport.h" />
+    <ClInclude Include="src\Tracer.h" />
+    <ClInclude Include="src\UdpReporter.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\FileReporter.cpp" />
+    <ClCompile Include="src\Helper.cpp" />
+    <ClCompile Include="src\IReporter.cpp" />
+    <ClCompile Include="src\ISampler.cpp" />
+    <ClCompile Include="src\ISpan.cpp" />
+    <ClCompile Include="src\ITracer.cpp" />
+    <ClCompile Include="src\JaegerSpan.cpp" />
+    <ClCompile Include="src\JaegerTracer.cpp" />
+    <ClCompile Include="src\Log.cpp" />
+    <ClCompile Include="src\PageViewHandler.cpp" />
+    <ClCompile Include="src\Printer.cpp" />
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\NoopSpan.cpp" />
+    <ClCompile Include="src\NoopTracer.cpp" />
+    <ClCompile Include="src\PercentageSampler.cpp" />
+    <ClCompile Include="src\Process.cpp" />
+    <ClCompile Include="src\SpanContext.cpp" />
+    <ClCompile Include="src\Tag.cpp" />
+    <ClCompile Include="src\TextCarrier.cpp" />
+    <ClCompile Include="src\thrift-gen\Agent.cpp" />
+    <ClCompile Include="src\thrift-gen\jaeger_types.cpp" />
+    <ClCompile Include="src\thrift-lib\protocol\TProtocol.cpp" />
+    <ClCompile Include="src\thrift-lib\transport\TBufferTransports.cpp" />
+    <ClCompile Include="src\thrift-lib\transport\TSocket.cpp" />
+    <ClCompile Include="src\Tracer.cpp" />
+    <ClCompile Include="src\UdpReporter.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Makefile" />
+    <None Include="src\thrift-lib\protocol\TBinaryProtocol.tcc" />
+    <None Include="src\thrift-lib\protocol\TCompactProtocol.tcc" />
+    <None Include="src\thrift\agent.thrift" />
+    <None Include="src\thrift\jaeger.thrift" />
+    <None Include="src\thrift\zipkincore.thrift" />
+    <None Include="test\index.php" />
+    <None Include="test\request.rest" />
+    <None Include="tracer-cpp.ini" />
+  </ItemGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(UBUNTU_INCLUDE);.\src\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>-fpic</AdditionalOptions>
+      <DebugInformationFormat />
+      <CAdditionalWarning />
+      <CppAdditionalWarning />
+      <Optimization>MaxSpeed</Optimization>
+      <StrictAliasing />
+      <OmitFramePointers />
+      <ThreadSafeStatics />
+      <ExceptionHandling />
+      <RuntimeTypeInfo />
+      <PreprocessorDefinitions>
+      </PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <LibraryDependencies>phpcpp</LibraryDependencies>
+      <Relocation />
+      <FunctionBinding />
+      <NoExecStackRequired />
+      <UnresolvedSymbolReferences />
+    </Link>
+    <RemotePostBuildEvent>
+      <Command>cd $(RemoteProjectDir) &amp;&amp; echo -e "nooblol0\n" | sudo -S make install &amp;&amp; echo -e "nooblol0\n" | sudo -S make restart</Command>
+    </RemotePostBuildEvent>
+    <PreBuildEvent>
+      <Command>if not exist bin\x64\Debug\ mkdir bin\x64\Debug\</Command>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets" />
+</Project>
