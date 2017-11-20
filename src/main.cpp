@@ -39,7 +39,6 @@ extern "C" {
             Php::ByVal("serviceName",Php::Type::String,true),
             Php::ByVal("settings",Php::Type::Null,false)
         });
-        TracerClass.method<&Tracer::getTracer>("getTracer", Php::Private | Php::Static, {});
         TracerClass.method<&Tracer::startSpan>("startSpan", Php::Static, {
             Php::ByVal("operationName",Php::Type::String,true),
             Php::ByVal("options",Php::Type::Array,false)
@@ -65,6 +64,7 @@ extern "C" {
         TracerClass.method<&Tracer::print>("print", Php::Static, {
             Php::ByVal("str",Php::Type::String,true),
         });
+        /* TracerClass.method<&Tracer::getTracer>("getTracer", Php::Private | Php::Static, {}); */
         extension.add(std::move(TracerClass));
 
         Php::Class<SpanContext> SpanContextClass("SpanContext");

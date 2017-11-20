@@ -108,17 +108,6 @@ void Tracer::init(Php::Parameters& params)
     global_tracer->init(serviceName);
 }
 
-Php::Value Tracer::getTracer()
-{
-    {
-        std::ostringstream ss;
-        ss << "Tracer::getTracer addr: " << global_tracer;
-        Tracer::file_logger.PrintLine(ss.str(), true);
-    }
-
-    return global_tracer == nullptr ? static_cast<Php::Value>(nullptr) : Php::Object(global_tracer->_name(), global_tracer);
-}
-
 Php::Value Tracer::startSpan(Php::Parameters& params)
 {
     Tracer::file_logger.PrintLine("Tracer::startSpan", true);
@@ -383,3 +372,16 @@ void Tracer::print(Php::Parameters& params)
     {
     }
 }
+
+/*
+Php::Value Tracer::getTracer()
+{
+    {
+        std::ostringstream ss;
+        ss << "Tracer::getTracer addr: " << global_tracer;
+        Tracer::file_logger.PrintLine(ss.str(), true);
+    }
+
+    return global_tracer == nullptr ? static_cast<Php::Value>(nullptr) : Php::Object(global_tracer->_name(), global_tracer);
+}
+*/
