@@ -250,6 +250,7 @@ SpanContext* JaegerTracer::extract(const Php::Value& carrier) const
 
 void JaegerTracer::flush()
 {
+    if (0)
     {
         std::ostringstream ss;
         ss << this;
@@ -282,26 +283,113 @@ void JaegerTracer::flush()
 
         try
         {
-            for (auto& iter : dynamic_cast<const JaegerTracer*>(this)->_spans)
+            Tracer::file_logger.PrintLine("*** parsing spans - start");
+            // JaegerizeVersion::V1
+            if (0)
             {
-                std::string batchData{};
-                LogCount incLogs{ LogCount::WHOLE };
-                do
+                for (auto& iter : dynamic_cast<const JaegerTracer*>(this)->_spans)
                 {
-                    ::Batch* batch = Helper::jaegerizeTracer(this, iter.second, incLogs);
-                    agent->emitBatch(*batch);
-                    batchData = trans->getBufferAsString();
+                    std::string batchData{};
+                    LogCount incLogs{ LogCount::WHOLE };
+                    do
+                    {
+                        ::Batch* batch = Helper::jaegerizeTracer(this, iter.second, incLogs, JaegerizeVersion::V1);
+                        agent->emitBatch(*batch);
+                        batchData = trans->getBufferAsString();
 
-                    trans->resetBuffer();
-                    delete batch;
-                    incLogs = static_cast<LogCount>(static_cast<int>(incLogs) - 1);
-                    Tracer::file_logger.PrintLine("    ---batchData.length() " + std::to_string(batchData.length()));
-                    if (incLogs == LogCount::ERROR)
-                        break;
-                } while (batchData.length() > MAXSPANBYTES);
+                        trans->resetBuffer();
+                        delete batch;
+                        incLogs = static_cast<LogCount>(static_cast<int>(incLogs) - 1);
+                        Tracer::file_logger.PrintLine("    ---batchData.length() " + std::to_string(batchData.length()));
+                        if (incLogs == LogCount::ERROR)
+                            break;
+                    } while (batchData.length() > MAXSPANBYTES);
 
-                data.push_back(batchData);
+                    data.push_back(batchData);
+                }
             }
+
+            // JaegerizeVersion::V2
+            if (1)
+            {
+                {
+                    std::ostringstream ss;
+                    ss
+                        << "*** total span count: "
+                        << dynamic_cast<const JaegerTracer*>(this)->_spans.size();
+                    Tracer::file_logger.PrintLine(ss.str());
+                }
+
+                int i = 0;
+                for (auto& iter : dynamic_cast<const JaegerTracer*>(this)->_spans)
+                {
+                    JaegerSpan* _span = dynamic_cast<JaegerSpan*>(iter.second);
+                    {
+                        Tracer::file_logger.PrintLine("");
+                        std::ostringstream ss;
+                        ss
+                            << "    -> span " << ++i
+                            << ": (`spanId` " << iter.first
+                            << " `total log count`: " << _span->_logs.size() << ")";
+                        Tracer::file_logger.PrintLine(ss.str());
+                    }
+
+                    size_t indexStart = 0;
+                    size_t indexCount = 0;
+                    LogCount incLogs;
+                    size_t part = 1;
+
+                    do
+                    {
+                        std::string batchData{};
+                        incLogs = LogCount::UPPERBOUND;
+                        size_t indexEnd = _span->_logs.size() - 1;
+
+                        do
+                        {
+                            incLogs = static_cast<LogCount>(static_cast<int>(incLogs) - 1);
+                            if (incLogs == LogCount::ERROR)
+                                break;
+
+                            indexCount = static_cast<int>((_span->_logs.size() - indexStart) * 1.0 / static_cast<size_t>(LogCount::WHOLE) * static_cast<size_t>(incLogs) + 0.5);
+                            indexCount <= 1 ? indexCount = 1 : indexCount;
+                            indexEnd = indexStart + indexCount;
+                            indexEnd <= 0 ? indexEnd = 0 : indexEnd--;
+
+                            Tracer::file_logger.PrintLine("    ---try `log count`: " + std::to_string(indexCount) +
+                                " (range " + std::to_string(indexStart) + " to " + std::to_string(indexEnd) +
+                                " `logLimit`: " +
+                                Log::toString(incLogs)
+                            );
+                            Tracer::file_logger.PrintLine("         indexEnd:   " + std::to_string(indexEnd), false);
+                            Tracer::file_logger.PrintLine("         indexCount: " + std::to_string(indexCount), false);
+
+                            ::Batch* batch = Helper::jaegerizeTracer(this, iter.second, incLogs, JaegerizeVersion::V2, indexStart, indexCount, part);
+                            agent->emitBatch(*batch);
+                            batchData = trans->getBufferAsString();
+
+                            trans->resetBuffer();
+                            delete batch;
+                            if (batchData.length() <= MAXSPANBYTES)
+                                Tracer::file_logger.PrintLine("       + batchData: " + std::to_string(batchData.length()) + " - " + Log::toString(incLogs) + "\n");
+                            else
+                                Tracer::file_logger.PrintLine("         batchData: " + std::to_string(batchData.length()));
+                        } while (batchData.length() > MAXSPANBYTES);
+                        data.push_back(batchData);
+
+                        //recount indexStart, should be equal to already inserted + 1
+                        indexStart += indexCount;
+                        if (_span->_logs.size() != indexEnd + 1)
+                        {
+                            part++;
+                            incLogs = LogCount::PARTIAL;
+                            continue;
+                        }
+                    } while (incLogs != LogCount::WHOLE && incLogs != LogCount::ERROR);
+                }
+            }
+
+            Tracer::file_logger.PrintLine("*** parsing spans - end");
         }
         catch (...)
         {

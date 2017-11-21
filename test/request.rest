@@ -1,5 +1,5 @@
 ###
-# home: 9 spans
+# 9 spans
 POST http://gate.dev/v2/payment/card/payout HTTP/1.1
 user-agent: vscode-restclient
 cookie: XDEBUG_SESSION=PHPSTORM
@@ -102,7 +102,7 @@ content-type: application/json
 {
   "general": {
     "project_id": 31,
-    "payment_id": "ORDER_ID_C00400_1504594436",
+    "payment_id": "ORDER_ID_C00400_1504594439",
     "signature": "6YA1m06cnT2YsM3VfvkGsjwM6bQff/njD0KL7uk/1ZxZm8EpdVoNRcxkZkE/K3Xb5NskLEDakrqjLcs8y0OWoQ=="
   },
   "card": {
@@ -130,3 +130,69 @@ GET http://gate.dev/
 Cookie: XDEBUG_SESSION=PHPSTORM
 #x-b3-sampled: 3
 
+###
+# atava
+# pmx: core-1035
+# plus: plus-146
+# ecotests: ./vendor/bin/codecept run cases PurchaseCest:C00400 -c ./tests/gate/payture/ —env local -d
+POST http://gate.dev/v2/payment/card/sale
+content-type: application/json
+
+{
+  "general": {
+    "project_id": 203,
+    "payment_id": "5556544565",
+    "signature": "No signature"
+  },
+  "card": {
+    "pan": "4111111111100031",
+    "year": 2020,
+    "month": 1,
+    "card_holder": "TONY RICHARDSON",
+    "cvv": "123"
+  },
+  "customer": {
+    "ip_address": "1.2.3.4",
+    "id": "Petrovich",
+    "phone": "79876543211"
+  },
+  "payment": {
+    "amount": 777877,
+    "currency": "RUB",
+    "description": "Some description"
+  }
+}
+
+###
+# roundbank C00400
+# 66 spans
+
+POST http://gate.dev/v2/payment/card/sale HTTP/1.1
+cookie: XDEBUG_SESSION=PHPSTORM
+content-type: application/json
+
+{
+  "general": {
+    "project_id": 31,
+    "payment_id": "ORDER_ID_C00400_0.40257800 1507630102",
+    "signature": "Tl0ipFFa876nRmO/U/BInrTRSGY4E/787n456XWqD4zrpyNPc+O2V6lSDGprkveoOTi9CE25XW+onbSg+JOBRw=="
+  },
+  "card": {
+    "pan": "4200778272290595",
+    "year": 2021,
+    "month": 12,
+    "card_holder": "HOLLY WARREN",
+    "cvv": "101",
+    "save": true
+  },
+  "customer": {
+    "id": "Kvadratych",
+    "country": "RU",
+    "ip_address": "1.2.3.4"
+  },
+  "payment": {
+    "amount": 1010,
+    "currency": "RUB",
+    "description": "Описание заказа: акции по скидке визы"
+  }
+}
