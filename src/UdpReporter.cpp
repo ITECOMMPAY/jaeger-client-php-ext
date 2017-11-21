@@ -55,10 +55,10 @@ void UdpReporter::flush(const std::string& data) const
 
         if (num_send != -1)
         {
-            Tracer::file_logger.PrintLine("UdpReporter num_send: " + std::to_string(num_send));
+            Tracer::file_logger.PrintLine("---UdpReporter num_send: " + std::to_string(num_send));
         }
         else
-            Tracer::file_logger.PrintLine("UdpReporter num_send: nothing sent");
+            Tracer::file_logger.PrintLine("---UdpReporter num_send: nothing sent");
         close(_socket);
     }
 }

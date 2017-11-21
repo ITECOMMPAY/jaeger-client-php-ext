@@ -5,6 +5,7 @@ using namespace OpenTracing;
 
 ITracer::~ITracer()
 {
+    if (0)
     {
         std::ostringstream ss;
         ss << this;

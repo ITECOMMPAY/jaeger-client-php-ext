@@ -40,6 +40,7 @@ JaegerTracer::JaegerTracer(IReporter* reporter, ISampler* sampler) :
     _process{ nullptr },
     _isSampled{ false }
 {
+    if (0)
     {
         std::ostringstream ss;
         ss << this;
@@ -335,11 +336,14 @@ void JaegerTracer::flush()
     data.clear();
     this->clearSpans();
     Tracer::file_logger.PrintLine("\tflush end");
-    }
+}
 
 void JaegerTracer::clearSpans()
 {
-    Tracer::file_logger.PrintLine("\tclearSpans start");
+    if (0)
+    {
+        Tracer::file_logger.PrintLine("\tclearSpans start");
+    }
 
     // issue with PHP ref count, so it will be deleted after script finishes, or when worker terminates...
     // but here is a workaround
@@ -356,8 +360,10 @@ void JaegerTracer::clearSpans()
     _spans_ref.clear();
     _spans.clear();
     _activeSpans.clear();
-    Tracer::file_logger.PrintLine("\tclearSpans end");
-
+    if (0)
+    {
+        Tracer::file_logger.PrintLine("\tclearSpans end");
+    }
 }
 
 const char* JaegerTracer::_name() const
