@@ -132,6 +132,7 @@ Php::Value Tracer::startSpan(Php::Parameters& params)
     {
         span = global_tracer->startSpan(operationName, options);
 
+        if (0)
         {
             std::ostringstream ss;
             ss <<
