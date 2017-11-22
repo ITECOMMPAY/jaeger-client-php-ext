@@ -214,8 +214,8 @@ const std::string OpenTracing::Helper::getHostName()
             }
 
             // the first one log should contain information if logs were splitted to different spans
-            if (((logLimit == LogCount::WHOLE) &&
-                (_span->_logs.size() != indStart + indCount)) ||
+            if (
+                ((logLimit == LogCount::WHOLE) && (_span->_logs.size() != indStart + indCount)) ||
                 (indStart != 0) ||
                 (indCount != _span->_logs.size()))
             {
@@ -239,7 +239,7 @@ const std::string OpenTracing::Helper::getHostName()
     jaegerSpan.__set_parentSpanId(_span->_context->_parentId);
     jaegerSpan.__set_operationName(_span->_operationName);
     jaegerSpan.__set_flags(_span->_context->_flags);
-    jaegerSpan.__set_startTime(_span->_startTime);
+    partialSpan && part != 1 ? jaegerSpan.__set_startTime(_span->_startTime + part) : jaegerSpan.__set_startTime(_span->_startTime);
     jaegerSpan.__set_duration(_span->_endTime != 0 ? _span->_endTime - _span->_startTime : Helper::now() - _span->_startTime);
 
     if (!_span->_context->_refType.isNull())
