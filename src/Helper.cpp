@@ -164,6 +164,7 @@ const std::string OpenTracing::Helper::getHostName()
 
     const JaegerSpan* _span = dynamic_cast<const JaegerSpan*>(span);
     bool partialSpan = false;
+    bool keepId = false;
 
     if (_span->_tags.size() > 0)
     {
@@ -254,13 +255,19 @@ const std::string OpenTracing::Helper::getHostName()
 
                 }
             }
+
+            if (part != 1 && (_span->_logs.size() == indStart + indCount))
+            {
+                keepId = true;
+            }
+
         }
         jaegerSpan.__set_logs(logs);
     }
 
     jaegerSpan.__set_traceIdLow(_span->_context->_traceId);
     jaegerSpan.__set_traceIdHigh(0);
-    partialSpan && part != 1 ? jaegerSpan.__set_spanId(Helper::generateId()) : jaegerSpan.__set_spanId(_span->_context->_spanId);
+    partialSpan && !keepId ? jaegerSpan.__set_spanId(Helper::generateId()) : jaegerSpan.__set_spanId(_span->_context->_spanId);
     jaegerSpan.__set_parentSpanId(_span->_context->_parentId);
     jaegerSpan.__set_operationName(_span->_operationName);
     jaegerSpan.__set_flags(_span->_context->_flags);
