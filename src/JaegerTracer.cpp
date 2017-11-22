@@ -338,12 +338,12 @@ void JaegerTracer::flush()
                     size_t indexCount = 0;
                     LogCount incLogs;
                     size_t part = 1;
-                    bool skipBadLog = false;
                     do
                     {
                         std::string batchData{};
                         incLogs = LogCount::UPPERBOUND;
                         size_t indexEnd = _span->_logs.size() - 1;
+                        bool skipBadLog = false;
 
                         do
                         {
@@ -354,8 +354,6 @@ void JaegerTracer::flush()
                                 {
                                     skipBadLog = true;
                                     incLogs = static_cast<LogCount>(static_cast<int>(incLogs) + 1);
-                                    data.pop_back();
-                                    indexStart -= indexCount;
                                 }
                                 else
                                 {
@@ -377,7 +375,7 @@ void JaegerTracer::flush()
                             Tracer::file_logger.PrintLine("         indexEnd:   " + std::to_string(indexEnd), false);
                             Tracer::file_logger.PrintLine("         indexCount: " + std::to_string(indexCount), false);
 
-                            ::Batch* batch = Helper::jaegerizeTracer(this, iter.second, incLogs, JaegerizeVersion::V2, indexStart, indexCount, part);
+                            ::Batch* batch = Helper::jaegerizeTracer(this, iter.second, incLogs, JaegerizeVersion::V2, indexStart, indexCount, part, skipBadLog);
                             agent->emitBatch(*batch);
                             batchData = trans->getBufferAsString();
 
@@ -398,6 +396,8 @@ void JaegerTracer::flush()
                             incLogs = LogCount::PARTIAL;
                             continue;
                         }
+                        if (_span->_logs.size() == indexStart)
+                            break;
                     } while (incLogs != LogCount::WHOLE && incLogs != LogCount::ERROR);
                 }
             }

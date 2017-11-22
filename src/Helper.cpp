@@ -151,9 +151,9 @@ const std::string OpenTracing::Helper::getHostName()
 }
 
 ::Span OpenTracing::Helper::jaegerizeSpan(
-    const OpenTracing::ISpan* span, 
-    LogCount logLimit, 
-    JaegerizeVersion ver, 
+    const OpenTracing::ISpan* span,
+    LogCount logLimit,
+    JaegerizeVersion ver,
     size_t indStart,
     size_t indCount,
     size_t part,
@@ -231,9 +231,14 @@ const std::string OpenTracing::Helper::getHostName()
                 partialSpan = true;
                 std::vector<Tag*> tags;
                 tags.push_back(new Tag(std::string{ "info" }, std::string{ "<---Logs were divided into several spans. PART " + std::to_string(part) + ":--->" }));
-                OpenTracing::Log* log = new OpenTracing::Log(tags, logs.front().timestamp - 1);
+                OpenTracing::Log* log = nullptr;
 
+                if (!badLog)
+                    log = new OpenTracing::Log(tags, logs.front().timestamp - 1);
+                else
+                    log = new OpenTracing::Log(tags, _span->_logs[indStart]->_timestamp - 1);
                 logs.push_back(jaegerizeLog(log));
+
                 delete log;
                 for (auto& iter : tags)
                     delete iter;
@@ -241,8 +246,7 @@ const std::string OpenTracing::Helper::getHostName()
                 if (badLog)
                 {
                     tags.push_back(new Tag(std::string{ "info" }, std::string{ "<---One log was ommited due its size, refer to the logging system--->" }));
-                    OpenTracing::Log* log = new OpenTracing::Log(tags, logs.front().timestamp + 1);
-
+                    log = new OpenTracing::Log(tags, logs.front().timestamp + 1);
                     logs.push_back(jaegerizeLog(log));
                     delete log;
                     for (auto& iter : tags)
