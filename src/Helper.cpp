@@ -63,7 +63,8 @@ const std::string OpenTracing::Helper::getHostName()
     JaegerizeVersion ver,
     size_t indStart,
     size_t indCount,
-    size_t part
+    size_t part,
+    bool badLog
 )
 {
     ::Batch* batch = new ::Batch();
@@ -93,7 +94,7 @@ const std::string OpenTracing::Helper::getHostName()
                 {
                     if (dynamic_cast<const JaegerSpan*>(span)->isDebug() || dynamic_cast<const JaegerSpan*>(span)->isSampled())
                     {
-                        jaegerSpans.push_back(jaegerizeSpan(span, logLimit, ver, indStart, indCount, part));
+                        jaegerSpans.push_back(jaegerizeSpan(span, logLimit, ver, indStart, indCount, part, badLog));
                     }
                 }
             }
@@ -149,7 +150,15 @@ const std::string OpenTracing::Helper::getHostName()
     return batch;
 }
 
-::Span OpenTracing::Helper::jaegerizeSpan(const OpenTracing::ISpan* span, LogCount logLimit, JaegerizeVersion ver, size_t indStart, size_t indCount, size_t part)
+::Span OpenTracing::Helper::jaegerizeSpan(
+    const OpenTracing::ISpan* span, 
+    LogCount logLimit, 
+    JaegerizeVersion ver, 
+    size_t indStart,
+    size_t indCount,
+    size_t part,
+    bool badLog
+)
 {
     ::Span jaegerSpan;
 
@@ -208,7 +217,7 @@ const std::string OpenTracing::Helper::getHostName()
         }
         if (ver == JaegerizeVersion::V2)
         {
-            for (size_t iter = indStart; iter < indStart + indCount; iter++)
+            for (size_t iter = indStart; !badLog && iter < indStart + indCount; iter++)
             {
                 logs.push_back(jaegerizeLog(_span->_logs[iter]));
             }
@@ -228,6 +237,18 @@ const std::string OpenTracing::Helper::getHostName()
                 delete log;
                 for (auto& iter : tags)
                     delete iter;
+
+                if (badLog)
+                {
+                    tags.push_back(new Tag(std::string{ "info" }, std::string{ "<---One log was ommited due its size, refer to the logging system--->" }));
+                    OpenTracing::Log* log = new OpenTracing::Log(tags, logs.front().timestamp + 1);
+
+                    logs.push_back(jaegerizeLog(log));
+                    delete log;
+                    for (auto& iter : tags)
+                        delete iter;
+
+                }
             }
         }
         jaegerSpan.__set_logs(logs);

@@ -37,7 +37,8 @@ namespace OpenTracing
             JaegerizeVersion ver = JaegerizeVersion::V1,
             size_t indStart = 0,
             size_t indCount = 0,
-            size_t part = 0
+            size_t part = 0,
+            bool badLog = false
         );
         /*Get jaeger version of the Span*/
         static ::Span jaegerizeSpan(
@@ -46,7 +47,8 @@ namespace OpenTracing
             JaegerizeVersion ver = JaegerizeVersion::V1,
             size_t indStart = 0,
             size_t indCount = 0,
-            size_t part = 0
+            size_t part = 0,
+            bool badLog = false
         );
         /*Get jaeger version of the Process*/
         static ::Process jaegerizeProcess(const OpenTracing::Process* process);

@@ -338,7 +338,7 @@ void JaegerTracer::flush()
                     size_t indexCount = 0;
                     LogCount incLogs;
                     size_t part = 1;
-
+                    bool skipBadLog = false;
                     do
                     {
                         std::string batchData{};
@@ -349,7 +349,20 @@ void JaegerTracer::flush()
                         {
                             incLogs = static_cast<LogCount>(static_cast<int>(incLogs) - 1);
                             if (incLogs == LogCount::ERROR)
-                                break;
+                            {
+                                if (!skipBadLog)
+                                {
+                                    skipBadLog = true;
+                                    incLogs = static_cast<LogCount>(static_cast<int>(incLogs) + 1);
+                                    data.pop_back();
+                                    indexStart -= indexCount;
+                                }
+                                else
+                                {
+                                    skipBadLog = false;
+                                    break;
+                                }
+                            }
 
                             indexCount = static_cast<int>((_span->_logs.size() - indexStart) * 1.0 / static_cast<size_t>(LogCount::WHOLE) * static_cast<size_t>(incLogs) + 0.5);
                             indexCount <= 1 ? indexCount = 1 : indexCount;
@@ -415,7 +428,7 @@ void JaegerTracer::flush()
         trans->close();
         delete batch;
 #endif
-    }
+        }
     else
         return;
 
@@ -424,7 +437,7 @@ void JaegerTracer::flush()
     data.clear();
     this->clearSpans();
     Tracer::file_logger.PrintLine("\tflush end");
-}
+    }
 
 void JaegerTracer::clearSpans()
 {
