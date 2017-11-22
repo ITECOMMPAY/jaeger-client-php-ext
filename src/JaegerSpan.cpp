@@ -61,12 +61,21 @@ void JaegerSpan::addTags(Php::Parameters& tags)
                 //tags_order.push_back(std::make_pair(key, value));
                 try
                 {
-                    if (values.get(i).isBool())
-                        this->_tags.push_back(new Tag(keys[i], values.get(i).boolValue()));
-                    else if (values.get(i).isFloat())
-                        this->_tags.push_back(new Tag(keys[i], values.get(i).floatValue()));
-                    else
-                        this->_tags.push_back(new Tag(keys[i], values.get(i).stringValue()));
+                    bool exist = false;
+                    for (auto& iter : this->_tags)
+                    {
+                        if (iter->_key == keys.get(i).stringValue())
+                            exist = true;
+                    }
+                    if (!exist)
+                    {
+                        if (values.get(i).isBool())
+                            this->_tags.push_back(new Tag(keys[i], values.get(i).boolValue()));
+                        else if (values.get(i).isFloat())
+                            this->_tags.push_back(new Tag(keys[i], values.get(i).floatValue()));
+                        else
+                            this->_tags.push_back(new Tag(keys[i], values.get(i).stringValue()));
+                    }
                 }
                 catch (...)
                 {
