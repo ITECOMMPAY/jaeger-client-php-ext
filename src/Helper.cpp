@@ -267,7 +267,7 @@ const std::string OpenTracing::Helper::getHostName()
 
     jaegerSpan.__set_traceIdLow(_span->_context->_traceId);
     jaegerSpan.__set_traceIdHigh(0);
-    partialSpan && !keepId ? jaegerSpan.__set_spanId(Helper::generateId()) : jaegerSpan.__set_spanId(_span->_context->_spanId);
+    partialSpan /*&& part != 1*/ && !keepId ? jaegerSpan.__set_spanId(Helper::generateId()) : jaegerSpan.__set_spanId(_span->_context->_spanId);
     jaegerSpan.__set_parentSpanId(_span->_context->_parentId);
     jaegerSpan.__set_operationName(_span->_operationName);
     jaegerSpan.__set_flags(_span->_context->_flags);

@@ -166,7 +166,7 @@ void JaegerTracer::finishSpan(ISpan* span, const Php::Value& endTime)
             "    _logs.size: " << dynamic_cast<JaegerSpan*>(span)->_logs.size() << std::endl <<
             "    _tags.size: " << dynamic_cast<JaegerSpan*>(span)->_tags.size() << std::endl;
 
-        Tracer::file_logger.PrintLine(ss.str(), true);
+        Tracer::file_logger.PrintLine(ss.str());
         ss.str("");
         ss.clear();
 
@@ -187,7 +187,7 @@ void JaegerTracer::finishSpan(ISpan* span, const Php::Value& endTime)
                 "    span to remove: " << jaegerSpan->_context->_spanId << std::endl <<
                 "    _activeSpans BEFORE(size: " << this->_activeSpans.size() << "): " << std::endl;
 
-            Tracer::file_logger.PrintLine(ss.str(), true);
+            Tracer::file_logger.PrintLine(ss.str());
             ss.str("");
             ss.clear();
 
@@ -213,7 +213,7 @@ void JaegerTracer::finishSpan(ISpan* span, const Php::Value& endTime)
             for (auto& iter : this->_activeSpans)
                 ss << "        " << iter << std::endl;
 
-            Tracer::file_logger.PrintLine(ss.str(), true);
+            Tracer::file_logger.PrintLine(ss.str());
         }
     }
 }
@@ -363,7 +363,7 @@ void JaegerTracer::flush()
                             }
 
                             indexCount = static_cast<int>((_span->_logs.size() - indexStart) * 1.0 / static_cast<size_t>(LogCount::WHOLE) * static_cast<size_t>(incLogs) + 0.5);
-                            indexCount <= 1 ? indexCount = 1 : indexCount;
+                            indexCount <= 1 && _span->_logs.size() != 0 ? indexCount = 1 : indexCount;
                             indexEnd = indexStart + indexCount;
                             indexEnd <= 0 ? indexEnd = 0 : indexEnd--;
 
@@ -390,7 +390,7 @@ void JaegerTracer::flush()
 
                         //recount indexStart, should be equal to already inserted + 1
                         indexStart += indexCount;
-                        if (_span->_logs.size() != indexEnd + 1)
+                        if (_span->_logs.size() != indexEnd + 1 && indexEnd != 0)
                         {
                             part++;
                             incLogs = LogCount::PARTIAL;
@@ -428,7 +428,7 @@ void JaegerTracer::flush()
         trans->close();
         delete batch;
 #endif
-        }
+    }
     else
         return;
 
@@ -437,7 +437,7 @@ void JaegerTracer::flush()
     data.clear();
     this->clearSpans();
     Tracer::file_logger.PrintLine("\tflush end");
-    }
+}
 
 void JaegerTracer::clearSpans()
 {
