@@ -130,10 +130,11 @@
       <UnresolvedSymbolReferences />
     </Link>
     <RemotePostBuildEvent>
-      <Command>cd $(RemoteProjectDir) &amp;&amp; echo -e "nooblol0\n" | sudo -S make install &amp;&amp; echo -e "nooblol0\n" | sudo -S make restart</Command>
+      <Command>cd $(RemoteProjectDir) &amp;&amp; echo -e "vagrant\n" | sudo -S make install &amp;&amp; echo -e "vagrant\n" | sudo -S make restart</Command>
     </RemotePostBuildEvent>
     <PreBuildEvent>
-      <Command>if not exist bin\x64\Debug\ mkdir bin\x64\Debug\</Command>
+      <Command>
+      </Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

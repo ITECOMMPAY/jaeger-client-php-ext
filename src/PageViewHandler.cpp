@@ -23,7 +23,7 @@ void onIdle()
     {
         std::ostringstream ss;
         ss << Tracer::global_tracer;
-        Tracer::file_logger.PrintLine("\tdelete global_tracer " + ss.str() + " in onIdle");
+        Tracer::file_logger.PrintLine("delete global_tracer " + ss.str() + " in onIdle");
         delete Tracer::global_tracer;
         Tracer::global_tracer = nullptr;
     }
@@ -37,7 +37,7 @@ void onShutDown()
     {
         std::ostringstream ss;
         ss << Tracer::global_tracer;
-        Tracer::file_logger.PrintLine("\tdelete global_tracer " + ss.str() + " in onShutDown");
+        Tracer::file_logger.PrintLine("delete global_tracer " + ss.str() + " in onShutDown");
         delete Tracer::global_tracer;
         Tracer::global_tracer = nullptr;
     }

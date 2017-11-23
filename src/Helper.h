@@ -10,6 +10,12 @@
 
 namespace OpenTracing
 {
+    enum class JaegerizeVersion {
+        ERROR = -1,
+        V1 = 1,
+        V2 = 2
+    };
+
     class Helper
     {
     public:
@@ -24,9 +30,26 @@ namespace OpenTracing
         /*Get Host name*/
         static const std::string getHostName();
         /*Get jaeger version of the Tracer*/
-        static ::Batch* jaegerizeTracer(const OpenTracing::ITracer* tracer, const OpenTracing::ISpan* span = nullptr, LogCount logLimit = LogCount::WHOLE);
+        static ::Batch* jaegerizeTracer(
+            const OpenTracing::ITracer* tracer,
+            const OpenTracing::ISpan* span = nullptr,
+            LogCount logLimit = LogCount::WHOLE,
+            JaegerizeVersion ver = JaegerizeVersion::V1,
+            size_t indStart = 0,
+            size_t indCount = 0,
+            size_t part = 0,
+            bool badLog = false
+        );
         /*Get jaeger version of the Span*/
-        static ::Span jaegerizeSpan(const OpenTracing::ISpan* span, LogCount logLimit = LogCount::WHOLE);
+        static ::Span jaegerizeSpan(
+            const OpenTracing::ISpan* span, 
+            LogCount logLimit = LogCount::WHOLE, 
+            JaegerizeVersion ver = JaegerizeVersion::V1,
+            size_t indStart = 0,
+            size_t indCount = 0,
+            size_t part = 0,
+            bool badLog = false
+        );
         /*Get jaeger version of the Process*/
         static ::Process jaegerizeProcess(const OpenTracing::Process* process);
         /*Get jaeger version of the Tag*/

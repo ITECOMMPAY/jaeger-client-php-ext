@@ -263,3 +263,5 @@ __pycache__/
 *.tlog
 *.o
 *.so
+*.recipe
+*.merged

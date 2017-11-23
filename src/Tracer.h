@@ -21,8 +21,6 @@ namespace OpenTracing
 
         /*Create tracer instance and call its init method*/
         static void init(Php::Parameters& params);
-        /*Get global tracer*/
-        static Php::Value getTracer();
         /*Pass startSpan call to the tracer*/
         static Php::Value startSpan(Php::Parameters& params);
         /*Pass getCurrentSpan call to the tracer*/
@@ -48,7 +46,10 @@ namespace OpenTracing
         /*Debug Output*/
         /* usage e.g. \Tracer::print('---'.print_r($_SERVER['SCRIPT_NAME'],true));*/
         static void print(Php::Parameters& params);
-    };
+
+		/*Get global tracer*/
+		/* static Php::Value getTracer(); */
+	};
 }
 #endif /* TRACER_H */
 
