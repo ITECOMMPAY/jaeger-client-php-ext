@@ -194,6 +194,17 @@ Php::Value Tracer::getCurrentSpan()
     return span == nullptr ? static_cast<Php::Value>(nullptr) : Php::Object(span->_name(), span);
 }
 
+Php::Value OpenTracing::Tracer::getCurrentTraceId()
+{
+    int64_t _traceId = int64_t();
+    if (global_tracer != nullptr)
+    {
+        _traceId = global_tracer->getCurrentTraceId();
+    }
+
+    return Php::Value(_traceId);
+}
+
 void Tracer::finishSpan(Php::Parameters& params)
 {
     Php::Value param = params[0];

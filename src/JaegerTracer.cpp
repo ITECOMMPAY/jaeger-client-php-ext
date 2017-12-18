@@ -147,6 +147,23 @@ ISpan* JaegerTracer::getCurrentSpan()
     return span;
 }
 
+int64_t OpenTracing::JaegerTracer::getCurrentTraceId()
+{
+    ISpan* span = nullptr;
+
+    for (auto& iter : dynamic_cast<const JaegerTracer*>(this)->_spans)
+    {
+        JaegerSpan* _span = dynamic_cast<JaegerSpan*>(iter.second);
+        if (_span->_context != nullptr)
+        {
+            span = _span;
+            break;
+        }
+    }
+
+    return span == nullptr ? int64_t() : dynamic_cast<JaegerSpan*>(span)->_context->_traceId;
+}
+
 void JaegerTracer::finishSpan(ISpan* span, const Php::Value& endTime)
 {
     /*

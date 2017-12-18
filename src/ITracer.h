@@ -18,6 +18,8 @@ namespace OpenTracing
         virtual OpenTracing::ISpan* startSpan(const std::string& operationName, const Php::Value& options = nullptr) = 0;
         /*Get current opened span*/
         virtual OpenTracing::ISpan* getCurrentSpan() = 0;
+        /*Get current trace id*/
+        virtual int64_t getCurrentTraceId() = 0;
         /*Finish span*/
         virtual void finishSpan(ISpan* span, const Php::Value& endTime = nullptr) = 0;
         /*Inject context into carrier*/

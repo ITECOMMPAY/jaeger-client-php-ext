@@ -14,6 +14,7 @@ namespace OpenTracing
         void init(const std::string& serviceName);
         ISpan* startSpan(const std::string& operationName, const Php::Value& options = nullptr);
         ISpan* getCurrentSpan();
+        int64_t getCurrentTraceId();
         void finishSpan(ISpan* span, const Php::Value& endTime = nullptr);
         void inject(const Php::Value& context, Php::Value& carrier);
         SpanContext* extract(const Php::Value& carrier) const;

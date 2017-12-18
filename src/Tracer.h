@@ -25,6 +25,8 @@ namespace OpenTracing
         static Php::Value startSpan(Php::Parameters& params);
         /*Pass getCurrentSpan call to the tracer*/
         static Php::Value getCurrentSpan();
+        /*Pass getCurrentTraceId call to the tracer*/
+        static Php::Value getCurrentTraceId();
         /*Pass finishSpan call to the tracer*/
         static void finishSpan(Php::Parameters& params);
         /*Pass inject call to the tracer*/
