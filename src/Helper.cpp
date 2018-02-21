@@ -56,7 +56,7 @@ const std::string OpenTracing::Helper::getHostName()
     return std::string{ name };
 }
 
-::Batch* OpenTracing::Helper::jaegerizeTracer(
+jaegertracing::thrift::Batch* OpenTracing::Helper::jaegerizeTracer(
     const OpenTracing::ITracer* tracer,
     const OpenTracing::ISpan* span,
     LogCount logLimit,
@@ -67,14 +67,14 @@ const std::string OpenTracing::Helper::getHostName()
     bool badLog
 )
 {
-    ::Batch* batch = new ::Batch();
+    jaegertracing::thrift::Batch* batch = new jaegertracing::thrift::Batch();
 
     if (strcmp(tracer->_name(), "NoopTracer") == 0)
     {
     }
     else if (strcmp(tracer->_name(), "JaegerTracer") == 0)
     {
-        std::vector<::Span> jaegerSpans;
+        std::vector<jaegertracing::thrift::Span> jaegerSpans;
 
         {
             std::ostringstream ss;
@@ -150,7 +150,7 @@ const std::string OpenTracing::Helper::getHostName()
     return batch;
 }
 
-::Span OpenTracing::Helper::jaegerizeSpan(
+jaegertracing::thrift::Span OpenTracing::Helper::jaegerizeSpan(
     const OpenTracing::ISpan* span,
     LogCount logLimit,
     JaegerizeVersion ver,
@@ -160,7 +160,7 @@ const std::string OpenTracing::Helper::getHostName()
     bool badLog
 )
 {
-    ::Span jaegerSpan;
+    jaegertracing::thrift::Span jaegerSpan;
 
     const JaegerSpan* _span = dynamic_cast<const JaegerSpan*>(span);
     bool partialSpan = false;
@@ -168,7 +168,7 @@ const std::string OpenTracing::Helper::getHostName()
 
     if (_span->_tags.size() > 0)
     {
-        std::vector<::Tag> tags;
+        std::vector<jaegertracing::thrift::Tag> tags;
         for (auto& iter : _span->_tags)
         {
             tags.push_back(jaegerizeTag(iter));
@@ -178,7 +178,7 @@ const std::string OpenTracing::Helper::getHostName()
 
     if (_span->_logs.size() > 0)
     {
-        std::vector<::Log> logs;
+        std::vector<jaegertracing::thrift::Log> logs;
         if (ver == JaegerizeVersion::V1)
         {
             for (auto iter = _span->_logs.rbegin(); iter != _span->_logs.rend(); iter++)
@@ -199,7 +199,7 @@ const std::string OpenTracing::Helper::getHostName()
                 {
                     for (auto& iter_tags : _span->_logs[iter]->_fields)
                     {
-                        if (iter_tags->_key == "log.level" && iter_tags->_vType == TagType::DOUBLE && iter_tags->_vDouble == 1)
+                        if (iter_tags->_key == "log.level" && iter_tags->_vType == jaegertracing::thrift::TagType::DOUBLE && iter_tags->_vDouble == 1)
                         {
                             logs.push_back(jaegerizeLog(_span->_logs[iter]));
                         }
@@ -276,10 +276,10 @@ const std::string OpenTracing::Helper::getHostName()
 
     if (!_span->_context->_refType.isNull())
     {
-        std::vector<SpanRef> references;
+        std::vector<jaegertracing::thrift::SpanRef> references;
 
-        SpanRef spanRef;
-        spanRef.__set_refType(static_cast<SpanRefType::type>(_span->_context->_refType.numericValue()));
+        jaegertracing::thrift::SpanRef spanRef;
+        spanRef.__set_refType(static_cast<jaegertracing::thrift::SpanRefType::type>(_span->_context->_refType.numericValue()));
         spanRef.__set_traceIdLow(_span->_context->_traceId);
         spanRef.__set_traceIdHigh(0);
         spanRef.__set_spanId(_span->_context->_parentId);
@@ -291,10 +291,10 @@ const std::string OpenTracing::Helper::getHostName()
     return jaegerSpan;
 }
 
-::Process OpenTracing::Helper::jaegerizeProcess(const OpenTracing::Process* process)
+jaegertracing::thrift::Process OpenTracing::Helper::jaegerizeProcess(const OpenTracing::Process* process)
 {
-    ::Process jaegerProcess;
-    std::vector<::Tag> tags;
+    jaegertracing::thrift::Process jaegerProcess;
+    std::vector<jaegertracing::thrift::Tag> tags;
 
     if (process != nullptr)
     {
@@ -309,21 +309,21 @@ const std::string OpenTracing::Helper::getHostName()
     return jaegerProcess;
 }
 
-::Tag OpenTracing::Helper::jaegerizeTag(const OpenTracing::Tag* tag)
+jaegertracing::thrift::Tag OpenTracing::Helper::jaegerizeTag(const OpenTracing::Tag* tag)
 {
-    ::Tag jaegerTag;
+    jaegertracing::thrift::Tag jaegerTag;
     jaegerTag.__set_key(tag->_key);
     jaegerTag.__set_vType(tag->_vType);
 
     switch (tag->_vType)
     {
-    case TagType::BOOL:
+    case jaegertracing::thrift::TagType::BOOL:
         jaegerTag.__set_vBool(tag->_vBool);
         break;
-    case TagType::DOUBLE:
+    case jaegertracing::thrift::TagType::DOUBLE:
         jaegerTag.__set_vDouble(tag->_vDouble);
         break;
-    case TagType::STRING:
+    case jaegertracing::thrift::TagType::STRING:
         jaegerTag.__set_vStr(tag->_vStr);
         break;
     default:
@@ -333,10 +333,10 @@ const std::string OpenTracing::Helper::getHostName()
     return jaegerTag;
 }
 
-::Log OpenTracing::Helper::jaegerizeLog(const OpenTracing::Log* log)
+jaegertracing::thrift::Log OpenTracing::Helper::jaegerizeLog(const OpenTracing::Log* log)
 {
-    ::Log jaegerLog;
-    std::vector<::Tag> fields;
+    jaegertracing::thrift::Log jaegerLog;
+    std::vector<jaegertracing::thrift::Tag> fields;
 
     std::ostringstream ss;
     {

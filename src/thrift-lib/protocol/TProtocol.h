@@ -44,7 +44,7 @@
 // http://cellperformance.beyond3d.com/articles/2006/06/understanding-strict-aliasing.html
 template <typename To, typename From>
 static inline To bitwise_cast(From from) {
-  static_assert(sizeof(From) == sizeof(To), "error");
+    static_assert(sizeof(From) == sizeof(To), "error");
 
   // BAD!!!  These are all broken with -O2.
   //return *reinterpret_cast<To*>(&from);  // BAD!!!
@@ -544,12 +544,12 @@ private:
 // This is the default / legacy choice
 struct TNetworkBigEndian
 {
-    static uint16_t toWire16(uint16_t x) { return htons(x); }
-    static uint32_t toWire32(uint32_t x) { return htonl(x); }
-    static uint64_t toWire64(uint64_t x) { return THRIFT_htonll(x); }
-    static uint16_t fromWire16(uint16_t x) { return ntohs(x); }
-    static uint32_t fromWire32(uint32_t x) { return ntohl(x); }
-    static uint64_t fromWire64(uint64_t x) { return THRIFT_ntohll(x); }
+  static uint16_t toWire16(uint16_t x)   {return htons(x);}
+  static uint32_t toWire32(uint32_t x)   {return htonl(x);}
+  static uint64_t toWire64(uint64_t x)   {return THRIFT_htonll(x);}
+  static uint16_t fromWire16(uint16_t x) {return ntohs(x);}
+  static uint32_t fromWire32(uint32_t x) {return ntohl(x);}
+  static uint64_t fromWire64(uint64_t x) {return THRIFT_ntohll(x);}
 };
 
 // On most systems, this will be a bit faster than TNetworkBigEndian
@@ -598,7 +598,7 @@ uint32_t skip(Protocol_& prot, TType type) {
     return prot.readBool(boolv);
   }
   case T_BYTE: {
-    int8_t bytev;
+    int8_t bytev = 0;
     return prot.readByte(bytev);
   }
   case T_I16: {
@@ -679,6 +679,8 @@ uint32_t skip(Protocol_& prot, TType type) {
   case T_UTF8:
   case T_UTF16:
     break;
+  default:
+      throw Php::Exception("TProtocolException::INVALID_DATA: TProtocolException: (Invalid data)");
   }
   return 0;
 }

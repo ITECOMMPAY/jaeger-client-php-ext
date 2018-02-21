@@ -163,8 +163,8 @@ uint32_t TBinaryProtocolT<Transport_, ByteOrder_>::writeI64(const int64_t i64) {
 
 template <class Transport_, class ByteOrder_>
 uint32_t TBinaryProtocolT<Transport_, ByteOrder_>::writeDouble(const double dub) {
-    static_assert(sizeof(double) == sizeof(uint64_t), "error");
-    static_assert(std::numeric_limits<double>::is_iec559, "error");
+  static_assert(sizeof(double) == sizeof(uint64_t), "error");
+  static_assert(std::numeric_limits<double>::is_iec559, "error");
 
   uint64_t bits = bitwise_cast<uint64_t>(dub);
   bits = ByteOrder_::toWire64(bits);
@@ -176,7 +176,7 @@ template <class Transport_, class ByteOrder_>
 template <typename StrType>
 uint32_t TBinaryProtocolT<Transport_, ByteOrder_>::writeString(const StrType& str) {
   if (str.size() > static_cast<size_t>((std::numeric_limits<int32_t>::max)()))
-      throw Php::Exception("TProtocolException::SIZE_LIMIT: TProtocolException: Exceeded size limit");
+    throw Php::Exception("TProtocolException::SIZE_LIMIT: TProtocolException: Exceeded size limit");
   uint32_t size = static_cast<uint32_t>(str.size());
   uint32_t result = writeI32((int32_t)size);
   if (size > 0) {
@@ -206,14 +206,14 @@ uint32_t TBinaryProtocolT<Transport_, ByteOrder_>::readMessageBegin(std::string&
     // Check for correct version number
     int32_t version = sz & VERSION_MASK;
     if (version != VERSION_1) {
-        throw Php::Exception("TProtocolException::BAD_VERSION: TProtocolException: Invalid version - Bad version identifier");
+      throw Php::Exception("TProtocolException::BAD_VERSION: TProtocolException: Invalid version - Bad version identifier");
     }
     messageType = (TMessageType)(sz & 0x000000ff);
     result += readString(name);
     result += readI32(seqid);
   } else {
     if (this->strict_read_) {
-        throw Php::Exception("TProtocolException::BAD_VERSION: TProtocolException: Invalid version - No version identifier... old protocol client in strict mode?");
+      throw Php::Exception("TProtocolException::BAD_VERSION: TProtocolException: Invalid version - No version identifier... old protocol client in strict mode?");
     } else {
       // Handle pre-versioned input
       int8_t type;
@@ -277,9 +277,9 @@ uint32_t TBinaryProtocolT<Transport_, ByteOrder_>::readMapBegin(TType& keyType,
   valType = (TType)v;
   result += readI32(sizei);
   if (sizei < 0) {
-      throw Php::Exception("TProtocolException::NEGATIVE_SIZE: TProtocolException: Negative size");
+    throw Php::Exception("TProtocolException::NEGATIVE_SIZE: TProtocolException: Negative size");
   } else if (this->container_limit_ && sizei > this->container_limit_) {
-      throw Php::Exception("TProtocolException::SIZE_LIMIT: TProtocolException: Exceeded size limit");
+    throw Php::Exception("TProtocolException::SIZE_LIMIT: TProtocolException: Exceeded size limit");
   }
   size = (uint32_t)sizei;
   return result;
@@ -299,9 +299,9 @@ uint32_t TBinaryProtocolT<Transport_, ByteOrder_>::readListBegin(TType& elemType
   elemType = (TType)e;
   result += readI32(sizei);
   if (sizei < 0) {
-      throw Php::Exception("TProtocolException::NEGATIVE_SIZE: TProtocolException: Negative size");
+    throw Php::Exception("TProtocolException::NEGATIVE_SIZE: TProtocolException: Negative size");
   } else if (this->container_limit_ && sizei > this->container_limit_) {
-      throw Php::Exception("TProtocolException::SIZE_LIMIT: TProtocolException: Exceeded size limit");
+    throw Php::Exception("TProtocolException::SIZE_LIMIT: TProtocolException: Exceeded size limit");
   }
   size = (uint32_t)sizei;
   return result;
@@ -321,9 +321,9 @@ uint32_t TBinaryProtocolT<Transport_, ByteOrder_>::readSetBegin(TType& elemType,
   elemType = (TType)e;
   result += readI32(sizei);
   if (sizei < 0) {
-      throw Php::Exception("TProtocolException::NEGATIVE_SIZE: TProtocolException: Negative size");
+    throw Php::Exception("TProtocolException::NEGATIVE_SIZE: TProtocolException: Negative size");
   } else if (this->container_limit_ && sizei > this->container_limit_) {
-      throw Php::Exception("TProtocolException::SIZE_LIMIT: TProtocolException: Exceeded size limit");
+     throw Php::Exception("TProtocolException::SIZE_LIMIT: TProtocolException: Exceeded size limit");
   }
   size = (uint32_t)sizei;
   return result;
@@ -419,10 +419,10 @@ uint32_t TBinaryProtocolT<Transport_, ByteOrder_>::readStringBody(StrType& str, 
 
   // Catch error cases
   if (size < 0) {
-      throw Php::Exception("TProtocolException::NEGATIVE_SIZE: TProtocolException: Negative size");
+    throw Php::Exception("TProtocolException::NEGATIVE_SIZE: TProtocolException: Negative size");
   }
   if (this->string_limit_ > 0 && size > this->string_limit_) {
-      throw Php::Exception("TProtocolException::SIZE_LIMIT: TProtocolException: Exceeded size limit");
+    throw Php::Exception("TProtocolException::SIZE_LIMIT: TProtocolException: Exceeded size limit");
   }
 
   // Catch empty string case

@@ -134,11 +134,11 @@ void JaegerSpan::addLogs(Php::Parameters& logs)
             ss << "    Log" << ++i << ": " << iter << " time : " << iter->_timestamp << std::endl;
             for (auto& it : iter->_fields)
             {
-                if (it->_vType == TagType::BOOL)
+                if (it->_vType == jaegertracing::thrift::TagType::BOOL)
                     ss << "        " << it->_key << " " << it->_vBool << std::endl;
-                if (it->_vType == TagType::DOUBLE)
+                if (it->_vType == jaegertracing::thrift::TagType::DOUBLE)
                     ss << "        " << it->_key << " " << it->_vDouble << std::endl;
-                if (it->_vType == TagType::STRING)
+                if (it->_vType == jaegertracing::thrift::TagType::STRING)
                     ss << "        " << it->_key << " " << it->_vStr << std::endl;
             }
         }

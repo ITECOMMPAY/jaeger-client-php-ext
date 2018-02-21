@@ -120,6 +120,9 @@
     <ClInclude Include="src\thrift-lib\transport\TSocket.h">
       <Filter>src\thrift-lib\transport</Filter>
     </ClInclude>
+    <ClInclude Include="src\thrift-gen\zipkincore_types.h">
+      <Filter>src\thrift-gen</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\JaegerTracer.cpp">
@@ -199,6 +202,9 @@
     </ClCompile>
     <ClCompile Include="src\thrift-lib\transport\TSocket.cpp">
       <Filter>src\thrift-lib\transport</Filter>
+    </ClCompile>
+    <ClCompile Include="src\thrift-gen\zipkincore_types.cpp">
+      <Filter>src\thrift-gen</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

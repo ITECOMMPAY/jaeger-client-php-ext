@@ -55,6 +55,7 @@
     <ClInclude Include="src\TextCarrier.h" />
     <ClInclude Include="src\thrift-gen\Agent.h" />
     <ClInclude Include="src\thrift-gen\jaeger_types.h" />
+    <ClInclude Include="src\thrift-gen\zipkincore_types.h" />
     <ClInclude Include="src\thrift-lib\protocol\TBinaryProtocol.h" />
     <ClInclude Include="src\thrift-lib\protocol\TCompactProtocol.h" />
     <ClInclude Include="src\thrift-lib\protocol\TProtocol.h" />
@@ -89,6 +90,7 @@
     <ClCompile Include="src\TextCarrier.cpp" />
     <ClCompile Include="src\thrift-gen\Agent.cpp" />
     <ClCompile Include="src\thrift-gen\jaeger_types.cpp" />
+    <ClCompile Include="src\thrift-gen\zipkincore_types.cpp" />
     <ClCompile Include="src\thrift-lib\protocol\TProtocol.cpp" />
     <ClCompile Include="src\thrift-lib\transport\TBufferTransports.cpp" />
     <ClCompile Include="src\thrift-lib\transport\TSocket.cpp" />

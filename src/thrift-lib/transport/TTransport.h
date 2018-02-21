@@ -76,7 +76,9 @@ public:
 
   /**
    * Opens the transport for communications.
+   *
    * @return bool Whether the transport was successfully opened
+   * @throws TTransportException if opening failed
    */
   virtual void open() {
       throw Php::Exception("TTransportException::NOT_OPEN: TTransportException: Transport not open - Cannot open base TTransport.");
@@ -95,6 +97,7 @@ public:
    * @param buf  Reference to the location to write the data
    * @param len  How many bytes to read
    * @return How many bytes were actually read
+   * @throws TTransportException If an error occurs
    */
   uint32_t read(uint8_t* buf, uint32_t len) {
     return read_virt(buf, len);
@@ -109,6 +112,7 @@ public:
    * @param s     Reference to location for read data
    * @param len   How many bytes to read
    * @return How many bytes read, which must be equal to size
+   * @throws TTransportException If insufficient data was read
    */
   uint32_t readAll(uint8_t* buf, uint32_t len) {
     return readAll_virt(buf, len);
@@ -139,6 +143,7 @@ public:
    * discarded.
    *
    * @param buf  The data to write out
+   * @throws TTransportException if an error occurs
    */
   void write(const uint8_t* buf, uint32_t len) {
     write_virt(buf, len);
@@ -162,6 +167,8 @@ public:
   /**
    * Flushes any pending data to be written. Typically used with buffered
    * transport mechanisms.
+   *
+   * @throws TTransportException if an error occurs
    */
   virtual void flush() {
     // default behaviour is to do nothing
@@ -192,6 +199,7 @@ public:
    * @return If the borrow succeeds, return a pointer to the borrowed data.
    *         This might be equal to \c buf, or it might be a pointer into
    *         the transport's internal buffers.
+   * @throws TTransportException if an error occurs
    */
   const uint8_t* borrow(uint8_t* buf, uint32_t* len) {
     return borrow_virt(buf, len);
@@ -205,6 +213,7 @@ public:
    * consume, or that would require a buffer to dump the consumed data?
    *
    * @param len  How many bytes to consume
+   * @throws TTransportException If an error occurs
    */
   void consume(uint32_t len) {
     consume_virt(len);
