@@ -274,7 +274,7 @@ jaegertracing::thrift::Span OpenTracing::Helper::jaegerizeSpan(
     partialSpan && part != 1 ? jaegerSpan.__set_startTime(_span->_startTime + part) : jaegerSpan.__set_startTime(_span->_startTime);
     jaegerSpan.__set_duration(_span->_endTime != 0 ? _span->_endTime - _span->_startTime : Helper::now() - _span->_startTime);
 
-    if (!_span->_context->_refType.isNull())
+    if (!_span->_context->_refType.isNull() && _span->_context->_traceId != _span->_context->_spanId)
     {
         std::vector<jaegertracing::thrift::SpanRef> references;
 
