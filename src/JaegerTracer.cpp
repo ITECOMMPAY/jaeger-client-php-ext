@@ -147,7 +147,7 @@ ISpan* JaegerTracer::getCurrentSpan()
     return span;
 }
 
-int64_t OpenTracing::JaegerTracer::getCurrentTraceId()
+int64_t JaegerTracer::getCurrentTraceId()
 {
     ISpan* span = nullptr;
 
@@ -162,6 +162,16 @@ int64_t OpenTracing::JaegerTracer::getCurrentTraceId()
     }
 
     return span == nullptr ? int64_t() : dynamic_cast<JaegerSpan*>(span)->_context->_traceId;
+}
+
+int64_t JaegerTracer::getCurrentSpanId(ISpan* span)
+{
+    return span == nullptr ? int64_t() : dynamic_cast<JaegerSpan*>(span)->_context->_spanId;
+}
+
+int64_t JaegerTracer::getCurrentParentId(ISpan* span)
+{
+    return span == nullptr ? int64_t() : dynamic_cast<JaegerSpan*>(span)->_context->_parentId;
 }
 
 void JaegerTracer::finishSpan(ISpan* span, const Php::Value& endTime)
@@ -274,7 +284,7 @@ void JaegerTracer::flush()
         Tracer::file_logger.PrintLine("JaegerTracer " + ss.str() + " flush");
     }
 
-    if (!this->_isSampled)
+    if (!this->_isSampled || !Tracer::udp_transport)
         return;
 
     std::vector<std::string> data;

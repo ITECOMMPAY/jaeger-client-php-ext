@@ -42,7 +42,7 @@ void JaegerSpan::addTags(Php::Parameters& tags)
         Tracer::file_logger.PrintLine(ss.str(), true);
     }
 
-    if (!tags.empty())
+    if (!tags.empty() && Tracer::udp_transport)
     {
         //std::map<std::string, std::string> tags = params[0];
         //std::unordered_map<std::string, std::string> tags_unordered;
@@ -94,7 +94,7 @@ void JaegerSpan::addLogs(Php::Parameters& logs)
         Tracer::file_logger.PrintLine(ss.str(), true);
     }
 
-    if (!logs.empty())
+    if (!logs.empty() && Tracer::udp_transport)
     {
         std::vector<Tag*> tags;
 
