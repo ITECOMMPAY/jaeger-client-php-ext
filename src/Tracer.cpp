@@ -59,6 +59,7 @@ void Tracer::init(Php::Parameters& params)
     Php::Value defaults;
     defaults["enabled"] = false;
     defaults["debug_output"] = false;
+    defaults["udp_transport"] = Tracer::udp_transport;
     defaults["reporter"]["type"] = "udp";
     defaults["reporter"]["options"]["addr"] = "localhost";
     defaults["reporter"]["options"]["port"] = 6831;
@@ -80,6 +81,7 @@ void Tracer::init(Php::Parameters& params)
     }
 
     Tracer::file_logger._enabled = settings["debug_output"];
+    Tracer::udp_transport = settings["udp_transport"];
 
     if (0)
     {
@@ -192,6 +194,45 @@ Php::Value Tracer::getCurrentSpan()
     }
     //todo - return a copy of object... fucking zend
     return span == nullptr ? static_cast<Php::Value>(nullptr) : Php::Object(span->_name(), span);
+}
+
+Php::Value Tracer::getCurrentTraceId()
+{
+    int64_t _traceId = int64_t();
+    if (global_tracer != nullptr)
+    {
+        _traceId = global_tracer->getCurrentTraceId();
+    }
+
+    return Php::Value(_traceId);
+}
+
+Php::Value Tracer::getCurrentSpanId(Php::Parameters& params)
+{
+    Php::Value _span = params[0];
+    int64_t _spanId = int64_t();
+    if (!_span.isNull())
+    {
+        if (!_span.instanceOf("ISpan"))
+            throw Php::Exception("Wrong parameter passed, should be ISpan");
+        ISpan* span = (ISpan*)_span.implementation();
+        if (global_tracer != nullptr)
+        {
+            _spanId = global_tracer->getCurrentSpanId(span);
+        }
+    }
+    return Php::Value(_spanId);
+}
+
+Php::Value Tracer::getCurrentParentId(Php::Parameters& params)
+{
+    int64_t _parentId = int64_t();
+    if (global_tracer != nullptr)
+    {
+        //_parentId = global_tracer->getCurrentParentId(span);
+    }
+
+    return Php::Value(_parentId);
 }
 
 void Tracer::finishSpan(Php::Parameters& params)

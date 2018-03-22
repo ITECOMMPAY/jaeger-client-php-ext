@@ -59,6 +59,7 @@ public:
 
     uint32_t readStructEnd() {
         throw Php::Exception("TProtocolException::NOT_IMPLEMENTED: this protocol does not support reading (yet).");
+
     }
 
     uint32_t readFieldBegin(std::string& name, TType& fieldType, int16_t& fieldId) {
@@ -77,6 +78,7 @@ public:
         (void)valType;
         (void)size;
         throw Php::Exception("TProtocolException::NOT_IMPLEMENTED: this protocol does not support reading (yet).");
+
     }
 
     uint32_t readMapEnd() {

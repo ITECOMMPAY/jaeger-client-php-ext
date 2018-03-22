@@ -138,6 +138,7 @@ SOURCES				=	\
 						src/UdpReporter.cpp \
 						src/thrift-gen/Agent.cpp \
 						src/thrift-gen/jaeger_types.cpp \
+						src/thrift-gen/zipkincore_types.cpp \
 						src/thrift-lib/protocol/TProtocol.cpp \
 						src/thrift-lib/transport/TBufferTransports.cpp
 OBJECTS				=	$(SOURCES:%.cpp=%.o)

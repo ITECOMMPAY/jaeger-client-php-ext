@@ -10,7 +10,7 @@ namespace OpenTracing
     {
     public:
         std::string _key;
-        TagType::type _vType;
+        jaegertracing::thrift::TagType::type _vType;
         bool _vBool;
         double _vDouble;
         std::string _vStr;

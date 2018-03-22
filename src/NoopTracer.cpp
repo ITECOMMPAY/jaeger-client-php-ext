@@ -51,6 +51,21 @@ ISpan* NoopTracer::getCurrentSpan()
     return new NoopSpan();
 }
 
+int64_t NoopTracer::getCurrentTraceId()
+{
+    return int64_t();
+}
+
+int64_t NoopTracer::getCurrentSpanId(ISpan* span)
+{
+    return int64_t();
+}
+
+int64_t NoopTracer::getCurrentParentId(ISpan* span)
+{
+    return int64_t();
+}
+
 void NoopTracer::finishSpan(ISpan* span, const Php::Value& endTime)
 {
     {

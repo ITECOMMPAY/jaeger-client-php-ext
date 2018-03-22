@@ -42,7 +42,7 @@ void JaegerSpan::addTags(Php::Parameters& tags)
         Tracer::file_logger.PrintLine(ss.str(), true);
     }
 
-    if (!tags.empty())
+    if (!tags.empty() && Tracer::udp_transport)
     {
         //std::map<std::string, std::string> tags = params[0];
         //std::unordered_map<std::string, std::string> tags_unordered;
@@ -94,7 +94,7 @@ void JaegerSpan::addLogs(Php::Parameters& logs)
         Tracer::file_logger.PrintLine(ss.str(), true);
     }
 
-    if (!logs.empty())
+    if (!logs.empty() && Tracer::udp_transport)
     {
         std::vector<Tag*> tags;
 
@@ -134,11 +134,11 @@ void JaegerSpan::addLogs(Php::Parameters& logs)
             ss << "    Log" << ++i << ": " << iter << " time : " << iter->_timestamp << std::endl;
             for (auto& it : iter->_fields)
             {
-                if (it->_vType == TagType::BOOL)
+                if (it->_vType == jaegertracing::thrift::TagType::BOOL)
                     ss << "        " << it->_key << " " << it->_vBool << std::endl;
-                if (it->_vType == TagType::DOUBLE)
+                if (it->_vType == jaegertracing::thrift::TagType::DOUBLE)
                     ss << "        " << it->_key << " " << it->_vDouble << std::endl;
-                if (it->_vType == TagType::STRING)
+                if (it->_vType == jaegertracing::thrift::TagType::STRING)
                     ss << "        " << it->_key << " " << it->_vStr << std::endl;
             }
         }

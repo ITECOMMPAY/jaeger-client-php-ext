@@ -11,9 +11,11 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+namespace cpp twitter.zipkin.thrift
 namespace java com.twitter.zipkin.thriftjava
 #@namespace scala com.twitter.zipkin.thriftscala
 namespace rb Zipkin
+namespace netcore Jaeger.Thrift.Agent.Zipkin
 
 #************** Annotation.value **************
 /**
@@ -74,6 +76,34 @@ const string SERVER_SEND = "ss"
  * should also log the CLIENT_ADDR.
  */
 const string SERVER_RECV = "sr"
+/**
+ * Message send ("ms") is a request to send a message to a destination, usually
+ * a broker. This may be the only annotation in a messaging span. If WIRE_SEND
+ * exists in the same span, it follows this moment and clarifies delays sending
+ * the message, such as batching.
+ *
+ * Unlike RPC annotations like CLIENT_SEND, messaging spans never share a span
+ * ID. For example, "ms" should always be the parent of "mr".
+ *
+ * Annotation.host is not the destination, it is the host which logged the send
+ * event: the producer. When annotating MESSAGE_SEND, instrumentation should
+ * also tag the MESSAGE_ADDR.
+ */
+const string MESSAGE_SEND = "ms"
+/**
+ * A consumer received ("mr") a message from a broker. This may be the only
+ * annotation in a messaging span. If WIRE_RECV exists in the same span, it
+ * precedes this moment and clarifies any local queuing delay.
+ *
+ * Unlike RPC annotations like SERVER_RECV, messaging spans never share a span
+ * ID. For example, "mr" should always be a child of "ms" unless it is a root
+ * span.
+ *
+ * Annotation.host is not the broker, it is the host which logged the receive
+ * event: the consumer.  When annotating MESSAGE_RECV, instrumentation should
+ * also tag the MESSAGE_ADDR.
+ */
+const string MESSAGE_RECV = "mr"
 /**
  * Optionally logs an attempt to send a message on the wire. Multiple wire send
  * events could indicate network retries. A lag between client or server send
@@ -148,6 +178,10 @@ const string CLIENT_ADDR = "ca"
  * different server ip or port.
  */
 const string SERVER_ADDR = "sa"
+/**
+ * Indicates the remote address of a messaging span, usually the broker.
+ */
+const string MESSAGE_ADDR = "ma"
 
 /**
  * Indicates the network context of a service recording an annotation with two
@@ -179,6 +213,10 @@ struct Endpoint {
    * Conventionally, when the service name isn't known, service_name = "unknown".
    */
   3: string service_name
+  /**
+   * IPv6 host address packed into 16 bytes. Ex Inet6Address.getBytes()
+   */
+  4: optional binary ipv6
 }
 
 /**
@@ -287,6 +325,11 @@ struct Span {
    * This field is i64 vs i32 to support spans longer than 35 minutes.
    */
   11: optional i64 duration
+  /**
+   * Optional unique 8-byte additional identifier for a trace. If non zero, this
+   * means the trace uses 128 bit traceIds instead of 64 bit.
+   */
+  12: optional i64 trace_id_high
 }
 
 # define TChannel service

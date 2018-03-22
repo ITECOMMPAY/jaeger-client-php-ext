@@ -66,12 +66,12 @@ ISpan* JaegerTracer::startSpan(const std::string& operationName, const Php::Valu
     if (Php::array_key_exists("childOf", options))
     {
         parent = options["childOf"];
-        refType = SpanRefType::type::CHILD_OF;
+        refType = jaegertracing::thrift::SpanRefType::type::CHILD_OF;
     }
     else if (Php::array_key_exists("followsFrom", options))
     {
         parent = options["followsFrom"];
-        refType = SpanRefType::type::FOLLOWS_FROM;
+        refType = jaegertracing::thrift::SpanRefType::type::FOLLOWS_FROM;
     }
 
     if (!parent.isNull())
@@ -145,6 +145,33 @@ ISpan* JaegerTracer::getCurrentSpan()
     }
 
     return span;
+}
+
+int64_t JaegerTracer::getCurrentTraceId()
+{
+    ISpan* span = nullptr;
+
+    for (auto& iter : dynamic_cast<const JaegerTracer*>(this)->_spans)
+    {
+        JaegerSpan* _span = dynamic_cast<JaegerSpan*>(iter.second);
+        if (_span->_context != nullptr)
+        {
+            span = _span;
+            break;
+        }
+    }
+
+    return span == nullptr ? int64_t() : dynamic_cast<JaegerSpan*>(span)->_context->_traceId;
+}
+
+int64_t JaegerTracer::getCurrentSpanId(ISpan* span)
+{
+    return span == nullptr ? int64_t() : dynamic_cast<JaegerSpan*>(span)->_context->_spanId;
+}
+
+int64_t JaegerTracer::getCurrentParentId(ISpan* span)
+{
+    return span == nullptr ? int64_t() : dynamic_cast<JaegerSpan*>(span)->_context->_parentId;
 }
 
 void JaegerTracer::finishSpan(ISpan* span, const Php::Value& endTime)
@@ -257,7 +284,7 @@ void JaegerTracer::flush()
         Tracer::file_logger.PrintLine("JaegerTracer " + ss.str() + " flush");
     }
 
-    if (!this->_isSampled)
+    if (!this->_isSampled || !Tracer::udp_transport)
         return;
 
     std::vector<std::string> data;
@@ -275,7 +302,7 @@ void JaegerTracer::flush()
         std::shared_ptr<TMemoryBuffer> trans(new TMemoryBuffer());
         std::shared_ptr<TCompactProtocol> proto(new TCompactProtocol(trans));
         //std::shared_ptr<TBinaryProtocol> proto(new TBinaryProtocol(trans));
-        std::shared_ptr<AgentClient> agent(new AgentClient(nullptr, proto));
+        std::shared_ptr<jaegertracing::agent::thrift::AgentClient> agent(new jaegertracing::agent::thrift::AgentClient(nullptr, proto));
 
         const int MAX_PACKET_SIZE = 65000;
         const int EMIT_BATCH_OVERHEAD = 33;
@@ -293,7 +320,7 @@ void JaegerTracer::flush()
                     LogCount incLogs{ LogCount::WHOLE };
                     do
                     {
-                        ::Batch* batch = Helper::jaegerizeTracer(this, iter.second, incLogs, JaegerizeVersion::V1);
+                        jaegertracing::thrift::Batch* batch = Helper::jaegerizeTracer(this, iter.second, incLogs, JaegerizeVersion::V1);
                         agent->emitBatch(*batch);
                         batchData = trans->getBufferAsString();
 
@@ -375,7 +402,7 @@ void JaegerTracer::flush()
                             Tracer::file_logger.PrintLine("         indexEnd:   " + std::to_string(indexEnd), false);
                             Tracer::file_logger.PrintLine("         indexCount: " + std::to_string(indexCount), false);
 
-                            ::Batch* batch = Helper::jaegerizeTracer(this, iter.second, incLogs, JaegerizeVersion::V2, indexStart, indexCount, part, skipBadLog);
+                            jaegertracing::thrift::Batch* batch = Helper::jaegerizeTracer(this, iter.second, incLogs, JaegerizeVersion::V2, indexStart, indexCount, part, skipBadLog);
                             agent->emitBatch(*batch);
                             batchData = trans->getBufferAsString();
 

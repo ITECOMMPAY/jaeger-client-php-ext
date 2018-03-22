@@ -44,6 +44,13 @@ extern "C" {
             Php::ByVal("options",Php::Type::Array,false)
         });
         TracerClass.method<&Tracer::getCurrentSpan>("getCurrentSpan", Php::Static, {});
+        TracerClass.method<&Tracer::getCurrentTraceId>("getCurrentTraceId", Php::Static, {});
+        TracerClass.method<&Tracer::getCurrentSpanId>("getCurrentSpanId", Php::Static, {
+            Php::ByVal("span",Php::Type::Object,true),
+        });
+        TracerClass.method<&Tracer::getCurrentParentId>("getCurrentParentId", Php::Static, {
+            Php::ByVal("span",Php::Type::Object,true),
+        });
         TracerClass.method<&Tracer::finishSpan>("finishSpan", Php::Static, {
             Php::ByVal("span",Php::Type::Object,true),
         });

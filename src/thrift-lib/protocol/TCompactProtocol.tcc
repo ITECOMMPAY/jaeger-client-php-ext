@@ -29,10 +29,9 @@
  * way to implement an arithmetic right shift on their platform.
  */
 
- /* Possible value for SIGNED_RIGHT_SHIFT_IS */
+  /* Possible value for SIGNED_RIGHT_SHIFT_IS */
 #define ARITHMETIC_RIGHT_SHIFT 1
- /* Indicates the effect of the right shift operator on negative signed
- integers */
+ /* Indicates the effect of the right shift operator on negative signed integers */
 #define SIGNED_RIGHT_SHIFT_IS 1
 
 #if !defined(SIGNED_RIGHT_SHIFT_IS) || !defined(ARITHMETIC_RIGHT_SHIFT)
@@ -278,13 +277,13 @@ uint32_t TCompactProtocolT<Transport_>::writeString(const std::string& str) {
 template <class Transport_>
 uint32_t TCompactProtocolT<Transport_>::writeBinary(const std::string& str) {
   if(str.size() > (std::numeric_limits<uint32_t>::max)())
-      throw Php::Exception("TProtocolException::SIZE_LIMIT: TProtocolException: Exceeded size limit");
+    throw Php::Exception("TProtocolException::SIZE_LIMIT: TProtocolException: Exceeded size limit");
   uint32_t ssize = static_cast<uint32_t>(str.size());
   uint32_t wsize = writeVarint32(ssize) ;
   // checking ssize + wsize > uint_max, but we don't want to overflow while checking for overflows.
   // transforming the check to ssize > uint_max - wsize
   if(ssize > (std::numeric_limits<uint32_t>::max)() - wsize)
-      throw Php::Exception("TProtocolException::SIZE_LIMIT: TProtocolException: Exceeded size limit");
+    throw Php::Exception("TProtocolException::SIZE_LIMIT: TProtocolException: Exceeded size limit");
   wsize += ssize;
   trans_->write((uint8_t*)str.data(), ssize);
   return wsize;
@@ -392,7 +391,7 @@ uint32_t TCompactProtocolT<Transport_>::writeVarint64(uint64_t n) {
  */
 template <class Transport_>
 uint64_t TCompactProtocolT<Transport_>::i64ToZigzag(const int64_t l) {
-  return (l << 1) ^ (l >> 63);
+  return (static_cast<uint64_t>(l) << 1) ^ (l >> 63);
 }
 
 /**
@@ -401,7 +400,7 @@ uint64_t TCompactProtocolT<Transport_>::i64ToZigzag(const int64_t l) {
  */
 template <class Transport_>
 uint32_t TCompactProtocolT<Transport_>::i32ToZigzag(const int32_t n) {
-  return (n << 1) ^ (n >> 31);
+  return (static_cast<uint32_t>(n) << 1) ^ (n >> 31);
 }
 
 /**
@@ -431,13 +430,13 @@ uint32_t TCompactProtocolT<Transport_>::readMessageBegin(
 
   rsize += readByte(protocolId);
   if (protocolId != PROTOCOL_ID) {
-      throw Php::Exception("TProtocolException::BAD_VERSION: Bad protocol identifier");
+    throw Php::Exception("TProtocolException::BAD_VERSION: Bad protocol identifier");
   }
 
   rsize += readByte(versionAndType);
   version = (int8_t)(versionAndType & VERSION_MASK);
   if (version != VERSION_N) {
-      throw Php::Exception("TProtocolException::BAD_VERSION: Bad protocol identifier");
+    throw Php::Exception("TProtocolException::BAD_VERSION: Bad protocol version");
   }
 
   messageType = (TMessageType)((versionAndType >> TYPE_SHIFT_AMOUNT) & TYPE_BITS);
@@ -534,9 +533,9 @@ uint32_t TCompactProtocolT<Transport_>::readMapBegin(TType& keyType,
     rsize += readByte(kvType);
 
   if (msize < 0) {
-      throw Php::Exception("TProtocolException::NEGATIVE_SIZE: TProtocolException: Negative size");
+    throw Php::Exception("TProtocolException::NEGATIVE_SIZE: TProtocolException: Negative size");
   } else if (container_limit_ && msize > container_limit_) {
-      throw Php::Exception("TProtocolException::SIZE_LIMIT: TProtocolException: Exceeded size limit");
+    throw Php::Exception("TProtocolException::SIZE_LIMIT: TProtocolException: Exceeded size limit");
   }
 
   keyType = getTType((int8_t)((uint8_t)kvType >> 4));
@@ -567,9 +566,9 @@ uint32_t TCompactProtocolT<Transport_>::readListBegin(TType& elemType,
   }
 
   if (lsize < 0) {
-      throw Php::Exception("TProtocolException::NEGATIVE_SIZE: TProtocolException: Negative size");
+    throw Php::Exception("TProtocolException::NEGATIVE_SIZE: TProtocolException: Negative size");
   } else if (container_limit_ && lsize > container_limit_) {
-      throw Php::Exception("TProtocolException::SIZE_LIMIT: TProtocolException: Exceeded size limit");
+    throw Php::Exception("TProtocolException::SIZE_LIMIT: TProtocolException: Exceeded size limit");
   }
 
   elemType = getTType((int8_t)(size_and_type & 0x0f));
@@ -693,17 +692,17 @@ uint32_t TCompactProtocolT<Transport_>::readBinary(std::string& str) {
 
   // Catch error cases
   if (size < 0) {
-      throw Php::Exception("TProtocolException::NEGATIVE_SIZE: TProtocolException: Negative size");
+    throw Php::Exception("TProtocolException::NEGATIVE_SIZE: TProtocolException: Negative size");
   }
   if (string_limit_ > 0 && size > string_limit_) {
-      throw Php::Exception("TProtocolException::SIZE_LIMIT: TProtocolException: Exceeded size limit");
+    throw Php::Exception("TProtocolException::SIZE_LIMIT: TProtocolException: Exceeded size limit");
   }
 
   // Use the heap here to prevent stack overflow for v. large strings
   if (size > string_buf_size_ || string_buf_ == NULL) {
     void* new_string_buf = std::realloc(string_buf_, (uint32_t)size);
     if (new_string_buf == NULL) {
-        throw Php::Exception("std::bad_alloc()");
+      throw Php::Exception("std::bad_alloc()");
     }
     string_buf_ = (uint8_t*)new_string_buf;
     string_buf_size_ = size;
@@ -725,7 +724,6 @@ uint32_t TCompactProtocolT<Transport_>::readVarint32(int32_t& i32) {
   i32 = (int32_t)val;
   return rsize;
 }
-
 
 /**
  * Convert from zigzag int to int.
@@ -772,7 +770,7 @@ TType TCompactProtocolT<Transport_>::getTType(int8_t type) {
     case detail::compact::CT_STRUCT:
       return T_STRUCT;
     default:
-        throw Php::Exception("TProtocolException: (Invalid exception type): don't know what type: "+ std::string{ (char)type });
+      throw Php::Exception("TProtocolException: (Invalid exception type): don't know what type: "+ std::string{ (char)type });
   }
 }
 

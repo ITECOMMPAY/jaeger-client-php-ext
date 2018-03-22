@@ -30,7 +30,7 @@ namespace OpenTracing
         /*Get Host name*/
         static const std::string getHostName();
         /*Get jaeger version of the Tracer*/
-        static ::Batch* jaegerizeTracer(
+        static jaegertracing::thrift::Batch* jaegerizeTracer(
             const OpenTracing::ITracer* tracer,
             const OpenTracing::ISpan* span = nullptr,
             LogCount logLimit = LogCount::WHOLE,
@@ -41,7 +41,7 @@ namespace OpenTracing
             bool badLog = false
         );
         /*Get jaeger version of the Span*/
-        static ::Span jaegerizeSpan(
+        static jaegertracing::thrift::Span jaegerizeSpan(
             const OpenTracing::ISpan* span, 
             LogCount logLimit = LogCount::WHOLE, 
             JaegerizeVersion ver = JaegerizeVersion::V1,
@@ -51,11 +51,11 @@ namespace OpenTracing
             bool badLog = false
         );
         /*Get jaeger version of the Process*/
-        static ::Process jaegerizeProcess(const OpenTracing::Process* process);
+        static jaegertracing::thrift::Process jaegerizeProcess(const OpenTracing::Process* process);
         /*Get jaeger version of the Tag*/
-        static ::Tag jaegerizeTag(const OpenTracing::Tag* tag);
+        static jaegertracing::thrift::Tag jaegerizeTag(const OpenTracing::Tag* tag);
         /*Get jaeger version of the Log*/
-        static ::Log jaegerizeLog(const OpenTracing::Log* log);
+        static jaegertracing::thrift::Log jaegerizeLog(const OpenTracing::Log* log);
     };
 }
 #endif /* HELPER_H */

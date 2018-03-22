@@ -18,6 +18,7 @@ namespace OpenTracing
         static Printer file_logger;
         static ITracer* global_tracer;
         static int header_flag;
+        static bool udp_transport;
 
         /*Create tracer instance and call its init method*/
         static void init(Php::Parameters& params);
@@ -25,6 +26,12 @@ namespace OpenTracing
         static Php::Value startSpan(Php::Parameters& params);
         /*Pass getCurrentSpan call to the tracer*/
         static Php::Value getCurrentSpan();
+        /*Pass getCurrentTraceId call to the tracer*/
+        static Php::Value getCurrentTraceId();
+        /*Pass getCurrentSpanId call to the tracer*/
+        static Php::Value getCurrentSpanId(Php::Parameters& params);
+        /*Pass getCurrentParentId call to the tracer*/
+        static Php::Value getCurrentParentId(Php::Parameters& params);
         /*Pass finishSpan call to the tracer*/
         static void finishSpan(Php::Parameters& params);
         /*Pass inject call to the tracer*/
