@@ -103,7 +103,7 @@ RM					=	rm -f
 CP					=	cp -f
 LN					=	ln -f -s
 MKDIR				=	mkdir -p
-
+LDCONFIG			=	ldconfig
 
 #
 #	All source files are simply all *.cpp files found in the current directory
@@ -156,21 +156,21 @@ ${EXTENSION}:			${OBJECTS}
 ${OBJECTS}:
 						${COMPILER} ${COMPILER_FLAGS} $@ ${@:%.o=%.cpp}
 
-install:		
+install:
 						${CP} ${EXTENSION} ${EXTENSION_DIR}
 						${CP} ${INI} ${INI_DIR}
 						${LN} ${INI_DIR}/${INI} ${LINK_INI_DIR_FPM}/${LINK_INI}
 						${LN} ${INI_DIR}/${INI} ${LINK_INI_DIR_CLI}/${LINK_INI}
-				
+						${LDCONFIG}
 clean:
 						${RM} ${EXTENSION} ${OBJECTS}
 
-uninstall:		
+uninstall:
 						${RM} ${EXTENSION_DIR}/${EXTENSION} 
 						${RM} ${INI_DIR}/${INI} 
 						${RM} ${LINK_INI_DIR_FPM}/${LINK_INI} 
 						${RM} ${LINK_INI_DIR_CLI}/${LINK_INI} 
 
-restart:		
+restart:
 						service php7.0-fpm restart
 						php -m | grep tracer-cpp
