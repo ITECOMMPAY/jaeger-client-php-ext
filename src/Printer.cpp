@@ -33,7 +33,7 @@ int mkpath(std::string s, mode_t mode)
 
 OpenTracing::Printer::Printer(const std::string& reportPath, bool printFooters) :
     _reportPath{ reportPath },
-    _reportName{ "tracer-cpp.log" },
+    _reportName{ "jaeger-client.log" },
     _printFooters{ printFooters },
     _enabled{ false }
 {

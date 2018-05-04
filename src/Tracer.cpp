@@ -83,13 +83,6 @@ void Tracer::init(Php::Parameters& params)
     Tracer::file_logger._enabled = settings["debug_output"];
     Tracer::udp_transport = settings["udp_transport"];
 
-    if (0)
-    {
-        std::ostringstream ss;
-        ss << global_tracer;
-        Tracer::file_logger.PrintLine("Tracer::init - delete global_tracer " + ss.str());
-    }
-
     delete global_tracer;
     if (!settings["enabled"])
     {
@@ -133,53 +126,6 @@ Php::Value Tracer::startSpan(Php::Parameters& params)
     if (global_tracer != nullptr)
     {
         span = global_tracer->startSpan(operationName, options);
-
-        if (0)
-        {
-            std::ostringstream ss;
-            ss <<
-                "--- tracer " << global_tracer << "\n\t\t\t\t\t\t\t\t\t\t    startSpan returned: " << span;
-            if (strcmp(span->_name(), "JaegerSpan") == 0)
-            {
-                ss <<
-                    " (SpanContext: " << dynamic_cast<JaegerSpan*>(span)->_context << " )" <<
-                    " total spans: " << dynamic_cast<JaegerTracer*>(global_tracer)->_spans.size() <<
-                    " " << dynamic_cast<JaegerTracer*>(global_tracer)->_process->_serviceName <<
-                    " " << dynamic_cast<JaegerSpan*>(span)->_operationName;
-            }
-            Tracer::file_logger.PrintLine(ss.str());
-            ss.str("");
-            ss.clear();
-
-            if (0)
-            {
-                std::ostringstream ss;
-                for (auto& iter : dynamic_cast<JaegerTracer*>(global_tracer)->_spans)
-                {
-                    JaegerSpan* temp = dynamic_cast<JaegerSpan*>(iter.second);
-                    ss <<
-                        "\n\t\t\t\t\t\t\t\t\t\t\t\tspan id: " << iter.first <<
-                        "\n\t\t\t\t\t\t\t\t\t\t\t\t\t_startTime: " << temp->_startTime <<
-                        "\n\t\t\t\t\t\t\t\t\t\t\t\t\t_endTime  : " << temp->_endTime;
-                    if (temp->_context != nullptr)
-                    {
-                        ss <<
-                            "\n\t\t\t\t\t\t\t\t\t\t\t\t\t_context: " <<
-                            "\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t_traceId: " << temp->_context->_traceId <<
-                            "\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t_spanId: " << temp->_context->_spanId <<
-                            "\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t_parentId: " << temp->_context->_parentId;
-                    }
-                }
-                Tracer::file_logger.PrintLine(ss.str());
-            }
-        }
-    }
-
-    if (0)
-    {
-        std::ostringstream ss;
-        ss << "--- tracer " << global_tracer;
-        Tracer::file_logger.PrintLine(ss.str());
     }
 
     return span == nullptr ? Php::Object("NoopSpan", new NoopSpan()) : Php::Object(span->_name(), span);
@@ -192,7 +138,8 @@ Php::Value Tracer::getCurrentSpan()
     {
         span = global_tracer->getCurrentSpan();
     }
-    //todo - return a copy of object... fucking zend
+
+    //todo - return a copy of object...
     return span == nullptr ? static_cast<Php::Value>(nullptr) : Php::Object(span->_name(), span);
 }
 
@@ -328,46 +275,11 @@ Php::Value Tracer::extract(Php::Parameters& params)
     const Php::Value& carrier = params[0];
 
     std::ostringstream ss;
-    if (0)
-    {
-        if (carrier.isString())
-            ss << "Tracer::extract start " << global_tracer << ", carrier = " << carrier;
-        else
-            ss << "Tracer::extract start " << global_tracer << ", carrier = [array]";
-    }
 
     SpanContext* context = nullptr;
     if (global_tracer != nullptr)
     {
         context = global_tracer->extract(carrier);
-    }
-
-    if (0)
-    {
-        if (context != nullptr)
-        {
-            ss << "\n\t\t\t\t\t\t\t\t\t\t\treturned context: " << context <<
-                "\n\t\t\t\t\t\t\t\t\t\t\t\t_traceId: " << context->_traceId <<
-                "\n\t\t\t\t\t\t\t\t\t\t\t\t_spanId: " << context->_spanId <<
-                "\n\t\t\t\t\t\t\t\t\t\t\t\t_parentId: " << context->_parentId <<
-                "\n\t\t\t\t\t\t\t\t\t\t\t\t_flags: " << context->_flags;
-        }
-        else
-        {
-            ss << "\n\t\t\t\t\t\t\t\t\t\treturned context: " << context << " probably was not created";
-        }
-        Tracer::file_logger.PrintLine(ss.str());
-        ss.str("");
-        ss.clear();
-    }
-
-    if (0)
-    {
-        if (carrier.isString())
-            ss << "Tracer::extract end   " << global_tracer << ", carrier = " << carrier;
-        else
-            ss << "Tracer::extract end   " << global_tracer << ", carrier = [array]" << "\n";
-        Tracer::file_logger.PrintLine(ss.str());
     }
 
     return context == nullptr ? static_cast<Php::Value>(nullptr) : Php::Object(context->_name(), context);
