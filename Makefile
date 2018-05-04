@@ -18,20 +18,13 @@
 #	are automatically generated
 #
 
-NAME				=	tracer-cpp
-
+NAME				=	jaeger-client
 
 #
-#	Php.ini directories
-#
-#	In the past, PHP used a single php.ini configuration file. Today, most
-#	PHP installations use a conf.d directory that holds a set of config files,
-#	one for each extension. Use this variable to specify this directory.
+#	Php version dirs
 #
 
-INI_DIR				=	/etc/php/7.0/mods-available
-LINK_INI_DIR_FPM	=	/etc/php/7.0/fpm/conf.d
-LINK_INI_DIR_CLI	=	/etc/php/7.0/cli/conf.d
+VERSION_DIRS		=	$(shell ls /etc/php)
 
 #
 #	The extension dirs
@@ -69,7 +62,6 @@ LINK_INI			=	20-${NAME}.ini
 COMPILER			=	g++
 LINKER				=	g++
 
-
 #
 #	Compiler and linker flags
 #
@@ -86,11 +78,9 @@ LINKER				=	g++
 #	with a list of all flags that should be passed to the linker.
 #
 
-
 COMPILER_FLAGS		=	-Wall -c -Isrc -O2 -std=c++11 -fpic -o
 LINKER_FLAGS		=	-shared
 LINKER_DEPENDENCIES	=	-lphpcpp
-
 
 #
 #	Command to remove files, copy files and create directories.
@@ -113,7 +103,6 @@ LDCONFIG			=	ldconfig
 #	file, with the .cpp extension being replaced by .o.
 #
 
-#SOURCES				=	$(wildcard *.cpp)
 SOURCES				=	\
 						src/main.cpp \
 						src/IReporter.cpp \
@@ -143,7 +132,6 @@ SOURCES				=	\
 						src/thrift-lib/transport/TBufferTransports.cpp
 OBJECTS				=	$(SOURCES:%.cpp=%.o)
 
-
 #
 #	From here the build instructions start
 #
@@ -156,21 +144,50 @@ ${EXTENSION}:			${OBJECTS}
 ${OBJECTS}:
 						${COMPILER} ${COMPILER_FLAGS} $@ ${@:%.o=%.cpp}
 
-install:
-						${CP} ${EXTENSION} ${EXTENSION_DIR}
-						${CP} ${INI} ${INI_DIR}
-						${LN} ${INI_DIR}/${INI} ${LINK_INI_DIR_FPM}/${LINK_INI}
-						${LN} ${INI_DIR}/${INI} ${LINK_INI_DIR_CLI}/${LINK_INI}
-						${LDCONFIG}
+fetch-php-cpp:
+						git submodule update --init PHP-CPP
+
+install-php-cpp:
+						cd ./PHP-CPP && sudo make clean
+						cd ./PHP-CPP && sudo make
+						cd ./PHP-CPP && sudo make install
+
 clean:
 						${RM} ${EXTENSION} ${OBJECTS}
 
-uninstall:
-						${RM} ${EXTENSION_DIR}/${EXTENSION} 
-						${RM} ${INI_DIR}/${INI} 
-						${RM} ${LINK_INI_DIR_FPM}/${LINK_INI} 
-						${RM} ${LINK_INI_DIR_CLI}/${LINK_INI} 
+install:
+						${CP} ${EXTENSION} ${EXTENSION_DIR}
+						@for dir in $(VERSION_DIRS); do \
+							INI_DIR="/etc/php/$$dir/mods-available"; \
+							if [ -d $$INI_DIR ]; then \
+								${CP} ${INI} $$INI_DIR; \
+							fi; \
+							LINK_INI_DIR_FPM="/etc/php/$$dir/fpm/conf.d"; \
+							if [ -d $$LINK_INI_DIR_FPM ]; then \
+								${LN} $$INI_DIR/${INI} $$LINK_INI_DIR_FPM/${LINK_INI}; \
+							fi; \
+							LINK_INI_DIR_CLI="/etc/php/$$dir/cli/conf.d"; \
+							if [ -d $$LINK_INI_DIR_CLI ]; then \
+								${LN} $$INI_DIR/${INI} $$LINK_INI_DIR_CLI/${LINK_INI}; \
+							fi; \
+						done
+						@if `which ldconfig`; then \
+							${LDCONFIG}; \
+						fi
 
-restart:
-						service php7.0-fpm restart
-						php -m | grep tracer-cpp
+uninstall:
+						${RM} ${EXTENSION_DIR}/${EXTENSION}
+						@for dir in $(VERSION_DIRS); do \
+							INI_DIR="/etc/php/$$dir/mods-available"; \
+							if [ -d $$INI_DIR ]; then \
+								${RM} $$INI_DIR/${INI}; \
+							fi; \
+							LINK_INI_DIR_FPM="/etc/php/$$dir/fpm/conf.d"; \
+							if [ -d $$LINK_INI_DIR_FPM ]; then \
+								${RM} $$LINK_INI_DIR_FPM/${LINK_INI}; \
+							fi; \
+							LINK_INI_DIR_CLI="/etc/php/$$dir/cli/conf.d"; \
+							if [ -d $$LINK_INI_DIR_CLI ]; then \
+								${RM} $$LINK_INI_DIR_CLI/${LINK_INI}; \
+							fi; \
+						done
