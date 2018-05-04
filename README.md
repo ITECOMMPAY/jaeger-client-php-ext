@@ -163,7 +163,7 @@ if ($context) {
 ## Other info
 
 Extension tries its best to deliver trace to the agent.
-And if the trace is size overflows UDP package - we split spans into several copies and flush them one by one so that you'll get multiple identical spans with
+And if the trace's size overflows UDP package - we split spans into several copies and flush them one by one so that you'll get multiple identical spans with
 a sequential set of logs.
 
 ## License
