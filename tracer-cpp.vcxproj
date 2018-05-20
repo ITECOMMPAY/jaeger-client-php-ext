@@ -98,6 +98,7 @@
     <ClCompile Include="src\UdpReporter.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="jaeger-client.ini" />
     <None Include="Makefile" />
     <None Include="src\thrift-lib\protocol\TBinaryProtocol.tcc" />
     <None Include="src\thrift-lib\protocol\TCompactProtocol.tcc" />
@@ -106,11 +107,10 @@
     <None Include="src\thrift\zipkincore.thrift" />
     <None Include="test\index.php" />
     <None Include="test\request.rest" />
-    <None Include="tracer-cpp.ini" />
   </ItemGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(UBUNTU_INCLUDE);.\src\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\src\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>-fpic</AdditionalOptions>
       <DebugInformationFormat />
       <CAdditionalWarning />

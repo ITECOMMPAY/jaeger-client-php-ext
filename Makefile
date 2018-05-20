@@ -160,7 +160,6 @@ install-php-cpp:
 						cd ./PHP-CPP && sudo make install
 
 install:
-						sudo make clean
 						make
 						${CP} ${EXTENSION} ${EXTENSION_DIR}
 						@for dir in $(VERSION_DIRS); do \

@@ -209,7 +209,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Makefile" />
-    <None Include="tracer-cpp.ini" />
     <None Include="src\thrift\zipkincore.thrift">
       <Filter>src\thrift</Filter>
     </None>
@@ -231,5 +230,6 @@
     <None Include="test\request.rest">
       <Filter>test</Filter>
     </None>
+    <None Include="jaeger-client.ini" />
   </ItemGroup>
 </Project>
