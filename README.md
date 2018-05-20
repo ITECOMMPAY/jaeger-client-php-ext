@@ -15,11 +15,13 @@ sudo make install-php-cpp
 Then, install the extension.
 
 ```bash
-make
 sudo make install
 ```
 
 And restart php service.
+```bash
+sudo make restart 
+```
 
 ## Initialization
 

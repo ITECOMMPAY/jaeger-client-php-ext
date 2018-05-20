@@ -27,6 +27,12 @@ NAME				=	jaeger-client
 VERSION_DIRS		=	$(shell ls /etc/php)
 
 #
+#	Php services
+#
+
+PHP_SERVICES		=	$(shell systemctl list-unit-files | grep -o 'php.*.service' | rev | cut -d. -f1 --complement | rev)
+
+#
 #	The extension dirs
 #
 #	This is normally a directory like /usr/lib/php5/20121221 (based on the 
@@ -94,6 +100,7 @@ CP					=	cp -f
 LN					=	ln -f -s
 MKDIR				=	mkdir -p
 LDCONFIG			=	ldconfig
+SERVICE				=	service
 
 #
 #	All source files are simply all *.cpp files found in the current directory
@@ -152,10 +159,9 @@ install-php-cpp:
 						cd ./PHP-CPP && sudo make
 						cd ./PHP-CPP && sudo make install
 
-clean:
-						${RM} ${EXTENSION} ${OBJECTS}
-
 install:
+						sudo make clean
+						make
 						${CP} ${EXTENSION} ${EXTENSION_DIR}
 						@for dir in $(VERSION_DIRS); do \
 							INI_DIR="/etc/php/$$dir/mods-available"; \
@@ -175,6 +181,9 @@ install:
 							${LDCONFIG}; \
 						fi
 
+clean:
+						${RM} ${EXTENSION} ${OBJECTS}
+
 uninstall:
 						${RM} ${EXTENSION_DIR}/${EXTENSION}
 						@for dir in $(VERSION_DIRS); do \
@@ -191,3 +200,9 @@ uninstall:
 								${RM} $$LINK_INI_DIR_CLI/${LINK_INI}; \
 							fi; \
 						done
+
+restart:
+						@for service in $(PHP_SERVICES); do \
+							service $$service restart; \
+						done
+						@php -m | grep $(NAME)
