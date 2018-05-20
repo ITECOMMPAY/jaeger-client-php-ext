@@ -6,9 +6,6 @@
 #include "JaegerTracer.h"
 #include "PageViewHandler.h"
 
-#include "IReporter.h"
-#include "UdpReporter.h"
-#include "SpanContext.h"
 using namespace OpenTracing;
 
 /**
@@ -71,7 +68,7 @@ extern "C" {
         TracerClass.method<&Tracer::print>("print", Php::Static, {
             Php::ByVal("str",Php::Type::String,true),
         });
-        /* TracerClass.method<&Tracer::getTracer>("getTracer", Php::Private | Php::Static, {}); */
+        TracerClass.method<&Tracer::getTracer>("getTracer", Php::Private | Php::Static, {});
         extension.add(std::move(TracerClass));
 
         Php::Class<SpanContext> SpanContextClass("SpanContext");

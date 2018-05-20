@@ -42,6 +42,15 @@ SpanContext* TextCarrier::extract(const std::string& carrier)
     if (parse.size() != 4)
         return nullptr;
 
+#ifdef EXTENDED_DEBUG
+    {
+        std::ostringstream ss;
+        for (auto& iter : parse)
+            ss << iter << ": size " << iter.size() << std::endl;
+        Tracer::file_logger.PrintLine(ss.str(), true);
+    }
+#endif
+
     try
     {
         return new SpanContext(

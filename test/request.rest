@@ -1,6 +1,6 @@
 ###
 # 9 spans
-POST http://gate.dev/v2/payment/card/payout HTTP/1.1
+POST http://gate.test/v2/payment/card/payout HTTP/1.1
 user-agent: vscode-restclient
 cookie: XDEBUG_SESSION=PHPSTORM
 content-type: application/json
@@ -34,7 +34,7 @@ x-b3-sampled: 1
 
 ### 19 штук
 # home: 
-POST http://gate.dev/v2/payment/card/payout HTTP/1.1
+POST http://gate.test/v2/payment/card/payout HTTP/1.1
 Cookie: XDEBUG_SESSION=PHPSTORM
 content-type: application/json
 
@@ -62,7 +62,7 @@ content-type: application/json
 }
 
 ###
-POST http://plus.dev/gate/ HTTP/1.1
+POST http://plus.test/gate/ HTTP/1.1
 Cookie: XDEBUG_SESSION=PHPSTORM
 content-type: application/json
 
@@ -73,9 +73,9 @@ content-type: application/json
   "merchant_params": {
     "merchant_id": 9975,
     "merchant_password": "vygasudecywykiry",
-    "gateway_url": "http://mock.dev/paybox/z/sagan/g2g/payment",
-    "paymentacs_url": "http://mock.dev/paybox/z/sagan/api/paymentAcs",
-    "status_url": "http://mock.dev/paybox/z/sagan/api/status"
+    "gateway_url": "http://mock.test/paybox/z/sagan/g2g/payment",
+    "paymentacs_url": "http://mock.test/paybox/z/sagan/api/paymentAcs",
+    "status_url": "http://mock.test/paybox/z/sagan/api/status"
   },
   "gate_id": "eco_dev",
   "amount": 5900,
@@ -91,7 +91,7 @@ content-type: application/json
 
 
 ###
-POST http://gate.dev/v2/payment/card/sale HTTP/1.1
+POST http://gate.test/v2/payment/card/sale HTTP/1.1
 Cookie: XDEBUG_SESSION=PHPSTORM
 content-type: application/json
 # x-b3-traceid: 109
@@ -126,7 +126,7 @@ content-type: application/json
 }
 
 ###
-GET http://gate.dev/
+GET http://gate.test/
 Cookie: XDEBUG_SESSION=PHPSTORM
 #x-b3-sampled: 3
 
@@ -135,7 +135,7 @@ Cookie: XDEBUG_SESSION=PHPSTORM
 # pmx: core-1035
 # plus: plus-146
 # ecotests: ./vendor/bin/codecept run cases PurchaseCest:C00400 -c ./tests/gate/payture/ —env local -d
-POST http://gate.dev/v2/payment/card/sale
+POST http://gate.test/v2/payment/card/sale
 content-type: application/json
 
 {
@@ -167,7 +167,7 @@ content-type: application/json
 # roundbank C00400
 # 66 spans
 
-POST http://gate.dev/v2/payment/card/sale HTTP/1.1
+POST http://gate.test/v2/payment/card/sale HTTP/1.1
 cookie: XDEBUG_SESSION=PHPSTORM
 content-type: application/json
 
