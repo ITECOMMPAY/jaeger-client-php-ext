@@ -27,7 +27,7 @@ extern "C" {
     {
         // static(!) Php::Extension object that should stay in memory
         // for the entire duration of the process (that's why it's static)
-        static Php::Extension extension("jaeger-client", "1.0");
+        static Php::Extension extension("jaeger-client", "1.1");
 
         //extension.onStartup(&onStartup);
         //extension.onRequest(&onRequest);
