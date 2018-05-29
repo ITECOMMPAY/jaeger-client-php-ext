@@ -123,6 +123,28 @@ void JaegerSpan::addLogs(Php::Parameters& logs)
 
         this->_logs.push_back(new Log(tags));
     }
+
+#ifdef EXTENDED_DEBUG
+    {
+        std::ostringstream ss;
+        int i = 0;
+        ss << "    Log count: " << this->_logs.size() << std::endl;
+        for (auto& iter : this->_logs)
+        {
+            ss << "    Log" << ++i << ": " << iter << " time : " << iter->_timestamp << std::endl;
+            for (auto& it : iter->_fields)
+            {
+                if (it->_vType == jaegertracing::thrift::TagType::BOOL)
+                    ss << "        " << it->_key << " " << it->_vBool << std::endl;
+                if (it->_vType == jaegertracing::thrift::TagType::DOUBLE)
+                    ss << "        " << it->_key << " " << it->_vDouble << std::endl;
+                if (it->_vType == jaegertracing::thrift::TagType::STRING)
+                    ss << "        " << it->_key << " " << it->_vStr << std::endl;
+            }
+        }
+        Tracer::file_logger.PrintLine(ss.str(), true);
+    }
+#endif
 }
 
 bool JaegerSpan::isSampled() const

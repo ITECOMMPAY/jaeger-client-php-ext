@@ -6,9 +6,6 @@
 #include "JaegerTracer.h"
 #include "PageViewHandler.h"
 
-#include "IReporter.h"
-#include "UdpReporter.h"
-#include "SpanContext.h"
 using namespace OpenTracing;
 
 /**
@@ -27,7 +24,7 @@ extern "C" {
     {
         // static(!) Php::Extension object that should stay in memory
         // for the entire duration of the process (that's why it's static)
-        static Php::Extension extension("jaeger-client", "1.0");
+        static Php::Extension extension("jaeger-client", "1.1");
 
         //extension.onStartup(&onStartup);
         //extension.onRequest(&onRequest);
@@ -71,7 +68,7 @@ extern "C" {
         TracerClass.method<&Tracer::print>("print", Php::Static, {
             Php::ByVal("str",Php::Type::String,true),
         });
-        /* TracerClass.method<&Tracer::getTracer>("getTracer", Php::Private | Php::Static, {}); */
+        TracerClass.method<&Tracer::getTracer>("getTracer", Php::Private | Php::Static, {});
         extension.add(std::move(TracerClass));
 
         Php::Class<SpanContext> SpanContextClass("SpanContext");

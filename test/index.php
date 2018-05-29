@@ -21,29 +21,11 @@ function Start()
    $q = getTracer();
 }
 
-$arr1=[
-    'enabled'=>true,
-    'mode'=>0,
-    'reporter'=>[
-        'type'=>'udp',
-        'options'=>[
-            'addr'=>'localhost',
-            'port'=>6831,
-            ]
-        ],
-    'sampler'=>[
-        'type'=>'percentage',
-        'options'=>[
-            'percents'=>100,
-            ]
-        ]
-    ];
-
 $request=[
     'Connection'=>'keep-alive',
     'Content-Length'=>'481',
     'Accept-Encoding'=>'gzip, deflate',
-    'Host'=>'gate.dev',
+    'Host'=>'gate.test',
     'X-B3-Sampled'=>'4',
     'X-B3-Parentspanid'=>'3',
     'X-B3-Spanid'=>'2',
@@ -53,7 +35,27 @@ $request=[
     'User-Agent'=>'vscode-restclient',
 ];
                                     echo("\n***init***\n");
-Tracer::init('gate',$arr1);
+Tracer::init('gate',
+    [
+        'enabled' => true,
+        'mode' => 0,
+        'debug_output' => true,
+        'udp_transport' => true,
+        'reporter' => [
+            'type' => 'udp',
+            'options' => [
+                'addr' => '192.168.15.15',
+                'port' => 6831,
+            ],
+        ],
+        'sampler' => [
+            'type' => 'percentage',
+            'options' => [
+                'percents' => 100
+            ]
+        ]
+    ]
+);
 
 $method = "GET";
 $path = "/";

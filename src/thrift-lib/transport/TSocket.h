@@ -270,17 +270,6 @@ public:
   virtual const std::string getOrigin();
 
   /**
-   * Constructor to create socket from file descriptor.
-   */
-  TSocket(THRIFT_SOCKET socket);
-
-  /**
-   * Constructor to create socket from file descriptor that
-   * can be interrupted safely.
-   */
-  TSocket(THRIFT_SOCKET socket, std::shared_ptr<THRIFT_SOCKET> interruptListener);
-
-  /**
    * Set a cache of the peer address (used when trivially available: e.g.
    * accept() or connect()). Only caches IPV4 and IPV6; unset for others.
    */

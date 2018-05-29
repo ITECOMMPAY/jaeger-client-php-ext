@@ -54,9 +54,9 @@ namespace OpenTracing
         /* usage e.g. \Tracer::print('---'.print_r($_SERVER['SCRIPT_NAME'],true));*/
         static void print(Php::Parameters& params);
 
-		/*Get global tracer*/
-		/* static Php::Value getTracer(); */
-	};
+        /*Get global tracer*/
+        static Php::Value getTracer();
+    };
 }
 #endif /* TRACER_H */
 

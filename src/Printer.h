@@ -1,6 +1,8 @@
 #ifndef PRINTER_H
 #define PRINTER_H
 
+//#define EXTENDED_DEBUG
+
 #include <iostream>
 #include <string>
 #include <sstream>

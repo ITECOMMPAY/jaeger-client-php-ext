@@ -726,6 +726,57 @@ uint32_t TCompactProtocolT<Transport_>::readVarint32(int32_t& i32) {
 }
 
 /**
+* Read an i64 from the wire as a proper varint. The MSB of each byte is set
+* if there is another byte to follow. This can read up to 10 bytes.
+*/
+template <class Transport_>
+uint32_t TCompactProtocolT<Transport_>::readVarint64(int64_t& i64) {
+    uint32_t rsize = 0;
+    uint64_t val = 0;
+    int shift = 0;
+    uint8_t buf[10];  // 64 bits / (7 bits/byte) = 10 bytes.
+    uint32_t buf_size = sizeof(buf);
+    const uint8_t* borrowed = trans_->borrow(buf, &buf_size);
+
+    // Fast path.
+    if (borrowed != NULL) {
+        while (true) {
+            uint8_t byte = borrowed[rsize];
+            rsize++;
+            val |= (uint64_t)(byte & 0x7f) << shift;
+            shift += 7;
+            if (!(byte & 0x80)) {
+                i64 = val;
+                trans_->consume(rsize);
+                return rsize;
+            }
+            // Have to check for invalid data so we don't crash.
+            if (UNLIKELY(rsize == sizeof(buf))) {
+                throw Php::Exception("TProtocolException::INVALID_DATA: Variable-length int over 10 bytes.");
+            }
+        }
+    }
+
+    // Slow path.
+    else {
+        while (true) {
+            uint8_t byte;
+            rsize += trans_->readAll(&byte, 1);
+            val |= (uint64_t)(byte & 0x7f) << shift;
+            shift += 7;
+            if (!(byte & 0x80)) {
+                i64 = val;
+                return rsize;
+            }
+            // Might as well check for invalid data on the slow path too.
+            if (UNLIKELY(rsize >= sizeof(buf))) {
+                throw Php::Exception("TProtocolException::INVALID_DATA: Variable-length int over 10 bytes.");
+            }
+        }
+    }
+}
+
+/**
  * Convert from zigzag int to int.
  */
 template <class Transport_>
