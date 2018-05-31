@@ -48,10 +48,7 @@ Let's assume that we have jaeger-agent listening on port 6831:
 ]);
 ```
 
-Note that some tags (host, ip) are attached to service automatically. 
-This is done via internal `ifconfig` call.
-Take this into account and be sure the command is available in your OS, e.g. as part of pre-installed net-tools package.
-
+Some tags (host, ip) are attached to service automatically. 
 Check also reporter and sampling settings format in the example above.
 
 ## Start span
