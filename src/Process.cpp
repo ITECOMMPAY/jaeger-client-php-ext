@@ -11,7 +11,7 @@ OpenTracing::Process::Process(const std::string& serviceName) :
     {
         std::ostringstream ss;
         ss << "    Process::Process addr: " << this;
-        Tracer::file_logger.PrintLine(ss.str(), true);
+        Tracer::file_logger.PrintLine(ss.str());
     }
     _tags.push_back(new Tag(Tag::TAG_TYPE_HOST, Helper::getHostName()));
     _tags.push_back(new Tag(Tag::TAG_TYPE_IP, Helper::getCurrentIp()));
