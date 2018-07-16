@@ -69,6 +69,13 @@ extern "C" {
             Php::ByVal("str",Php::Type::String,true),
         });
         TracerClass.method<&Tracer::getTracer>("getTracer", Php::Private | Php::Static, {});
+        TracerClass.method<&Tracer::startTracing>("startTracing", Php::Static, {
+            Php::ByVal("request_data",Php::Type::Array,true)         
+        });
+        // TracerClass.method<&Tracer::useExtendedTrarelicSpansFor>("useExtendedTrarelicSpansFor", Php::Static, {
+        //     Php::ByVal("hosts",Php::Type::Array,true)         
+        // });        
+
         extension.add(std::move(TracerClass));
 
         Php::Class<SpanContext> SpanContextClass("SpanContext");

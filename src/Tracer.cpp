@@ -1,4 +1,6 @@
 #include <iostream>
+#include <vector>
+#include <algorithm>
 #include "Tracer.h"
 #include "UdpReporter.h"
 #include "FileReporter.h"
@@ -9,10 +11,103 @@
 #include "JaegerSpan.h"
 using namespace OpenTracing;
 
+Php::Value Tracer::createDefaultParamsList()
+{
+    Php::Value defaults;
+
+    defaults["enabled"] = false;
+    defaults["debug_output"] = false;
+    defaults["udp_transport"] = Tracer::udp_transport;
+    defaults["reporter"]["type"] = "udp";
+    defaults["reporter"]["options"]["addr"] = "localhost";
+    defaults["reporter"]["options"]["port"] = 6831;
+    defaults["sampler"]["type"] = "percentage";
+    defaults["sampler"]["options"]["percents"] = 1;
+
+    return defaults;
+}
+
+Php::Value Tracer::createGuzzleParamsList()
+{
+    Php::Value defaults;
+
+    defaults["enabled"] = true;
+    defaults["mode"] = 0;
+    defaults["debug_output"] = true;
+    defaults["udp_transport"] = true;
+    defaults["reporter"]["type"] = "udp";
+    defaults["reporter"]["options"]["addr"] = "192.168.13.13";
+    defaults["reporter"]["options"]["port"] = 6831;
+    defaults["sampler"]["type"] = "percentage";
+    defaults["sampler"]["options"]["percents"] = 100;
+
+    return defaults;
+}
+
+Php::Value Tracer::createGuzzleTagParamsList(const std::string& uri, const std::string& caller, const std::string& type)
+{
+    Php::Value tagAttrs;
+    tagAttrs["is_external"] = true;
+    tagAttrs["http.uri"] = uri;
+    tagAttrs["caller"] = caller;
+    tagAttrs["type"] = type;
+
+    return tagAttrs;
+}
 
 Tracer::~Tracer()
 {
     Tracer::file_logger.PrintLine("~Tracer");
+}
+
+void Tracer::parseHostsStr(std::string hosts)
+{
+    if (!hosts.empty())
+    {
+        size_t dPos;
+        // read hosts from semicolon separated ini string 
+        while ((dPos = hosts.find(';')) != std::string::npos)
+        {
+            extended_span_name_hosts.insert(hosts.substr(0, dPos));
+            hosts.erase(0, dPos + 1);
+        }
+        extended_span_name_hosts.insert(hosts);
+    }
+}
+
+void Tracer::loadIniSettings()
+{
+    parseHostsStr(Php::ini_get("trarelic.extended_spans_for_hosts").stringValue());
+    
+    ini_settings_loaded = true;
+}    
+
+std::string Tracer::getTrarelicSpanName(std::string uri)
+{
+    // load list of hosts that require extended span names (with payment system name)
+    if (!ini_settings_loaded)
+    {
+        loadIniSettings();
+    }
+
+    // remove scheme from uri
+    size_t pos;
+    if ((pos = uri.find("://")) != std::string::npos) 
+    {
+        uri = uri.erase(0, pos + 3);
+    }
+    std::string host = uri.substr(0, uri.find('/'));
+    if (extended_span_name_hosts.find(host) != extended_span_name_hosts.end())
+    {
+        // getting host name with the first segment of path (name of ps)
+        std::string hostAndPs = uri.substr(0, uri.find('/', host.length() + 1));
+        // replace delimeter between host and ps from '/' to '-'
+        return hostAndPs.replace(host.length(), 1, "-");
+    }
+    else
+    {
+        return host;
+    }
 }
 
 IReporter* Tracer::buildReporter(const Php::Value& settings)
@@ -56,15 +151,7 @@ ISampler* Tracer::buildSampler(const Php::Value& settings)
 
 void Tracer::init(Php::Parameters& params)
 {
-    Php::Value defaults;
-    defaults["enabled"] = false;
-    defaults["debug_output"] = false;
-    defaults["udp_transport"] = Tracer::udp_transport;
-    defaults["reporter"]["type"] = "udp";
-    defaults["reporter"]["options"]["addr"] = "localhost";
-    defaults["reporter"]["options"]["port"] = 6831;
-    defaults["sampler"]["type"] = "percentage";
-    defaults["sampler"]["options"]["percents"] = 1;
+    Php::Value defaults = createDefaultParamsList();
 
     std::string serviceName = params[0];
     Php::Value settings = nullptr;
@@ -80,6 +167,11 @@ void Tracer::init(Php::Parameters& params)
             settings = Php::call("array_merge", defaults, settings);
     }
 
+    initInternal(serviceName, settings);
+}
+
+void Tracer::initInternal(const std::string& serviceName, const Php::Value& settings)
+{
     Tracer::file_logger._enabled = settings["debug_output"];
     Tracer::udp_transport = settings["udp_transport"];
 
@@ -112,23 +204,8 @@ void Tracer::init(Php::Parameters& params)
     global_tracer->init(serviceName);
 }
 
-Php::Value Tracer::startSpan(Php::Parameters& params)
+Php::Value Tracer::startSpanInternal(const std::string& operationName, const Php::Value& options)
 {
-    Tracer::file_logger.PrintLine("Tracer::startSpan", true);
-
-    std::string operationName = params[0];
-    Php::Value options = nullptr;
-
-    if (params.size() == 1)
-    {
-        Tracer::file_logger.PrintLine("    1 parameter", true);
-    }
-    else
-    {
-        options = params[1];
-        Tracer::file_logger.PrintLine("    2 parameters", true);
-    }
-
     ISpan* span = nullptr;
 
     if (global_tracer != nullptr)
@@ -185,6 +262,26 @@ Php::Value Tracer::startSpan(Php::Parameters& params)
 #endif
 
     return span == nullptr ? Php::Object("NoopSpan", new NoopSpan()) : Php::Object(span->_name(), span);
+}
+
+Php::Value Tracer::startSpan(Php::Parameters& params)
+{
+    Tracer::file_logger.PrintLine("Tracer::startSpan", true);
+
+    std::string operationName = params[0];
+    Php::Value options = nullptr;
+
+    if (params.size() == 1)
+    {
+        Tracer::file_logger.PrintLine("    1 parameter", true);
+    }
+    else
+    {
+        options = params[1];
+        Tracer::file_logger.PrintLine("    2 parameters", true);
+    }
+
+    return startSpanInternal(operationName, options);
 }
 
 Php::Value Tracer::getCurrentSpan()
@@ -427,7 +524,6 @@ void Tracer::print(Php::Parameters& params)
     }
 }
 
-
 Php::Value Tracer::getTracer()
 {
     {
@@ -437,4 +533,61 @@ Php::Value Tracer::getTracer()
     }
 
     return global_tracer == nullptr ? static_cast<Php::Value>(nullptr) : Php::Object(global_tracer->_name(), global_tracer);
+}
+
+Php::Value Tracer::startTracing(Php::Parameters& params)
+{
+    std::ostringstream ss;
+    ss << "Tracer::startTracing" << std::endl;
+
+    Php::Object newSpan;
+    bool spanAdded = false;
+
+    if (params[0].isArray() && params[0].count() >= 3) 
+    {
+        Php::Value request_data = params[0];
+
+        std::string uri = request_data.get(0).stringValue();
+        std::string caller = request_data.get(1).stringValue();
+        std::string type = request_data.get(2).stringValue();
+
+        Php::Value options;
+        
+        Php::Value span = getCurrentSpan();
+
+        if (span.isNull())
+        {
+            ss << "Tracer::startTracing no spans found, create new" << std::endl;
+            initInternal("TRARELIC", createGuzzleParamsList()); 
+        }
+        else
+        {
+            ss << "Tracer::startTracing set current span as parent" << std::endl;
+            options["childOf"] = span;
+        }
+
+        newSpan = static_cast<Php::Object>(startSpanInternal(getTrarelicSpanName(uri), options));
+        newSpan.call("addTags", createGuzzleTagParamsList(uri, caller, type));
+
+        ss << "Tracer::startTracing create new span with http.uri = " + uri + ", caller = " + caller + ", type = " + type << std::endl;
+        spanAdded = true;
+    }
+    else
+    {
+        ss << "Tracer::startTracing incorrect input" << std::endl;
+    }
+
+    Tracer::file_logger.PrintLine(ss.str(), true);
+
+    return spanAdded? newSpan: static_cast<Php::Value>(nullptr);
+}
+
+void Tracer::useExtendedTrarelicSpansFor(Php::Parameters& params)
+{
+    extended_span_name_hosts.clear();
+
+    std::vector<std::string> hosts = params[0];
+    std::for_each(hosts.begin(), hosts.end(), [&](const std::string& host) {
+        extended_span_name_hosts.insert(host);
+    });  
 }
