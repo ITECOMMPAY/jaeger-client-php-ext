@@ -150,7 +150,6 @@ install-php-cpp:
 						cd ./PHP-CPP && sudo make install
 
 install:
-						make
 						${CP} ${EXTENSION} ${EXTENSION_DIR}
 
 						@if [ ${OS_RELEASE} = "CentOS Linux" ]; then \

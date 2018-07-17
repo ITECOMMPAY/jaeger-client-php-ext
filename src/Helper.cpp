@@ -33,19 +33,160 @@ const int OpenTracing::Helper::genPercentage()
     return dist(re);
 }
 
+#define IPVer2
 const std::string OpenTracing::Helper::getCurrentIp()
 {
-    const char *cmd = R"($(which ip) addr show | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*' | grep -v '127.0.0.1')";
-    char buf[BUFSIZ];
-    memset(buf, '\0', BUFSIZ);
-    FILE *ptr;
-    if ((ptr = popen(cmd, "r")) != NULL)
+    std::string retVal{};
+
+#ifdef IPVer1
+    const char *cmd = R"($(which ip) addr show | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*' | grep -Ev '127.0.0.1|10.0.2.15')";
+
+    FILE *ptr = popen(cmd, "r");
+    if (ptr != NULL)
     {
-        while (fgets(buf, BUFSIZ, ptr) != NULL);
-        pclose(ptr);
+        char buf[BUFSIZ];
+        memset(buf, '\0', BUFSIZ);
+
+        std::vector<std::string> ip;
+        while (fgets(buf, BUFSIZ, ptr) != NULL)
+        {
+            ip.push_back(std::string(buf, strlen(buf) - 1));
+            Php::out << ip.back() << std::endl;
+        }
+
+        // some logic to get ip
+        // currently only last found
+        retVal = ip.back();
+    }
+    pclose(ptr);
+#endif
+
+#ifdef IPVer2
+    const char *cmd = R"(hostname -I)";
+
+    FILE *ptr = popen(cmd, "r");
+    if (ptr != NULL)
+    {
+        char buf[BUFSIZ];
+        memset(buf, '\0', BUFSIZ);
+
+        std::vector<std::string> ip;
+        while (fgets(buf, BUFSIZ, ptr) != NULL)
+        {
+            std::istringstream iss(std::string(buf, strlen(buf) - 1));
+            for (std::string s; iss >> s; )
+            {
+                ip.push_back(s);
+            }
+        }
+
+        // some logic to get ip
+        std::vector<std::string>::iterator iter = ip.begin();
+        while (iter != ip.end())
+        {
+            if (*iter == "10.0.2.15")
+            {
+                iter = ip.erase(iter);
+                continue;
+            }
+            iter++;
+        }
+
+        // currently only last found
+        if (ip.size() > 0)
+            retVal = ip.back();
     }
 
-    return std::string{ buf,strlen(buf) - 1 };
+    pclose(ptr);
+#endif
+
+#ifdef IPVer3
+    struct ifaddrs *ifaddr, *ifa;
+    int family, s;
+    char host[NI_MAXHOST];
+
+    if (getifaddrs(&ifaddr) == -1)
+    {
+        //perror("getifaddrs");
+        //exit(EXIT_FAILURE);
+        //Php::out << "getifaddrs problem" << std::endl;
+    }
+
+    std::vector<std::string> ip;
+    for (ifa = ifaddr; ifa != NULL; ifa = ifa->ifa_next)
+    {
+        if (ifa->ifa_addr == NULL)
+            continue;
+
+        s = getnameinfo(ifa->ifa_addr, sizeof(struct sockaddr_in), host, NI_MAXHOST, NULL, 0, NI_NUMERICHOST);
+
+        if ( /*(strcmp(ifa->ifa_name,"wlan0")==0)&&( */ ifa->ifa_addr->sa_family == AF_INET) // )
+        {
+            if (s != 0)
+            {
+                //printf("getnameinfo() failed: %s\n", gai_strerror(s));
+                //exit(EXIT_FAILURE);
+                //Php::out << "getnameinfo() failed: " << gai_strerror(s) << std::endl;
+                continue;
+            }
+            ip.push_back(std::string(host, strlen(host) - 1));
+            Tracer::file_logger.PrintLine(ip.back());
+            //printf("\tInterface : <%s>\n", ifa->ifa_name);
+            //printf("\t  Address : <%s>\n", host);
+
+            // some logic to get ip
+            // currently only last found
+            retVal = ip.back();
+        }
+    }
+
+    freeifaddrs(ifaddr);
+#endif
+
+#ifdef IPVer4
+    const char* google_dns_server = "8.8.8.8";
+    int dns_port = 53;
+
+    struct sockaddr_in serv;
+
+    int sock = socket(AF_INET, SOCK_DGRAM, 0);
+
+    //Socket could not be created
+    if (sock < 0)
+    {
+        perror("Socket error");
+    }
+
+    memset(&serv, 0, sizeof(serv));
+    serv.sin_family = AF_INET;
+    serv.sin_addr.s_addr = inet_addr(google_dns_server);
+    serv.sin_port = htons(dns_port);
+
+    int err = connect(sock, (const struct sockaddr*) &serv, sizeof(serv));
+
+    struct sockaddr_in name;
+    socklen_t namelen = sizeof(name);
+    err = getsockname(sock, (struct sockaddr*) &name, &namelen);
+
+    char buffer[100];
+    const char* p = inet_ntop(AF_INET, &name.sin_addr, buffer, 100);
+
+    if (p != NULL)
+    {
+        retVal = std::string(buffer, strlen(buffer) - 1);
+        Tracer::file_logger.PrintLine(retVal);
+        //printf("Local ip is : %s \n", buffer);
+    }
+    else
+    {
+        //Some error
+        //printf("Error number : %d . Error message : %s \n", errno, strerror(errno));
+    }
+
+    close(sock);
+#endif
+
+    return retVal;
 }
 
 const std::string OpenTracing::Helper::getHostName()
