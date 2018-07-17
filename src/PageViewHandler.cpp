@@ -4,7 +4,9 @@ using namespace OpenTracing;
 Printer Tracer::file_logger{ "/data/logs", false };
 ITracer* Tracer::global_tracer{ nullptr };
 int Tracer::header_flag{ 0 };
+bool Tracer::ini_settings_loaded{ false };
 bool Tracer::udp_transport{ true };
+std::unordered_set<std::string> Tracer::extended_span_name_hosts{};
 
 void onStartup()
 {
