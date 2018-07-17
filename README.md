@@ -15,6 +15,7 @@ sudo make install-php-cpp
 Then, install the extension.
 
 ```bash
+sudo make
 sudo make install
 ```
 
@@ -48,7 +49,7 @@ Let's assume that we have jaeger-agent listening on port 6831:
 ]);
 ```
 
-Some tags (host, ip) are attached to service automatically. 
+Some tags (host, ip) are attached to service automatically. This is done via internal `hostname` call.
 Check also reporter and sampling settings format in the example above.
 
 ## Start span
