@@ -23,12 +23,8 @@ namespace OpenTracing
         static void initInternal(const std::string& serviceName, const Php::Value& paramsList);
         /*Start span implementation */
         static Php::Value startSpanInternal(const std::string& operationName, const Php::Value& options = nullptr);
-        /*Load settings from php.ini */
-        static void loadIniSettings();
-        /*Get list of hosts from semicolon separated string */
-        static void parseHostsStr(std::string hosts);
         /*Create name for trarelic span based on its http.uri tag*/
-        static std::string getTrarelicSpanName(std::string uri);
+        static std::string getTrarelicSpanName(std::string uri, unsigned fetchCount);
     public:
         Tracer() {};
         virtual ~Tracer();
@@ -37,8 +33,6 @@ namespace OpenTracing
         static ITracer* global_tracer;
         static int header_flag;
         static bool udp_transport;
-        static bool ini_settings_loaded;
-        static std::unordered_set<std::string> extended_span_name_hosts;
 
         /*Create tracer instance and call its init method*/
         static void init(Php::Parameters& params);
@@ -64,8 +58,6 @@ namespace OpenTracing
         static void addTags(Php::Parameters& params);
         /*Add logs to current span*/
         static void addLogs(Php::Parameters& params);
-        /*Set list of hosts with extended trarelic span names */
-        static void useExtendedTrarelicSpansFor(Php::Parameters& params);
         /*Add new span for external requests registration*/
         static Php::Value startTracing(Php::Parameters& params);
 

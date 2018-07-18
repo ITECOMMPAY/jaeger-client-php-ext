@@ -36,7 +36,7 @@ Php::Value Tracer::createGuzzleParamsList()
     defaults["debug_output"] = true;
     defaults["udp_transport"] = true;
     defaults["reporter"]["type"] = "udp";
-    defaults["reporter"]["options"]["addr"] = "192.168.13.13";
+    defaults["reporter"]["options"]["addr"] = "192.168.15.15";
     defaults["reporter"]["options"]["port"] = 6831;
     defaults["sampler"]["type"] = "percentage";
     defaults["sampler"]["options"]["percents"] = 100;
@@ -58,56 +58,29 @@ Php::Value Tracer::createGuzzleTagParamsList(const std::string& uri, const std::
 Tracer::~Tracer()
 {
     Tracer::file_logger.PrintLine("~Tracer");
-}
+}   
 
-void Tracer::parseHostsStr(std::string hosts)
+std::string Tracer::getTrarelicSpanName(std::string uri, unsigned fetchCount)
 {
-    if (!hosts.empty())
-    {
-        size_t dPos;
-        // read hosts from semicolon separated ini string 
-        while ((dPos = hosts.find(';')) != std::string::npos)
-        {
-            extended_span_name_hosts.insert(hosts.substr(0, dPos));
-            hosts.erase(0, dPos + 1);
-        }
-        extended_span_name_hosts.insert(hosts);
-    }
-}
-
-void Tracer::loadIniSettings()
-{
-    parseHostsStr(Php::ini_get("trarelic.extended_spans_for_hosts").stringValue());
-    
-    ini_settings_loaded = true;
-}    
-
-std::string Tracer::getTrarelicSpanName(std::string uri)
-{
-    // load list of hosts that require extended span names (with payment system name)
-    if (!ini_settings_loaded)
-    {
-        loadIniSettings();
-    }
-
     // remove scheme from uri
     size_t pos;
     if ((pos = uri.find("://")) != std::string::npos) 
     {
         uri = uri.erase(0, pos + 3);
     }
-    std::string host = uri.substr(0, uri.find('/'));
-    if (extended_span_name_hosts.find(host) != extended_span_name_hosts.end())
+ 
+    size_t nameLen = 0;
+    while (fetchCount && nameLen != std::string::npos) 
     {
-        // getting host name with the first segment of path (name of ps)
-        std::string hostAndPs = uri.substr(0, uri.find('/', host.length() + 1));
-        // replace delimeter between host and ps from '/' to '-'
-        return hostAndPs.replace(host.length(), 1, "-");
+        nameLen = uri.find('/', nameLen + 1);
+        fetchCount--;
     }
-    else
-    {
-        return host;
-    }
+
+    std::string spanName = uri.substr(0, nameLen);
+
+    size_t endHostPos = spanName.find('/');
+    // replace first '/' with '-' if span name contains payment system info
+    return (endHostPos == std::string::npos) || (endHostPos == spanName.length() - 1)? spanName: spanName.replace(spanName.find('/'), 1, "-");
 }
 
 IReporter* Tracer::buildReporter(const Php::Value& settings)
@@ -543,13 +516,14 @@ Php::Value Tracer::startTracing(Php::Parameters& params)
     Php::Object newSpan;
     bool spanAdded = false;
 
-    if (params[0].isArray() && params[0].count() >= 3) 
+    if (params[0].isArray() && params[0].count() >= 4) 
     {
         Php::Value request_data = params[0];
 
         std::string uri = request_data.get(0).stringValue();
         std::string caller = request_data.get(1).stringValue();
         std::string type = request_data.get(2).stringValue();
+        unsigned fetchCount = request_data.get(3).numericValue();
 
         Php::Value options;
         
@@ -566,7 +540,7 @@ Php::Value Tracer::startTracing(Php::Parameters& params)
             options["childOf"] = span;
         }
 
-        newSpan = static_cast<Php::Object>(startSpanInternal(getTrarelicSpanName(uri), options));
+        newSpan = static_cast<Php::Object>(startSpanInternal(getTrarelicSpanName(uri, fetchCount), options));
         newSpan.call("addTags", createGuzzleTagParamsList(uri, caller, type));
 
         ss << "Tracer::startTracing create new span with http.uri = " + uri + ", caller = " + caller + ", type = " + type << std::endl;
@@ -580,14 +554,4 @@ Php::Value Tracer::startTracing(Php::Parameters& params)
     Tracer::file_logger.PrintLine(ss.str(), true);
 
     return spanAdded? newSpan: static_cast<Php::Value>(nullptr);
-}
-
-void Tracer::useExtendedTrarelicSpansFor(Php::Parameters& params)
-{
-    extended_span_name_hosts.clear();
-
-    std::vector<std::string> hosts = params[0];
-    std::for_each(hosts.begin(), hosts.end(), [&](const std::string& host) {
-        extended_span_name_hosts.insert(host);
-    });  
 }
