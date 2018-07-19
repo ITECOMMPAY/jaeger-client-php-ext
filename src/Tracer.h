@@ -1,6 +1,7 @@
 #ifndef TRACER_H
 #define TRACER_H
 
+#include <unordered_set>
 #include <phpcpp.h>
 #include "ITracer.h"
 #include "IReporter.h"
@@ -11,6 +12,19 @@ namespace OpenTracing
 {
     class Tracer : public Php::Base
     {
+    private:
+        /*Create array with Tracer paramaters for Guzzle requests */
+        static Php::Value createGuzzleParamsList();
+        /*Create array with default Tracer paramaters */
+        static Php::Value createDefaultParamsList();
+        /*Create array with tag paramaters for Guzzle external calls */
+        static Php::Value createGuzzleTagParamsList(const std::string& uri, const std::string& caller, const std::string& type);
+        /*Init tracer implementation */
+        static void initInternal(const std::string& serviceName, const Php::Value& paramsList);
+        /*Start span implementation */
+        static Php::Value startSpanInternal(const std::string& operationName, const Php::Value& options = nullptr);
+        /*Create name for trarelic span based on its http.uri tag*/
+        static std::string getTrarelicSpanName(std::string uri, unsigned fetchCount);
     public:
         Tracer() {};
         virtual ~Tracer();
@@ -44,6 +58,8 @@ namespace OpenTracing
         static void addTags(Php::Parameters& params);
         /*Add logs to current span*/
         static void addLogs(Php::Parameters& params);
+        /*Add new span for external requests registration*/
+        static Php::Value startTracing(Php::Parameters& params);
 
         /*Build reporter*/
         static IReporter* buildReporter(const Php::Value& settings);

@@ -24,7 +24,7 @@ extern "C" {
     {
         // static(!) Php::Extension object that should stay in memory
         // for the entire duration of the process (that's why it's static)
-        static Php::Extension extension("jaeger-client", "1.2");
+        static Php::Extension extension("jaeger-client", "1.3");
 
         //extension.onStartup(&onStartup);
         //extension.onRequest(&onRequest);
@@ -69,6 +69,10 @@ extern "C" {
             Php::ByVal("str",Php::Type::String,true),
         });
         TracerClass.method<&Tracer::getTracer>("getTracer", Php::Private | Php::Static, {});
+        TracerClass.method<&Tracer::startTracing>("startTracing", Php::Static, {
+            Php::ByVal("request_data",Php::Type::Array,true)         
+        });
+
         extension.add(std::move(TracerClass));
 
         Php::Class<SpanContext> SpanContextClass("SpanContext");
