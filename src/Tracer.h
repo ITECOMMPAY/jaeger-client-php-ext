@@ -1,7 +1,7 @@
 #ifndef TRACER_H
 #define TRACER_H
 
-#include <unordered_set>
+#include <vector>
 #include <phpcpp.h>
 #include "ITracer.h"
 #include "IReporter.h"
@@ -25,6 +25,12 @@ namespace OpenTracing
         static Php::Value startSpanInternal(const std::string& operationName, const Php::Value& options = nullptr);
         /*Create name for trarelic span based on its http.uri tag*/
         static std::string getTrarelicSpanName(std::string uri, unsigned fetchCount);
+        /*Load settings from php.ini */
+        static void loadIniSettings();
+        /*Get list of hosts from semicolon separated string */
+        static std::vector<std::string> parseHostsStr(std::string hosts);
+        /*Check host name from uri for a empty spans list*/
+        static bool checkForEmptySpanHost(const std::string uri);
     public:
         Tracer() {};
         virtual ~Tracer();
@@ -33,6 +39,9 @@ namespace OpenTracing
         static ITracer* global_tracer;
         static int header_flag;
         static bool udp_transport;
+        static bool ini_settings_loaded;
+        static std::vector<std::string> empty_span_hosts;
+        static std::vector<std::string> not_instrumented_hosts;
 
         /*Create tracer instance and call its init method*/
         static void init(Php::Parameters& params);
