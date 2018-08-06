@@ -20,6 +20,15 @@ static void removeSchemeFromUri(std::string& uri)
     }
 }
 
+static void removeParamsQueryFromUri(std::string& uri)
+{
+    size_t pos;
+    if ((pos = uri.find("?")) != std::string::npos)
+    {
+        uri.erase(pos);
+    }
+}
+
 static bool hostsFilterPassed(const std::string& uri, const std::vector<std::string>& filtered)
 {
     for (auto host : filtered)
@@ -54,13 +63,23 @@ Php::Value Tracer::createGuzzleParamsList()
 
     defaults["enabled"] = true;
     defaults["mode"] = 0;
-    defaults["debug_output"] = true;
+    defaults["debug_output"] = false;
     defaults["udp_transport"] = true;
-    defaults["reporter"]["type"] = "udp";
-    defaults["reporter"]["options"]["addr"] = "192.168.15.15";
-    defaults["reporter"]["options"]["port"] = 6831;
+
     defaults["sampler"]["type"] = "percentage";
     defaults["sampler"]["options"]["percents"] = 100;
+    if (!userTracerSettings.empty())
+    {
+        defaults["reporter"]["type"] = userTracerSettings["reporter_type"];
+        defaults["reporter"]["options"]["addr"] = userTracerSettings["reporter_addr"];
+        defaults["reporter"]["options"]["port"] = userTracerSettings["reporter_port"];
+    }
+    else 
+    {
+        defaults["reporter"]["type"] = "udp";
+        defaults["reporter"]["options"]["addr"] = "localhost";
+        defaults["reporter"]["options"]["port"] = 6831;
+    }
 
     return defaults;
 }
@@ -175,8 +194,14 @@ void Tracer::init(Php::Parameters& params)
     else
     {
         settings = params[1];
-        if (settings.isArray())
+        if (settings.isArray()) 
+        {
             settings = Php::call("array_merge", defaults, settings);
+            userTracerSettings["reporter_type"] = settings["reporter"]["type"].value().stringValue();
+            userTracerSettings["reporter_addr"] = settings["reporter"]["options"]["addr"].value().stringValue();
+            userTracerSettings["reporter_port"] = settings["reporter"]["options"]["port"].value().stringValue();
+        }
+
     }
 
     initInternal(serviceName, settings);
@@ -570,6 +595,7 @@ Php::Value Tracer::startTracing(Php::Parameters& params)
         unsigned fetchCount = request_data.get(3).numericValue();
 
         removeSchemeFromUri(uri);
+        removeParamsQueryFromUri(uri);
 
         // check that external host is not in ignore list
         if (hostsFilterPassed(uri, not_instrumented_hosts)) 
@@ -581,7 +607,7 @@ Php::Value Tracer::startTracing(Php::Parameters& params)
             if (span.isNull())
             {
                 ss << "Tracer::startTracing no spans found, create new" << std::endl;
-                initInternal("TRARELIC", createGuzzleParamsList()); 
+                initInternal("Guzzle external", createGuzzleParamsList());
             }
             else
             {

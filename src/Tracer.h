@@ -42,6 +42,7 @@ namespace OpenTracing
         static bool ini_settings_loaded;
         static std::vector<std::string> empty_span_hosts;
         static std::vector<std::string> not_instrumented_hosts;
+        static std::map<std::string, std::string> userTracerSettings;
 
         /*Create tracer instance and call its init method*/
         static void init(Php::Parameters& params);
