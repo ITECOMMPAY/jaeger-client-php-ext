@@ -11,6 +11,36 @@
 #include "JaegerSpan.h"
 using namespace OpenTracing;
 
+static void removeSchemeFromUri(std::string& uri)
+{
+    size_t pos;
+    if ((pos = uri.find("://")) != std::string::npos) 
+    {
+        uri.erase(0, pos + 3);
+    }
+}
+
+static void removeParamsQueryFromUri(std::string& uri)
+{
+    size_t pos;
+    if ((pos = uri.find("?")) != std::string::npos)
+    {
+        uri.erase(pos);
+    }
+}
+
+static bool hostsFilterPassed(const std::string& uri, const std::vector<std::string>& filtered)
+{
+    for (auto host : filtered)
+    {
+        if (uri.find(host) == 0) 
+        {
+            return false;
+        }
+    }
+    return true;
+}
+
 Php::Value Tracer::createDefaultParamsList()
 {
     Php::Value defaults;
@@ -33,13 +63,23 @@ Php::Value Tracer::createGuzzleParamsList()
 
     defaults["enabled"] = true;
     defaults["mode"] = 0;
-    defaults["debug_output"] = true;
+    defaults["debug_output"] = false;
     defaults["udp_transport"] = true;
-    defaults["reporter"]["type"] = "udp";
-    defaults["reporter"]["options"]["addr"] = "192.168.15.15";
-    defaults["reporter"]["options"]["port"] = 6831;
+
     defaults["sampler"]["type"] = "percentage";
     defaults["sampler"]["options"]["percents"] = 100;
+    if (!userTracerSettings.empty())
+    {
+        defaults["reporter"]["type"] = userTracerSettings["reporter_type"];
+        defaults["reporter"]["options"]["addr"] = userTracerSettings["reporter_addr"];
+        defaults["reporter"]["options"]["port"] = userTracerSettings["reporter_port"];
+    }
+    else 
+    {
+        defaults["reporter"]["type"] = "udp";
+        defaults["reporter"]["options"]["addr"] = "localhost";
+        defaults["reporter"]["options"]["port"] = 6831;
+    }
 
     return defaults;
 }
@@ -60,15 +100,33 @@ Tracer::~Tracer()
     Tracer::file_logger.PrintLine("~Tracer");
 }   
 
+std::vector<std::string> Tracer::parseHostsStr(std::string hosts)
+{
+    std::vector<std::string> hostsList{};
+    if (!hosts.empty())
+    {
+        size_t dPos;
+        // read hosts from semicolon separated ini string 
+        while ((dPos = hosts.find(';')) != std::string::npos)
+        {
+            hostsList.emplace_back(hosts.substr(0, dPos));
+            hosts.erase(0, dPos + 1);
+        }
+        hostsList.emplace_back(hosts);
+    }
+    return hostsList;
+}
+
+void Tracer::loadIniSettings()
+{
+    empty_span_hosts = parseHostsStr(Php::ini_get("trarelic.empty_spans_for_hosts").stringValue());
+    not_instrumented_hosts = parseHostsStr(Php::ini_get("trarelic.no_spans_for_hosts").stringValue());
+
+    ini_settings_loaded = true;
+}  
+
 std::string Tracer::getTrarelicSpanName(std::string uri, unsigned fetchCount)
 {
-    // remove scheme from uri
-    size_t pos;
-    if ((pos = uri.find("://")) != std::string::npos) 
-    {
-        uri = uri.erase(0, pos + 3);
-    }
- 
     size_t nameLen = 0;
     while (fetchCount && nameLen != std::string::npos) 
     {
@@ -136,8 +194,14 @@ void Tracer::init(Php::Parameters& params)
     else
     {
         settings = params[1];
-        if (settings.isArray())
+        if (settings.isArray()) 
+        {
             settings = Php::call("array_merge", defaults, settings);
+            userTracerSettings["reporter_type"] = settings["reporter"]["type"].value().stringValue();
+            userTracerSettings["reporter_addr"] = settings["reporter"]["options"]["addr"].value().stringValue();
+            userTracerSettings["reporter_port"] = settings["reporter"]["options"]["port"].value().stringValue();
+        }
+
     }
 
     initInternal(serviceName, settings);
@@ -518,6 +582,11 @@ Php::Value Tracer::startTracing(Php::Parameters& params)
 
     if (params[0].isArray() && params[0].count() >= 4) 
     {
+        if (!ini_settings_loaded)
+        {
+            loadIniSettings();
+        }
+
         Php::Value request_data = params[0];
 
         std::string uri = request_data.get(0).stringValue();
@@ -525,26 +594,39 @@ Php::Value Tracer::startTracing(Php::Parameters& params)
         std::string type = request_data.get(2).stringValue();
         unsigned fetchCount = request_data.get(3).numericValue();
 
-        Php::Value options;
-        
-        Php::Value span = getCurrentSpan();
+        removeSchemeFromUri(uri);
+        removeParamsQueryFromUri(uri);
 
-        if (span.isNull())
+        // check that external host is not in ignore list
+        if (hostsFilterPassed(uri, not_instrumented_hosts)) 
         {
-            ss << "Tracer::startTracing no spans found, create new" << std::endl;
-            initInternal("TRARELIC", createGuzzleParamsList()); 
-        }
-        else
-        {
-            ss << "Tracer::startTracing set current span as parent" << std::endl;
-            options["childOf"] = span;
+            Php::Value options;
+
+            Php::Value span = getCurrentSpan();
+
+            if (span.isNull())
+            {
+                ss << "Tracer::startTracing no spans found, create new" << std::endl;
+                initInternal("Guzzle external", createGuzzleParamsList());
+            }
+            else
+            {
+                ss << "Tracer::startTracing set current span as parent" << std::endl;
+                options["childOf"] = span;
+            }
+
+            newSpan = static_cast<Php::Object>(startSpanInternal(getTrarelicSpanName(uri, fetchCount), options));
+            
+            // check that info tags required for external call span
+            if (hostsFilterPassed(uri, empty_span_hosts)) 
+            {
+                newSpan.call("addTags", createGuzzleTagParamsList(uri, caller, type));
+                ss << "Tracer::startTracing create new span with http.uri = " + uri + ", caller = " + caller + ", type = " + type << std::endl;            
+            }
+
+            spanAdded = true;
         }
 
-        newSpan = static_cast<Php::Object>(startSpanInternal(getTrarelicSpanName(uri, fetchCount), options));
-        newSpan.call("addTags", createGuzzleTagParamsList(uri, caller, type));
-
-        ss << "Tracer::startTracing create new span with http.uri = " + uri + ", caller = " + caller + ", type = " + type << std::endl;
-        spanAdded = true;
     }
     else
     {
