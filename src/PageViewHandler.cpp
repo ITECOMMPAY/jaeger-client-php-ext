@@ -6,6 +6,7 @@ ITracer* Tracer::global_tracer{ nullptr };
 bool Tracer::ini_settings_loaded{ false };
 int Tracer::header_flag{ 0 };
 bool Tracer::udp_transport{ true };
+bool Tracer::single_ext_call{ false };
 std::vector<std::string> Tracer::empty_span_hosts{};
 std::vector<std::string> Tracer::not_instrumented_hosts{};
 std::map<std::string, std::string> Tracer::userTracerSettings;

@@ -40,6 +40,7 @@ namespace OpenTracing
         static int header_flag;
         static bool udp_transport;
         static bool ini_settings_loaded;
+        static bool single_ext_call;
         static std::vector<std::string> empty_span_hosts;
         static std::vector<std::string> not_instrumented_hosts;
         static std::map<std::string, std::string> userTracerSettings;
