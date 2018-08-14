@@ -57,7 +57,7 @@ Php::Value Tracer::createDefaultParamsList()
     return defaults;
 }
 
-Php::Value Tracer::createGuzzleParamsList()
+Php::Value Tracer::createCurlParamsList()
 {
     Php::Value defaults;
 
@@ -84,7 +84,7 @@ Php::Value Tracer::createGuzzleParamsList()
     return defaults;
 }
 
-Php::Value Tracer::createGuzzleTagParamsList(const std::string& uri, const std::string& caller, const std::string& type)
+Php::Value Tracer::createCurlTagParamsList(const std::string& uri, const std::string& caller, const std::string& type)
 {
     Php::Value tagAttrs;
     tagAttrs["is_external"] = true;
@@ -388,7 +388,7 @@ void Tracer::finishSpan(Php::Parameters& params)
         // restore previous Tracer service name for process
         if (Tracer::single_ext_call && !userTracerSettings.empty()) 
         {
-            initInternal(userTracerSettings["serviceName"], createGuzzleParamsList());
+            initInternal(userTracerSettings["serviceName"], createCurlParamsList());
             Tracer::single_ext_call = false;
         }
     }
@@ -617,7 +617,7 @@ Php::Value Tracer::startTracing(Php::Parameters& params)
             if (span.isNull())
             {          
                 ss << "Tracer::startTracing no spans found, create new" << std::endl;
-                initInternal("curl external", createGuzzleParamsList());
+                initInternal("curl external", createCurlParamsList());
                 Tracer::single_ext_call = true;
             }
             else
@@ -631,7 +631,7 @@ Php::Value Tracer::startTracing(Php::Parameters& params)
             // check that info tags required for external call span
             if (hostsFilterPassed(uri, empty_span_hosts)) 
             {
-                newSpan.call("addTags", createGuzzleTagParamsList(uri, caller, type));
+                newSpan.call("addTags", createCurlTagParamsList(uri, caller, type));
                 ss << "Tracer::startTracing create new span with http.uri = " + uri + ", caller = " + caller + ", type = " + type << std::endl;            
             }
 

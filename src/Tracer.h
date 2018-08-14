@@ -13,12 +13,12 @@ namespace OpenTracing
     class Tracer : public Php::Base
     {
     private:
-        /*Create array with Tracer paramaters for Guzzle requests */
-        static Php::Value createGuzzleParamsList();
+        /*Create array with Tracer paramaters for curl requests */
+        static Php::Value createCurlParamsList();
         /*Create array with default Tracer paramaters */
         static Php::Value createDefaultParamsList();
-        /*Create array with tag paramaters for Guzzle external calls */
-        static Php::Value createGuzzleTagParamsList(const std::string& uri, const std::string& caller, const std::string& type);
+        /*Create array with tag paramaters for curl external calls */
+        static Php::Value createCurlTagParamsList(const std::string& uri, const std::string& caller, const std::string& type);
         /*Init tracer implementation */
         static void initInternal(const std::string& serviceName, const Php::Value& paramsList);
         /*Start span implementation */
