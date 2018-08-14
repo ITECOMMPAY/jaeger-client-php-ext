@@ -579,7 +579,6 @@ Php::Value OpenTracing::createCurlTagParamsList(const std::string& uri, const st
     return tagAttrs;
 }
 
-
 void OpenTracing::removeSchemeFromUri(std::string& uri)
 {
     size_t pos;
