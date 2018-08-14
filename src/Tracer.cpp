@@ -197,6 +197,7 @@ void Tracer::init(Php::Parameters& params)
         if (settings.isArray()) 
         {
             settings = Php::call("array_merge", defaults, settings);
+            userTracerSettings["serviceName"] = serviceName;
             userTracerSettings["reporter_type"] = settings["reporter"]["type"].value().stringValue();
             userTracerSettings["reporter_addr"] = settings["reporter"]["options"]["addr"].value().stringValue();
             userTracerSettings["reporter_port"] = settings["reporter"]["options"]["port"].value().stringValue();
@@ -382,6 +383,13 @@ void Tracer::finishSpan(Php::Parameters& params)
         if (global_tracer != nullptr)
         {
             global_tracer->finishSpan(span);
+        }
+
+        // restore previous Tracer service name for process
+        if (Tracer::single_ext_call && !userTracerSettings.empty()) 
+        {
+            initInternal(userTracerSettings["serviceName"], createGuzzleParamsList());
+            Tracer::single_ext_call = false;
         }
     }
 }
@@ -604,10 +612,13 @@ Php::Value Tracer::startTracing(Php::Parameters& params)
 
             Php::Value span = getCurrentSpan();
 
+            Tracer::single_ext_call = false;
+
             if (span.isNull())
-            {
+            {          
                 ss << "Tracer::startTracing no spans found, create new" << std::endl;
-                initInternal("Guzzle external", createGuzzleParamsList());
+                initInternal("curl external", createGuzzleParamsList());
+                Tracer::single_ext_call = true;
             }
             else
             {
@@ -625,6 +636,7 @@ Php::Value Tracer::startTracing(Php::Parameters& params)
             }
 
             spanAdded = true;
+
         }
 
     }
