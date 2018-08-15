@@ -24,7 +24,7 @@ extern "C" {
     {
         // static(!) Php::Extension object that should stay in memory
         // for the entire duration of the process (that's why it's static)
-        static Php::Extension extension("jaeger-client", "1.5");
+        static Php::Extension extension("jaeger-client", "1.6");
 
         //extension.onStartup(&onStartup);
         //extension.onRequest(&onRequest);
@@ -35,44 +35,43 @@ extern "C" {
         TracerClass.method<&Tracer::init>("init", Php::Static, {
             Php::ByVal("serviceName",Php::Type::String,true),
             Php::ByVal("settings",Php::Type::Null,false)
-        });
+            });
         TracerClass.method<&Tracer::startSpan>("startSpan", Php::Static, {
             Php::ByVal("operationName",Php::Type::String,true),
             Php::ByVal("options",Php::Type::Array,false)
-        });
+            });
         TracerClass.method<&Tracer::getCurrentSpan>("getCurrentSpan", Php::Static, {});
         TracerClass.method<&Tracer::getCurrentTraceId>("getCurrentTraceId", Php::Static, {});
         TracerClass.method<&Tracer::getCurrentSpanId>("getCurrentSpanId", Php::Static, {
             Php::ByVal("span",Php::Type::Object,true),
-        });
+            });
         TracerClass.method<&Tracer::getCurrentParentId>("getCurrentParentId", Php::Static, {
             Php::ByVal("span",Php::Type::Object,true),
-        });
+            });
         TracerClass.method<&Tracer::finishSpan>("finishSpan", Php::Static, {
             Php::ByVal("span",Php::Type::Object,true),
-        });
+            });
         TracerClass.method<&Tracer::inject>("inject", Php::Static, {
             Php::ByVal("context",Php::Type::Object,true),
             Php::ByVal("carrier",Php::Type::Null,true),
-        });
+            });
         TracerClass.method<&Tracer::extract>("extract", Php::Static, {
             Php::ByVal("carrier",Php::Type::Null,true),
-        });
+            });
         TracerClass.method<&Tracer::flush>("flush", Php::Static, {});
         TracerClass.method<&Tracer::addTags>("addTags", Php::Static, {
             Php::ByVal("tags",Php::Type::Array,true),
-        });
+            });
         TracerClass.method<&Tracer::addLogs>("addLogs", Php::Static, {
             Php::ByVal("logs",Php::Type::Array,true),
-        });
+            });
         TracerClass.method<&Tracer::print>("print", Php::Static, {
             Php::ByVal("str",Php::Type::String,true),
-        });
+            });
         TracerClass.method<&Tracer::getTracer>("getTracer", Php::Private | Php::Static, {});
-        TracerClass.method<&Tracer::startTracing>("startTracing", Php::Static, {
-            Php::ByVal("request_data",Php::Type::Array,true)         
-        });
-
+        TracerClass.method<&Tracer::startExternalTracing>("startExternalTracing", Php::Static, {
+            Php::ByVal("request_data",Php::Type::Array,true)
+            });
         extension.add(std::move(TracerClass));
 
         Php::Class<SpanContext> SpanContextClass("SpanContext");

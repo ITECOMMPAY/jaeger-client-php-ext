@@ -6,6 +6,7 @@
 #include "Process.h"
 #include "Log.h"
 #include "Tag.h"
+
 #include "thrift-gen/jaeger_types.h"
 
 namespace OpenTracing
@@ -42,8 +43,8 @@ namespace OpenTracing
         );
         /*Get jaeger version of the Span*/
         static jaegertracing::thrift::Span jaegerizeSpan(
-            const OpenTracing::ISpan* span, 
-            LogCount logLimit = LogCount::WHOLE, 
+            const OpenTracing::ISpan* span,
+            LogCount logLimit = LogCount::WHOLE,
             JaegerizeVersion ver = JaegerizeVersion::V1,
             size_t indStart = 0,
             size_t indCount = 0,
