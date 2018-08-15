@@ -69,7 +69,7 @@ extern "C" {
             Php::ByVal("str",Php::Type::String,true),
             });
         TracerClass.method<&Tracer::getTracer>("getTracer", Php::Private | Php::Static, {});
-        TracerClass.method<&Tracer::startExternalTracing>("startTracing", Php::Static, {
+        TracerClass.method<&Tracer::startExternalTracing>("startExternalTracing", Php::Static, {
             Php::ByVal("request_data",Php::Type::Array,true)
             });
         extension.add(std::move(TracerClass));
