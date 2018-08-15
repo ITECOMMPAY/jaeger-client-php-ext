@@ -458,7 +458,7 @@ Php::Value Tracer::getTracer()
 Php::Value Tracer::startExternalTracing(Php::Parameters& params)
 {
     std::ostringstream ss;
-    ss << "Tracer::startTracing" << std::endl;
+    ss << "Tracer::startExternalTracing" << std::endl;
 
     Php::Object newSpan;
     bool spanAdded = false;
@@ -491,13 +491,13 @@ Php::Value Tracer::startExternalTracing(Php::Parameters& params)
 
             if (span.isNull())
             {
-                ss << "Tracer::startTracing no spans found, create new" << std::endl;
+                ss << "Tracer::startExternalTracing no spans found, create new" << std::endl;
                 initInternal("curl external", createCurlParamsList());
                 Tracer::single_ext_call = true;
             }
             else
             {
-                ss << "Tracer::startTracing set current span as parent" << std::endl;
+                ss << "Tracer::startExternalTracing set current span as parent" << std::endl;
                 options["childOf"] = span;
             }
 
@@ -507,7 +507,7 @@ Php::Value Tracer::startExternalTracing(Php::Parameters& params)
             if (hostsFilterPassed(uri, empty_span_hosts))
             {
                 newSpan.call("addTags", createCurlTagParamsList(uri, caller, type));
-                ss << "Tracer::startTracing create new span with http.uri = " + uri + ", caller = " + caller + ", type = " + type << std::endl;
+                ss << "Tracer::startExternalTracing create new span with http.uri = " + uri + ", caller = " + caller + ", type = " + type << std::endl;
             }
 
             spanAdded = true;
