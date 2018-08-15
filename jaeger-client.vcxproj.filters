@@ -1,0 +1,235 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="src">
+      <UniqueIdentifier>{d7987453-088e-404a-9a1c-e109f426ab83}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\interface">
+      <UniqueIdentifier>{045e31f9-f2a2-4dfa-b99c-9c17dda46859}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\thrift">
+      <UniqueIdentifier>{84b3a0e9-e179-40d0-8f5f-4e691ed8e77c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\thrift-gen">
+      <UniqueIdentifier>{96430357-e046-4485-8b82-1d89ef08b43a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\thrift-lib">
+      <UniqueIdentifier>{0f680c11-6b3e-4a65-a1f7-8496d59eb693}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\thrift-lib\protocol">
+      <UniqueIdentifier>{2e4c528e-4702-4ff0-a384-86cfeb44b4e2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\thrift-lib\transport">
+      <UniqueIdentifier>{f1a442b9-d401-42a2-97ce-f6372084b75f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="test">
+      <UniqueIdentifier>{b1a3bbb3-4bed-479a-8a04-a2d500561268}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\IReporter.cpp">
+      <Filter>src\interface</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ISampler.cpp">
+      <Filter>src\interface</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ISpan.cpp">
+      <Filter>src\interface</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ITracer.cpp">
+      <Filter>src\interface</Filter>
+    </ClCompile>
+    <ClCompile Include="src\thrift-gen\Agent.cpp">
+      <Filter>src\thrift-gen</Filter>
+    </ClCompile>
+    <ClCompile Include="src\thrift-gen\jaeger_types.cpp">
+      <Filter>src\thrift-gen</Filter>
+    </ClCompile>
+    <ClCompile Include="src\thrift-gen\zipkincore_types.cpp">
+      <Filter>src\thrift-gen</Filter>
+    </ClCompile>
+    <ClCompile Include="src\thrift-lib\protocol\TProtocol.cpp">
+      <Filter>src\thrift-lib\protocol</Filter>
+    </ClCompile>
+    <ClCompile Include="src\thrift-lib\transport\TBufferTransports.cpp">
+      <Filter>src\thrift-lib\transport</Filter>
+    </ClCompile>
+    <ClCompile Include="src\thrift-lib\transport\TSocket.cpp">
+      <Filter>src\thrift-lib\transport</Filter>
+    </ClCompile>
+    <ClCompile Include="src\FileReporter.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Helper.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\JaegerSpan.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\JaegerTracer.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Log.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\main.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\NoopSpan.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\NoopTracer.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\PageViewHandler.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\PercentageSampler.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Printer.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Process.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SpanContext.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Tag.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\TextCarrier.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Tracer.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\UdpReporter.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\IReporter.h">
+      <Filter>src\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ISampler.h">
+      <Filter>src\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ISpan.h">
+      <Filter>src\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ITracer.h">
+      <Filter>src\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="src\thrift-gen\Agent.h">
+      <Filter>src\thrift-gen</Filter>
+    </ClInclude>
+    <ClInclude Include="src\thrift-gen\jaeger_types.h">
+      <Filter>src\thrift-gen</Filter>
+    </ClInclude>
+    <ClInclude Include="src\thrift-gen\zipkincore_types.h">
+      <Filter>src\thrift-gen</Filter>
+    </ClInclude>
+    <ClInclude Include="src\thrift-lib\TBase.h">
+      <Filter>src\thrift-lib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\thrift-lib\protocol\TBinaryProtocol.h">
+      <Filter>src\thrift-lib\protocol</Filter>
+    </ClInclude>
+    <ClInclude Include="src\thrift-lib\protocol\TCompactProtocol.h">
+      <Filter>src\thrift-lib\protocol</Filter>
+    </ClInclude>
+    <ClInclude Include="src\thrift-lib\protocol\TProtocol.h">
+      <Filter>src\thrift-lib\protocol</Filter>
+    </ClInclude>
+    <ClInclude Include="src\thrift-lib\protocol\TVirtualProtocol.h">
+      <Filter>src\thrift-lib\protocol</Filter>
+    </ClInclude>
+    <ClInclude Include="src\thrift-lib\transport\TBufferTransports.h">
+      <Filter>src\thrift-lib\transport</Filter>
+    </ClInclude>
+    <ClInclude Include="src\thrift-lib\transport\TSocket.h">
+      <Filter>src\thrift-lib\transport</Filter>
+    </ClInclude>
+    <ClInclude Include="src\thrift-lib\transport\TTransport.h">
+      <Filter>src\thrift-lib\transport</Filter>
+    </ClInclude>
+    <ClInclude Include="src\thrift-lib\transport\TVirtualTransport.h">
+      <Filter>src\thrift-lib\transport</Filter>
+    </ClInclude>
+    <ClInclude Include="src\FileReporter.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Helper.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\JaegerSpan.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\JaegerTracer.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Log.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\NoopSpan.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\NoopTracer.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\PageViewHandler.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\PercentageSampler.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Printer.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Process.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SpanContext.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Tag.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\TextCarrier.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Tracer.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\UdpReporter.h">
+      <Filter>src</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\thrift\agent.thrift">
+      <Filter>src\thrift</Filter>
+    </None>
+    <None Include="src\thrift\jaeger.thrift">
+      <Filter>src\thrift</Filter>
+    </None>
+    <None Include="src\thrift\zipkincore.thrift">
+      <Filter>src\thrift</Filter>
+    </None>
+    <None Include="src\thrift-lib\protocol\TBinaryProtocol.tcc">
+      <Filter>src\thrift-lib\protocol</Filter>
+    </None>
+    <None Include="src\thrift-lib\protocol\TCompactProtocol.tcc">
+      <Filter>src\thrift-lib\protocol</Filter>
+    </None>
+    <None Include="jaeger-client.ini" />
+    <None Include="Makefile" />
+    <None Include="test\index.php">
+      <Filter>test</Filter>
+    </None>
+    <None Include="test\request.rest">
+      <Filter>test</Filter>
+    </None>
+  </ItemGroup>
+</Project>

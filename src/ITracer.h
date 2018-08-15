@@ -11,7 +11,7 @@ namespace OpenTracing
     {
     public:
         virtual ~ITracer() = 0;
-        
+
         /*Init tracing*/
         virtual void init(const std::string& serviceName) = 0;
         /*Start span*/
