@@ -7,21 +7,20 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{67de862e-0bad-45f8-925e-51963c896c26}</ProjectGuid>
+    <ProjectGuid>{69b8a10b-7fca-47e9-a54c-d6d6ac46a265}</ProjectGuid>
     <Keyword>Linux</Keyword>
-    <RootNamespace>tracer_cpp</RootNamespace>
+    <RootNamespace>jaeger_client</RootNamespace>
     <MinimumVisualStudioVersion>15.0</MinimumVisualStudioVersion>
     <ApplicationType>Linux</ApplicationType>
     <ApplicationTypeRevision>1.0</ApplicationTypeRevision>
     <TargetLinuxPlatform>Generic</TargetLinuxPlatform>
     <LinuxProjectType>{2238F9CD-F817-4ECC-BD14-2524D2669B35}</LinuxProjectType>
-    <ProjectName>jaeger-client</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <UseDebugLibraries>true</UseDebugLibraries>
-    <RemoteRootDir>~/_work</RemoteRootDir>
     <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <RemoteRootDir>~/_work</RemoteRootDir>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings" />
@@ -30,26 +29,54 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(ProjectDir)</OutDir>
-    <TargetName>$(ProjectName)</TargetName>
-    <TargetExt>.so</TargetExt>
     <IntDir>$(ProjectDir)src\</IntDir>
+    <TargetName>$(ProjectName)</TargetName>
     <RemoteLinkLocalCopyOutput>false</RemoteLinkLocalCopyOutput>
   </PropertyGroup>
   <ItemGroup>
-    <ClInclude Include="src\Helper.h" />
-    <ClInclude Include="src\ISampler.h" />
+    <ClCompile Include="src\FileReporter.cpp" />
+    <ClCompile Include="src\Helper.cpp" />
+    <ClCompile Include="src\IReporter.cpp" />
+    <ClCompile Include="src\ISampler.cpp" />
+    <ClCompile Include="src\ISpan.cpp" />
+    <ClCompile Include="src\ITracer.cpp" />
+    <ClCompile Include="src\JaegerSpan.cpp" />
+    <ClCompile Include="src\JaegerTracer.cpp" />
+    <ClCompile Include="src\Log.cpp" />
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\NoopSpan.cpp" />
+    <ClCompile Include="src\NoopTracer.cpp" />
+    <ClCompile Include="src\PageViewHandler.cpp" />
+    <ClCompile Include="src\PercentageSampler.cpp" />
+    <ClCompile Include="src\Printer.cpp" />
+    <ClCompile Include="src\Process.cpp" />
+    <ClCompile Include="src\SpanContext.cpp" />
+    <ClCompile Include="src\Tag.cpp" />
+    <ClCompile Include="src\TextCarrier.cpp" />
+    <ClCompile Include="src\thrift-gen\Agent.cpp" />
+    <ClCompile Include="src\thrift-gen\jaeger_types.cpp" />
+    <ClCompile Include="src\thrift-gen\zipkincore_types.cpp" />
+    <ClCompile Include="src\thrift-lib\protocol\TProtocol.cpp" />
+    <ClCompile Include="src\thrift-lib\transport\TBufferTransports.cpp" />
+    <ClCompile Include="src\thrift-lib\transport\TSocket.cpp" />
+    <ClCompile Include="src\Tracer.cpp" />
+    <ClCompile Include="src\UdpReporter.cpp" />
+  </ItemGroup>
+  <ItemGroup>
     <ClInclude Include="src\FileReporter.h" />
+    <ClInclude Include="src\Helper.h" />
     <ClInclude Include="src\IReporter.h" />
+    <ClInclude Include="src\ISampler.h" />
     <ClInclude Include="src\ISpan.h" />
     <ClInclude Include="src\ITracer.h" />
     <ClInclude Include="src\JaegerSpan.h" />
     <ClInclude Include="src\JaegerTracer.h" />
     <ClInclude Include="src\Log.h" />
-    <ClInclude Include="src\PageViewHandler.h" />
-    <ClInclude Include="src\Printer.h" />
     <ClInclude Include="src\NoopSpan.h" />
     <ClInclude Include="src\NoopTracer.h" />
+    <ClInclude Include="src\PageViewHandler.h" />
     <ClInclude Include="src\PercentageSampler.h" />
+    <ClInclude Include="src\Printer.h" />
     <ClInclude Include="src\Process.h" />
     <ClInclude Include="src\SpanContext.h" />
     <ClInclude Include="src\Tag.h" />
@@ -70,35 +97,6 @@
     <ClInclude Include="src\UdpReporter.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\FileReporter.cpp" />
-    <ClCompile Include="src\Helper.cpp" />
-    <ClCompile Include="src\IReporter.cpp" />
-    <ClCompile Include="src\ISampler.cpp" />
-    <ClCompile Include="src\ISpan.cpp" />
-    <ClCompile Include="src\ITracer.cpp" />
-    <ClCompile Include="src\JaegerSpan.cpp" />
-    <ClCompile Include="src\JaegerTracer.cpp" />
-    <ClCompile Include="src\Log.cpp" />
-    <ClCompile Include="src\PageViewHandler.cpp" />
-    <ClCompile Include="src\Printer.cpp" />
-    <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\NoopSpan.cpp" />
-    <ClCompile Include="src\NoopTracer.cpp" />
-    <ClCompile Include="src\PercentageSampler.cpp" />
-    <ClCompile Include="src\Process.cpp" />
-    <ClCompile Include="src\SpanContext.cpp" />
-    <ClCompile Include="src\Tag.cpp" />
-    <ClCompile Include="src\TextCarrier.cpp" />
-    <ClCompile Include="src\thrift-gen\Agent.cpp" />
-    <ClCompile Include="src\thrift-gen\jaeger_types.cpp" />
-    <ClCompile Include="src\thrift-gen\zipkincore_types.cpp" />
-    <ClCompile Include="src\thrift-lib\protocol\TProtocol.cpp" />
-    <ClCompile Include="src\thrift-lib\transport\TBufferTransports.cpp" />
-    <ClCompile Include="src\thrift-lib\transport\TSocket.cpp" />
-    <ClCompile Include="src\Tracer.cpp" />
-    <ClCompile Include="src\UdpReporter.cpp" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="jaeger-client.ini" />
     <None Include="Makefile" />
     <None Include="src\thrift-lib\protocol\TBinaryProtocol.tcc" />
@@ -111,34 +109,28 @@
   </ItemGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>.\src\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <AdditionalOptions>-fpic</AdditionalOptions>
+      <AdditionalIncludeDirectories>./src/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <Optimization>MaxSpeed</Optimization>
       <DebugInformationFormat />
       <CAdditionalWarning />
       <CppAdditionalWarning />
-      <Optimization>MaxSpeed</Optimization>
       <StrictAliasing />
       <OmitFramePointers />
       <ThreadSafeStatics />
       <ExceptionHandling />
       <RuntimeTypeInfo />
-      <PreprocessorDefinitions>
-      </PreprocessorDefinitions>
+      <AdditionalOptions>-fpic</AdditionalOptions>
     </ClCompile>
     <Link>
+      <UnresolvedSymbolReferences />
       <LibraryDependencies>phpcpp</LibraryDependencies>
       <Relocation />
       <FunctionBinding />
       <NoExecStackRequired />
-      <UnresolvedSymbolReferences />
     </Link>
     <RemotePostBuildEvent>
       <Command>cd $(RemoteProjectDir) &amp;&amp; echo -e "vagrant\n" | sudo -S make install &amp;&amp; echo -e "vagrant\n" | sudo -S make restart</Command>
     </RemotePostBuildEvent>
-    <PreBuildEvent>
-      <Command>
-      </Command>
-    </PreBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
