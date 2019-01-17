@@ -10,31 +10,10 @@
 
 namespace OpenTracing
 {
+    /*static class to be exported*/
     class Tracer : public Php::Base
     {
-    private:
-        /*Create array with Tracer paramaters for Guzzle requests */
-        static Php::Value createGuzzleParamsList();
-        /*Create array with default Tracer paramaters */
-        static Php::Value createDefaultParamsList();
-        /*Create array with tag paramaters for Guzzle external calls */
-        static Php::Value createGuzzleTagParamsList(const std::string& uri, const std::string& caller, const std::string& type);
-        /*Init tracer implementation */
-        static void initInternal(const std::string& serviceName, const Php::Value& paramsList);
-        /*Start span implementation */
-        static Php::Value startSpanInternal(const std::string& operationName, const Php::Value& options = nullptr);
-        /*Create name for trarelic span based on its http.uri tag*/
-        static std::string getTrarelicSpanName(std::string uri, unsigned fetchCount);
-        /*Load settings from php.ini */
-        static void loadIniSettings();
-        /*Get list of hosts from semicolon separated string */
-        static std::vector<std::string> parseHostsStr(std::string hosts);
-        /*Check host name from uri for a empty spans list*/
-        static bool checkForEmptySpanHost(const std::string uri);
-    public:
-        Tracer() {};
-        virtual ~Tracer();
-
+    public: /*data*/
         static Printer file_logger;
         static ITracer* global_tracer;
         static int header_flag;
@@ -44,6 +23,9 @@ namespace OpenTracing
         static std::vector<std::string> empty_span_hosts;
         static std::vector<std::string> not_instrumented_hosts;
         static std::map<std::string, std::string> userTracerSettings;
+    public: /*methods*/
+        Tracer() {};
+        virtual ~Tracer();
 
         /*Create tracer instance and call its init method*/
         static void init(Php::Parameters& params);
@@ -70,12 +52,7 @@ namespace OpenTracing
         /*Add logs to current span*/
         static void addLogs(Php::Parameters& params);
         /*Add new span for external requests registration*/
-        static Php::Value startTracing(Php::Parameters& params);
-
-        /*Build reporter*/
-        static IReporter* buildReporter(const Php::Value& settings);
-        /*Build sampler*/
-        static ISampler* buildSampler(const Php::Value& settings);
+        static Php::Value startExternalTracing(Php::Parameters& params);
 
         /*Debug Output*/
         /* usage e.g. \Tracer::print('---'.print_r($_SERVER['SCRIPT_NAME'],true));*/
@@ -84,6 +61,34 @@ namespace OpenTracing
         /*Get global tracer*/
         static Php::Value getTracer();
     };
+
+    /*Helpers*/
+    /*Removes scheme from URI*/
+    void removeSchemeFromUri(std::string& uri);
+    /*Removes params from URI*/
+    void removeParamsQueryFromUri(std::string& uri);
+    /*Filteres hosts*/
+    bool hostsFilterPassed(const std::string& uri, const std::vector<std::string>& filtered);
+    /*Get list of hosts from semicolon separated string */
+    std::vector<std::string> parseHostsStr(std::string hosts);
+    /*Build reporter*/
+    IReporter* buildReporter(const Php::Value& settings);
+    /*Build sampler*/
+    ISampler* buildSampler(const Php::Value& settings);
+    /*Create name for trarelic span based on its http.uri tag*/
+    std::string getTrarelicSpanName(std::string uri, unsigned fetchCount);
+    /*Create array with Tracer paramaters for curl requests */
+    Php::Value createCurlParamsList();
+    /*Load settings from php.ini */
+    void loadIniSettings();
+    /*Create array with default Tracer paramaters */
+    Php::Value createDefaultParamsList();
+    /*Create array with tag paramaters for curl external calls */
+    Php::Value createCurlTagParamsList(const std::string& uri, const std::string& caller, const std::string& type);
+    /*Init tracer implementation */
+    void initInternal(const std::string& serviceName, const Php::Value& paramsList);
+    /*Start span implementation */
+    Php::Value startSpanInternal(const std::string& operationName, const Php::Value& options = nullptr);
 }
 #endif /* TRACER_H */
 

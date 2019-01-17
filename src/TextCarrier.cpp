@@ -5,7 +5,6 @@
 using namespace OpenTracing;
 
 const std::string TextCarrier::KFK_DELIMITER = "|";
-const std::string TextCarrier::OTR_DELIMITER = ":";
 
 void OpenTracing::TextCarrier::inject(const SpanContext* context, Php::Value& carrier)
 {
@@ -21,11 +20,7 @@ void OpenTracing::TextCarrier::inject(const SpanContext* context, Php::Value& ca
         size_t delimPos = carrier.stringValue().find(TextCarrier::KFK_DELIMITER);
         std::ostringstream ss{ carrier.stringValue().substr(0, delimPos != std::string::npos ? delimPos : carrier.length()) + TextCarrier::KFK_DELIMITER, std::ios::ate };
 
-        ss <<
-            context->_traceId << TextCarrier::OTR_DELIMITER <<
-            context->_spanId << TextCarrier::OTR_DELIMITER <<
-            context->_parentId << TextCarrier::OTR_DELIMITER <<
-            context->_flags;
+        ss << (std::string)*context;
 
         carrier = ss.str();
     }
@@ -34,31 +29,10 @@ void OpenTracing::TextCarrier::inject(const SpanContext* context, Php::Value& ca
 SpanContext* TextCarrier::extract(const std::string& carrier)
 {
     std::stringstream ss{ carrier.substr(carrier.find(TextCarrier::KFK_DELIMITER) + 1, carrier.length()) };
-    std::string item;
-    std::vector<std::string> parse;
-    while (std::getline(ss, item, TextCarrier::OTR_DELIMITER[0]))
-        parse.push_back(item);
-
-    if (parse.size() != 4)
-        return nullptr;
-
-#ifdef EXTENDED_DEBUG
-    {
-        std::ostringstream ss;
-        for (auto& iter : parse)
-            ss << iter << ": size " << iter.size() << std::endl;
-        Tracer::file_logger.PrintLine(ss.str(), true);
-    }
-#endif
 
     try
     {
-        return new SpanContext(
-            std::stoul(parse[0]),
-            std::stoul(parse[1]),
-            std::stoul(parse[2]),
-            std::stoul(parse[3])
-        );
+        return new SpanContext(ss);
     }
     catch (...)
     {
