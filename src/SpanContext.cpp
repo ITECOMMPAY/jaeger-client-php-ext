@@ -57,6 +57,6 @@ OpenTracing::SpanContext::operator std::string() const {
     return ss.str();
 }
 
-Php::Value OpenTracing::SpanContext::__toString() {
-    return (std::string) *this;
-}
+// Php::Value OpenTracing::SpanContext::__toString() {
+//     return (std::string) *this;
+// }

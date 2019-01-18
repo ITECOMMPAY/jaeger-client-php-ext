@@ -23,6 +23,8 @@ namespace OpenTracing
         Tag(const std::string& key, const std::string& value);
         Tag(const Tag&) = delete;
         ~Tag();
+
+        operator std::string() const;
     };
 }
 

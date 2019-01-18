@@ -43,3 +43,7 @@ const char* NoopSpan::_name() const
 {
     return "NoopSpan";
 }
+
+NoopSpan::operator std::string() const {
+    return "";
+}

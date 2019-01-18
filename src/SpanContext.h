@@ -2,10 +2,11 @@
 #define SPANCONTEXT_H
 
 #include <phpcpp.h>
+#include "BaseExported.h"
 
 namespace OpenTracing
 {
-    class SpanContext : public Php::Base
+    class SpanContext : public BaseExported
     {
     public:
         static const std::string OTR_DELIMITER;
@@ -21,8 +22,8 @@ namespace OpenTracing
         SpanContext(const SpanContext&) = delete;
         const char* _name() const;
 
-        operator std::string() const;
-        Php::Value __toString();
+        operator std::string() const override;
+        // Php::Value __toString();
     };
 }
 

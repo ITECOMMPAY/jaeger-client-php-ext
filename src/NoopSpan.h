@@ -13,6 +13,7 @@ namespace OpenTracing
         void addTags(Php::Parameters& tags);
         void addLogs(Php::Parameters& logs);
         const char* _name() const;
+        operator std::string() const override;
     };
 }
 

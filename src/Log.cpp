@@ -17,3 +17,12 @@ OpenTracing::Log::~Log()
 
     Tracer::file_logger.PrintLine("    ~Log", true);
 }
+
+OpenTracing::Log::operator std::string() const {
+    std::stringstream ss("Log: ");
+    for (auto tag : _fields) {
+        ss << (std::string)*tag << "; ";    
+    }
+    ss << _timestamp << ";";
+    return ss.str();
+}

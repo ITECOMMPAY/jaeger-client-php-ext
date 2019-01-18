@@ -26,6 +26,8 @@ namespace OpenTracing
         Log(std::vector<Tag*>& logs, const Php::Value& timestamp = nullptr);
         Log(const Log&) = delete;
         ~Log();
+        
+        operator std::string() const;
 
         static std::string toString(LogCount log)
         {

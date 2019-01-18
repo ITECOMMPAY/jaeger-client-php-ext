@@ -2,10 +2,11 @@
 #define ISPAN_H
 
 #include <phpcpp.h>
+#include "BaseExported.h"
 
 namespace OpenTracing
 {
-    class ISpan : public Php::Base
+    class ISpan : public BaseExported
     {
     public:
         virtual ~ISpan() = 0;
