@@ -10,7 +10,6 @@ namespace OpenTracing
     {
     public:
         static const std::string KFK_DELIMITER;
-        static const std::string OTR_DELIMITER;
 
         //Inject context into carrier - string (key) or array (headers)
         //carrier key e.g. 1-30-1499218504

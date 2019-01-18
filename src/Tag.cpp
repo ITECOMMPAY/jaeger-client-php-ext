@@ -45,3 +45,21 @@ OpenTracing::Tag::~Tag()
         Tracer::file_logger.PrintLine(ss.str(), true);
     }
 }
+
+OpenTracing::Tag::operator std::string() const {
+    std::stringstream ss;
+    switch(this->_vType) {
+        case jaegertracing::thrift::TagType::STRING:
+            ss << this->_vStr;
+            break;
+        case jaegertracing::thrift::TagType::DOUBLE:
+            ss << this->_vDouble;
+            break;
+        case jaegertracing::thrift::TagType::BOOL:
+            ss << this->_vBool;
+            break;
+        default:
+            ss << "not supported tag type";
+    }
+    return ss.str();
+}

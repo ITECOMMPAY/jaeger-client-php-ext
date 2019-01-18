@@ -161,3 +161,21 @@ const char* JaegerSpan::_name() const
 {
     return "JaegerSpan";
 }
+
+OpenTracing::JaegerSpan::operator std::string() const {
+    std::stringstream ss(_name());
+    // add span timing
+    ss << ":" << "[" << _startTime << "-" << _endTime << "] ";
+
+    ss << "Logs: ";
+    for (auto log : _logs) {
+        ss << (std::string)*log << "; ";
+    }    
+    ss << "Tags: ";
+    for (auto tag : _tags) {
+        ss << (std::string)*tag << "; ";
+    }    
+    ss << "Context: " << (std::string)*_context;
+
+    return ss.str();
+}

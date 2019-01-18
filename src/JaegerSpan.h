@@ -31,6 +31,8 @@ namespace OpenTracing
         /*Whether the span is debug*/
         bool isDebug() const;
         const char* _name() const;
+
+        operator std::string() const override;
     };
 }
 
