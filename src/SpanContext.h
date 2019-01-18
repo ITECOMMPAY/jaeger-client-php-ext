@@ -23,7 +23,6 @@ namespace OpenTracing
         const char* _name() const;
 
         operator std::string() const override;
-        // Php::Value __toString();
     };
 }
 

@@ -179,7 +179,3 @@ OpenTracing::JaegerSpan::operator std::string() const {
 
     return ss.str();
 }
-
-// Php::Value OpenTracing::SpanContext::__toString() {
-//     return (std::string) *this;
-// }
