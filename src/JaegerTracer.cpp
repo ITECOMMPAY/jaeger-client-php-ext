@@ -65,6 +65,15 @@ ISpan* JaegerTracer::startSpan(const std::string& operationName, const Php::Valu
     Php::Value parent = nullptr;
     SpanContext* context = nullptr;
 
+#ifdef EXTENDED_DEBUG
+    Tracer::file_logger.PrintLine("START SPAN OPTIONS");
+    for (auto opt : options) {
+        std::ostringstream ss;
+        ss << "{" << opt.first.stringValue() << " : " << opt.second.stringValue() << "}";
+        Tracer::file_logger.PrintLine("\t " + ss.str() + " \n");
+    }
+#endif
+
     if (Php::array_key_exists("childOf", options))
     {
         parent = options["childOf"];
@@ -121,6 +130,7 @@ ISpan* JaegerTracer::startSpan(const std::string& operationName, const Php::Valu
     }
 
     JaegerSpan* span = new JaegerSpan(context, operationName);
+
     this->_spans_ref.push_back(Php::Object(span->_name(), span));
 
     this->_spans[span->_context->_spanId] = span;
@@ -202,7 +212,7 @@ void JaegerTracer::finishSpan(ISpan* span, const Php::Value& endTime)
     JaegerSpan* jaegerSpan = dynamic_cast<JaegerSpan*>(span);
     if (jaegerSpan != nullptr)
     {
-        jaegerSpan->_endTime = !endTime.isNull() ? static_cast<int64_t>(endTime) : Helper::now();
+        jaegerSpan->_endTime = !endTime.isNull() ? static_cast<int64_t>(endTime) : Helper::now().usec;
 
 #ifdef EXTENDED_DEBUG
         {
@@ -309,7 +319,7 @@ void JaegerTracer::flush()
 
         try
         {
-            Tracer::file_logger.PrintLine("*** parsing spans - start");
+            Tracer::file_logger.PrintLine("*** parsing spans - start ");
             // JaegerizeVersion::V1
 #ifdef Jaegerize1
             {

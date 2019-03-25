@@ -1,7 +1,10 @@
 #include <random>
+#include <errno.h>
 #include <sys/time.h>
 #include <unistd.h>
 #include <limits.h>
+#include <stdlib.h>
+#include <time.h>
 #include "Helper.h"
 #include "NoopTracer.h"
 #include "JaegerTracer.h"
@@ -13,12 +16,38 @@ std::uniform_int_distribution<int> dist{ 0, 99 };
 std::uniform_int_distribution<unsigned int> dist_32bit{ 0x00000000, 0xFFFFFFFF };
 std::uniform_int_distribution<int64_t> dist_64bit{ 0x0000000000000000, INT64_MAX };
 
-const int64_t OpenTracing::Helper::now()
+const OpenTracing::TimeStamp OpenTracing::Helper::now() {
+    OpenTracing::TimeStamp ts = {0, ""};
+
+    const int getTimeOfDayErrCode = OpenTracing::Helper::timeOfDayMicroSec(ts.usec);
+    if (!getTimeOfDayErrCode) {
+        return ts;
+    }
+    ts.errors += "gettimeofday error code: " + std::to_string(getTimeOfDayErrCode);
+
+    const int clockGetTimeErrCode = OpenTracing::Helper::clockGetTimeMicroSec(ts.usec);
+    if (!clockGetTimeErrCode) {
+        return ts;
+    }
+    ts.errors += "clock_gettime error code: " + std::to_string(clockGetTimeErrCode);
+
+    return ts;
+}
+
+const int OpenTracing::Helper::timeOfDayMicroSec(int64_t& microsec)
 {
-    struct timeval time;
-    gettimeofday(&time, NULL);
-    int64_t microsec = ((uint64_t)time.tv_sec * 1000 * 1000) + time.tv_usec;
-    return microsec;
+    struct timeval time {0, 0};
+    int code = gettimeofday(&time, NULL);
+    microsec = ((uint64_t)time.tv_sec * 1000 * 1000) + time.tv_usec;
+    return code? errno: 0;
+}
+
+const int OpenTracing::Helper::clockGetTimeMicroSec(int64_t& microsec)
+{   
+    struct timespec time {0, 0};
+    int code = clock_gettime(CLOCK_REALTIME, &time);
+    microsec = ((uint64_t)time.tv_sec * 1000 * 1000) + time.tv_nsec / 1000;
+    return code? errno: 0;
 }
 
 const int64_t OpenTracing::Helper::generateId()
@@ -412,7 +441,8 @@ jaegertracing::thrift::Span OpenTracing::Helper::jaegerizeSpan(
     jaegerSpan.__set_operationName(_span->_operationName);
     jaegerSpan.__set_flags(_span->_context->_flags);
     partialSpan && part != 1 ? jaegerSpan.__set_startTime(_span->_startTime + part) : jaegerSpan.__set_startTime(_span->_startTime);
-    jaegerSpan.__set_duration(_span->_endTime != 0 ? _span->_endTime - _span->_startTime : Helper::now() - _span->_startTime);
+
+    jaegerSpan.__set_duration(_span->_endTime != 0 ? _span->_endTime - _span->_startTime : Helper::now().usec - _span->_startTime);
 
     if (!_span->_context->_refType.isNull() && _span->_context->_traceId != _span->_context->_spanId)
     {

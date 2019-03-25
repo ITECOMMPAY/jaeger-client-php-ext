@@ -9,7 +9,7 @@ OpenTracing::SpanContext::SpanContext(const int64_t& traceId, const int64_t& spa
     _spanId{ spanId },
     _parentId{ parentId },
     _flags{ flags },
-    _refType{ refType }
+    _refType( refType )
 {
     {
         std::ostringstream ss;

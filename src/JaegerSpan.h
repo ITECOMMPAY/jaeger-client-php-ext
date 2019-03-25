@@ -10,6 +10,8 @@ namespace OpenTracing
 {
     class JaegerSpan : public ISpan
     {
+    private:
+        void addLogsInternal(const Php::Value& logs);
     public:
         std::string _operationName;
         int64_t _startTime;

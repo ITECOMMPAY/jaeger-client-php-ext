@@ -6,7 +6,19 @@
 OpenTracing::Log::Log(std::vector<OpenTracing::Tag*>& logs, const Php::Value& timestamp) :
     _fields{ std::move(logs) }
 {
-    this->_timestamp = !timestamp.isNull() ? static_cast<int64_t>(timestamp) : Helper::now();
+    if (timestamp.isNull()) 
+    {
+        auto ts = Helper::now();
+        if (!ts.errors.empty()) 
+        {
+            this->_fields.push_back(new Tag("error", ts.errors));
+        }
+        this->_timestamp = ts.usec;
+    } 
+    else 
+    {
+        this->_timestamp = static_cast<int64_t>(timestamp);
+    }
 }
 
 OpenTracing::Log::~Log()
