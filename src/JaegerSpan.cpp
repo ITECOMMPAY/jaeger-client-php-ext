@@ -15,7 +15,17 @@ JaegerSpan::JaegerSpan(SpanContext* context, const std::string& operationName, c
         ss << "    JaegerSpan::JaegerSpan addr: " << this;
         Tracer::file_logger.PrintLine(ss.str(), true);
     }
-    _startTime = !startTime.isNull() ? static_cast<int64_t>(startTime) : Helper::now();
+    if (!startTime.isNull()) {
+        _startTime = static_cast<int64_t>(startTime);
+    } else {
+        auto ts = Helper::now();
+        _startTime = ts.usec;
+        if (!ts.errors.empty()) {
+            Php::Value log;
+            log["error"] = "cannot generate starting timestamp for span " + std::to_string(context->_spanId) + ": " + ts.errors;
+            this->addLogsInternal(log);
+        }
+    }
 }
 
 JaegerSpan::~JaegerSpan()
@@ -86,6 +96,36 @@ void JaegerSpan::addTags(Php::Parameters& tags)
     }
 }
 
+void JaegerSpan::addLogsInternal(const Php::Value& logs)
+{
+    if (!Tracer::udp_transport) 
+    {
+        return;
+    }
+
+    std::vector<Tag*> tags;
+    Php::Value keys = Php::array_keys(logs);
+    Php::Value values = Php::array_values(logs);
+
+    for (int i = 0; i < keys.size(); i++)
+    {
+        try
+        {
+            if (values.get(i).isBool())
+                tags.push_back(new Tag(keys[i], values.get(i).boolValue()));
+            else if (values.get(i).isFloat() || values.get(i).isNumeric())
+                tags.push_back(new Tag(keys[i], values.get(i).floatValue()));
+            else
+                tags.push_back(new Tag(keys[i], values.get(i).stringValue()));
+        }
+        catch (...)
+        {
+            throw Php::Exception("  ::addLogs - wrong parameters, check it to be a [string=>string,]");
+        }
+    }
+    this->_logs.push_back(new Log(tags));
+}
+
 void JaegerSpan::addLogs(Php::Parameters& logs)
 {
     {
@@ -94,34 +134,9 @@ void JaegerSpan::addLogs(Php::Parameters& logs)
         Tracer::file_logger.PrintLine(ss.str(), true);
     }
 
-    if (!logs.empty() && Tracer::udp_transport)
+    if (!logs.empty())
     {
-        std::vector<Tag*> tags;
-
-        //to keep the order of tags
-        {
-            Php::Value keys = Php::array_keys(logs[0]);
-            Php::Value values = Php::array_values(logs[0]);
-
-            for (int i = 0; i < keys.size(); i++)
-            {
-                try
-                {
-                    if (values.get(i).isBool())
-                        tags.push_back(new Tag(keys[i], values.get(i).boolValue()));
-                    else if (values.get(i).isFloat() || values.get(i).isNumeric())
-                        tags.push_back(new Tag(keys[i], values.get(i).floatValue()));
-                    else
-                        tags.push_back(new Tag(keys[i], values.get(i).stringValue()));
-                }
-                catch (...)
-                {
-                    throw Php::Exception("  ::addLogs - wrong parameters, check it to be a [string=>string,]");
-                }
-            }
-        }
-
-        this->_logs.push_back(new Log(tags));
+        this->addLogsInternal(logs[0]);
     }
 
 #ifdef EXTENDED_DEBUG

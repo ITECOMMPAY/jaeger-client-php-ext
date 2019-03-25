@@ -11,6 +11,11 @@
 
 namespace OpenTracing
 {
+    struct TimeStamp {
+        int64_t usec;
+        std::string errors;
+    };
+
     enum class JaegerizeVersion {
         ERROR = -1,
         V1 = 1,
@@ -19,9 +24,14 @@ namespace OpenTracing
 
     class Helper
     {
+    private:
+        /*Get current unix timestamp in microseconds based on gettimeofday() output*/
+        static const int timeOfDayMicroSec(int64_t& microsec);
+        /*Get current unix timestamp in microseconds based on clock_gettime() output*/
+        static const int clockGetTimeMicroSec(int64_t& microsec);
     public:
         /*Get current unix timestamp in microseconds*/
-        static const int64_t now();
+        static const TimeStamp now();
         /*Get random id*/
         static const int64_t generateId();
         /*Get random percentage in [0;100]*/

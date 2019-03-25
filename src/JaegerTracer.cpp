@@ -212,7 +212,7 @@ void JaegerTracer::finishSpan(ISpan* span, const Php::Value& endTime)
     JaegerSpan* jaegerSpan = dynamic_cast<JaegerSpan*>(span);
     if (jaegerSpan != nullptr)
     {
-        jaegerSpan->_endTime = !endTime.isNull() ? static_cast<int64_t>(endTime) : Helper::now();
+        jaegerSpan->_endTime = !endTime.isNull() ? static_cast<int64_t>(endTime) : Helper::now().usec;
 
 #ifdef EXTENDED_DEBUG
         {
