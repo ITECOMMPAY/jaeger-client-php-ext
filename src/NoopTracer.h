@@ -26,6 +26,4 @@ namespace OpenTracing
     };
 }
 
-
 #endif /* NOOPTRACER_H */
-

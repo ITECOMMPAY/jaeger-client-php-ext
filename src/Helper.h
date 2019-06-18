@@ -69,4 +69,5 @@ namespace OpenTracing
         static jaegertracing::thrift::Log jaegerizeLog(const OpenTracing::Log* log);
     };
 }
+
 #endif /* HELPER_H */

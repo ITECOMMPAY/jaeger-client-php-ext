@@ -19,5 +19,4 @@ namespace OpenTracing
     };
 }
 
-
 #endif /* PROCESS_H */

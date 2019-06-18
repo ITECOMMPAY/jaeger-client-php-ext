@@ -20,7 +20,7 @@ void OpenTracing::TextCarrier::inject(const SpanContext* context, Php::Value& ca
         size_t delimPos = carrier.stringValue().find(TextCarrier::KFK_DELIMITER);
         std::ostringstream ss{ carrier.stringValue().substr(0, delimPos != std::string::npos ? delimPos : carrier.length()) + TextCarrier::KFK_DELIMITER, std::ios::ate };
 
-        ss << (std::string)*context;
+        ss << (std::string) * context;
 
         carrier = ss.str();
     }

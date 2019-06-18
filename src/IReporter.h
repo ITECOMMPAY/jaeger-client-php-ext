@@ -13,5 +13,5 @@ namespace OpenTracing
         virtual const char* _name() const = 0;
     };
 }
-#endif /* IREPORTER_H */
 
+#endif /* IREPORTER_H */

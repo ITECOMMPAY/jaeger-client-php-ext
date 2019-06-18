@@ -9,7 +9,7 @@ OpenTracing::SpanContext::SpanContext(const int64_t& traceId, const int64_t& spa
     _spanId{ spanId },
     _parentId{ parentId },
     _flags{ flags },
-    _refType( refType )
+    _refType(refType)
 {
     {
         std::ostringstream ss;
@@ -24,8 +24,8 @@ OpenTracing::SpanContext::SpanContext(std::stringstream& ss) {
     while (std::getline(ss, item, OTR_DELIMITER[0]))
         parse.push_back(item);
 
-    if (parse.size() != 4)
-        throw std::exception();
+    if (parse.size() < 4)
+        throw Php::Exception("Context params less than 4");
 
 #ifdef EXTENDED_DEBUG
     {
@@ -52,7 +52,7 @@ OpenTracing::SpanContext::operator std::string() const {
         _traceId << OpenTracing::SpanContext::OTR_DELIMITER <<
         _spanId << OpenTracing::SpanContext::OTR_DELIMITER <<
         _parentId << OpenTracing::SpanContext::OTR_DELIMITER <<
-       _flags;
+        _flags;
 
     return ss.str();
 }

@@ -649,4 +649,3 @@ std::string OpenTracing::getTrarelicSpanName(std::string uri, unsigned fetchCoun
     // replace first '/' with '-' if span name contains payment system info
     return (endHostPos == std::string::npos) || (endHostPos == spanName.length() - 1) ? spanName : spanName.replace(spanName.find('/'), 1, "-");
 }
-

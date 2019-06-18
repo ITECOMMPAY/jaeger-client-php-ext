@@ -17,7 +17,7 @@ std::uniform_int_distribution<unsigned int> dist_32bit{ 0x00000000, 0xFFFFFFFF }
 std::uniform_int_distribution<int64_t> dist_64bit{ 0x0000000000000000, INT64_MAX };
 
 const OpenTracing::TimeStamp OpenTracing::Helper::now() {
-    OpenTracing::TimeStamp ts = {0, ""};
+    OpenTracing::TimeStamp ts = { 0, "" };
 
     const int getTimeOfDayErrCode = OpenTracing::Helper::timeOfDayMicroSec(ts.usec);
     if (!getTimeOfDayErrCode) {
@@ -36,18 +36,18 @@ const OpenTracing::TimeStamp OpenTracing::Helper::now() {
 
 const int OpenTracing::Helper::timeOfDayMicroSec(int64_t& microsec)
 {
-    struct timeval time {0, 0};
+    struct timeval time { 0, 0 };
     int code = gettimeofday(&time, NULL);
     microsec = ((uint64_t)time.tv_sec * 1000 * 1000) + time.tv_usec;
-    return code? errno: 0;
+    return code ? errno : 0;
 }
 
 const int OpenTracing::Helper::clockGetTimeMicroSec(int64_t& microsec)
-{   
-    struct timespec time {0, 0};
+{
+    struct timespec time { 0, 0 };
     int code = clock_gettime(CLOCK_REALTIME, &time);
     microsec = ((uint64_t)time.tv_sec * 1000 * 1000) + time.tv_nsec / 1000;
-    return code? errno: 0;
+    return code ? errno : 0;
 }
 
 const int64_t OpenTracing::Helper::generateId()
@@ -68,9 +68,9 @@ const std::string OpenTracing::Helper::getCurrentIp()
     std::string retVal{};
 
 #ifdef IPVer1
-    const char *cmd = R"($(which ip) addr show | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*' | grep -Ev '127.0.0.1|10.0.2.15')";
+    const char* cmd = R"($(which ip) addr show | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*' | grep -Ev '127.0.0.1|10.0.2.15')";
 
-    FILE *ptr = popen(cmd, "r");
+    FILE* ptr = popen(cmd, "r");
     if (ptr != NULL)
     {
         char buf[BUFSIZ];
@@ -91,9 +91,9 @@ const std::string OpenTracing::Helper::getCurrentIp()
 #endif
 
 #ifdef IPVer2
-    const char *cmd = R"(hostname -I)";
+    const char* cmd = R"(hostname -I)";
 
-    FILE *ptr = popen(cmd, "r");
+    FILE* ptr = popen(cmd, "r");
     if (ptr != NULL)
     {
         char buf[BUFSIZ];
@@ -130,7 +130,7 @@ const std::string OpenTracing::Helper::getCurrentIp()
 #endif
 
 #ifdef IPVer3
-    struct ifaddrs *ifaddr, *ifa;
+    struct ifaddrs* ifaddr, * ifa;
     int family, s;
     char host[NI_MAXHOST];
 
@@ -191,11 +191,11 @@ const std::string OpenTracing::Helper::getCurrentIp()
     serv.sin_addr.s_addr = inet_addr(google_dns_server);
     serv.sin_port = htons(dns_port);
 
-    int err = connect(sock, (const struct sockaddr*) &serv, sizeof(serv));
+    int err = connect(sock, (const struct sockaddr*) & serv, sizeof(serv));
 
     struct sockaddr_in name;
     socklen_t namelen = sizeof(name);
-    err = getsockname(sock, (struct sockaddr*) &name, &namelen);
+    err = getsockname(sock, (struct sockaddr*) & name, &namelen);
 
     char buffer[100];
     const char* p = inet_ntop(AF_INET, &name.sin_addr, buffer, 100);
@@ -440,7 +440,7 @@ jaegertracing::thrift::Span OpenTracing::Helper::jaegerizeSpan(
     jaegerSpan.__set_parentSpanId(_span->_context->_parentId);
     jaegerSpan.__set_operationName(_span->_operationName);
     jaegerSpan.__set_flags(_span->_context->_flags);
-    partialSpan && part != 1 ? jaegerSpan.__set_startTime(_span->_startTime + part) : jaegerSpan.__set_startTime(_span->_startTime);
+    (partialSpan && part != 1) ? jaegerSpan.__set_startTime(_span->_startTime + part) : jaegerSpan.__set_startTime(_span->_startTime);
 
     jaegerSpan.__set_duration(_span->_endTime != 0 ? _span->_endTime - _span->_startTime : Helper::now().usec - _span->_startTime);
 

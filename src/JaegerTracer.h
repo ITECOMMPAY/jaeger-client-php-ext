@@ -46,4 +46,3 @@ namespace OpenTracing
 }
 
 #endif /* JAEGERTRACER_H */
-
