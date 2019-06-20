@@ -18,5 +18,5 @@ namespace OpenTracing
         const char* _name() const;
     };
 }
-#endif /* UDPREPORTER_H */
 
+#endif /* UDPREPORTER_H */

@@ -10,5 +10,3 @@ void onIdle();
 void onShutDown();
 
 #endif /* PAGEVIEWHANDLER_H */
-
-

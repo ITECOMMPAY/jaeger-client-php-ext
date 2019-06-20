@@ -51,9 +51,9 @@ ISpan* NoopTracer::getCurrentSpan()
     return new NoopSpan();
 }
 
-int64_t NoopTracer::getCurrentTraceId()
+const std::string NoopTracer::getCurrentTraceId()
 {
-    return int64_t();
+    return std::string();
 }
 
 int64_t NoopTracer::getCurrentSpanId(ISpan* span)

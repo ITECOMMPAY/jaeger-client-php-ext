@@ -188,4 +188,3 @@ void OpenTracing::Printer::PrintLine(const std::string& line, bool skip, bool pr
         mtx.unlock();
     }
 }
-

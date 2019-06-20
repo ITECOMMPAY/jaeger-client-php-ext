@@ -20,11 +20,11 @@ extern "C" {
     *
     *  @return void*   a pointer to an address that is understood by PHP
     */
-    PHPCPP_EXPORT void *get_module()
+    PHPCPP_EXPORT void* get_module()
     {
         // static(!) Php::Extension object that should stay in memory
         // for the entire duration of the process (that's why it's static)
-        static Php::Extension extension("jaeger-client", "1.8");
+        static Php::Extension extension("jaeger-client", "1.9");
 
         //extension.onStartup(&onStartup);
         //extension.onRequest(&onRequest);

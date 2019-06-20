@@ -206,6 +206,9 @@
     <ClInclude Include="src\UdpReporter.h">
       <Filter>src</Filter>
     </ClInclude>
+    <ClInclude Include="src\BaseExported.h">
+      <Filter>src</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\thrift\agent.thrift">

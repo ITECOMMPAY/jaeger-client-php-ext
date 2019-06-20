@@ -17,4 +17,3 @@ namespace OpenTracing
 }
 
 #endif /* FILEREPORTER_H */
-
