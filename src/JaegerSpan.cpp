@@ -12,8 +12,8 @@ JaegerSpan::JaegerSpan(SpanContext* context, const std::string& operationName, c
 {
     {
         std::ostringstream ss;
-        ss << "    JaegerSpan::JaegerSpan addr: " << this;
-        Tracer::file_logger.PrintLine(ss.str(), true);
+        ss << this;
+        Tracer::file_logger.PrintLine("\tJaegerSpan " + ss.str() + " constructor", true);
     }
     if (!startTime.isNull())
     {
@@ -187,12 +187,12 @@ OpenTracing::JaegerSpan::operator std::string() const {
     ss << ":" << "[" << _startTime << "-" << _endTime << "] ";
 
     ss << "Logs: ";
-    for (auto log : _logs) 
+    for (auto log : _logs)
     {
         ss << (std::string) * log << "; ";
     }
     ss << "Tags: ";
-    for (auto tag : _tags) 
+    for (auto tag : _tags)
     {
         ss << (std::string) * tag << "; ";
     }

@@ -434,8 +434,8 @@ jaegertracing::thrift::Span OpenTracing::Helper::jaegerizeSpan(
         jaegerSpan.__set_logs(logs);
     }
 
-    jaegerSpan.__set_traceIdLow(_span->_context->_traceId);
-    jaegerSpan.__set_traceIdHigh(0);
+    jaegerSpan.__set_traceIdLow(_span->_context->_traceIdLow);
+    jaegerSpan.__set_traceIdHigh(_span->_context->_traceIdHigh);
     partialSpan /*&& part != 1*/ && !keepId ? jaegerSpan.__set_spanId(Helper::generateId()) : jaegerSpan.__set_spanId(_span->_context->_spanId);
     jaegerSpan.__set_parentSpanId(_span->_context->_parentId);
     jaegerSpan.__set_operationName(_span->_operationName);
@@ -444,14 +444,14 @@ jaegertracing::thrift::Span OpenTracing::Helper::jaegerizeSpan(
 
     jaegerSpan.__set_duration(_span->_endTime != 0 ? _span->_endTime - _span->_startTime : Helper::now().usec - _span->_startTime);
 
-    if (!_span->_context->_refType.isNull() && _span->_context->_traceId != _span->_context->_spanId)
+    if (!_span->_context->_refType.isNull() && _span->_context->_traceIdLow != _span->_context->_spanId)
     {
         std::vector<jaegertracing::thrift::SpanRef> references;
 
         jaegertracing::thrift::SpanRef spanRef;
         spanRef.__set_refType(static_cast<jaegertracing::thrift::SpanRefType::type>(_span->_context->_refType.numericValue()));
-        spanRef.__set_traceIdLow(_span->_context->_traceId);
-        spanRef.__set_traceIdHigh(0);
+        spanRef.__set_traceIdLow(_span->_context->_traceIdLow);
+        spanRef.__set_traceIdHigh(_span->_context->_traceIdHigh);
         spanRef.__set_spanId(_span->_context->_parentId);
         references.push_back(spanRef);
 

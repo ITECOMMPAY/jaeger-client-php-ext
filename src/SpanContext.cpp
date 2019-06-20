@@ -1,11 +1,14 @@
 #include <iostream>
+#include <sstream>
+#include <iomanip>
 #include "SpanContext.h"
 #include "Tracer.h"
 
 const std::string OpenTracing::SpanContext::OTR_DELIMITER = ":";
 
-OpenTracing::SpanContext::SpanContext(const int64_t& traceId, const int64_t& spanId, const int64_t& parentId, const int& flags, const Php::Value& refType) :
-    _traceId{ traceId },
+OpenTracing::SpanContext::SpanContext(const int64_t& traceIdHigh, const int64_t& traceIdLow, const int64_t& spanId, const int64_t& parentId, const int& flags, const Php::Value& refType) :
+    _traceIdHigh{ traceIdHigh },
+    _traceIdLow{ traceIdLow },
     _spanId{ spanId },
     _parentId{ parentId },
     _flags{ flags },
@@ -13,7 +16,7 @@ OpenTracing::SpanContext::SpanContext(const int64_t& traceId, const int64_t& spa
 {
     {
         std::ostringstream ss;
-        ss << "    SpanContext: " << _traceId << " " << _spanId << " " << _parentId << " " << _flags;
+        ss << "    SpanContext: " << _traceIdHigh << _traceIdLow << " " << _spanId << " " << _parentId << " " << _flags << " " << _refType.numericValue();
         Tracer::file_logger.PrintLine(ss.str(), true);
     }
 }
@@ -35,9 +38,22 @@ OpenTracing::SpanContext::SpanContext(std::stringstream& ss) {
         Tracer::file_logger.PrintLine(ss.str(), true);
     }
 #endif
-    this->_traceId = std::stoul(parse[0]);
-    this->_spanId = std::stoul(parse[1]);
-    this->_parentId = std::stoul(parse[2]);
+    std::string traceId{ parse[0] }, high, low;
+    if (traceId.length() > 16)
+    {
+        high = traceId.substr(0, traceId.length() - 16);
+        low = traceId.substr(high.length(), traceId.length());
+    }
+    else
+    {
+        high = "0";
+        low = traceId == "" ? "0" : traceId.substr(0, traceId.length());
+    }
+
+    this->_traceIdHigh = std::stoul(high, 0, 16);
+    this->_traceIdLow = std::stoul(low, 0, 16);
+    this->_spanId = std::stoul(parse[1], 0, 16);
+    this->_parentId = std::stoul(parse[2], 0, 16);
     this->_flags = std::stoul(parse[3]);
 }
 
@@ -48,8 +64,18 @@ const char* OpenTracing::SpanContext::_name() const
 
 OpenTracing::SpanContext::operator std::string() const {
     std::stringstream ss;
+    std::ios::fmtflags ss_flags(ss.flags());
+
+    if (_traceIdHigh == 0) {
+        ss << std::hex << (_traceIdLow | 0);
+    }
+    else {
+        ss << std::hex << (_traceIdHigh | 0) << std::setfill('0') << std::setw(16) << (_traceIdLow | 0);
+    }
+
+    ss.flags(ss_flags);
     ss <<
-        _traceId << OpenTracing::SpanContext::OTR_DELIMITER <<
+        std::hex << OpenTracing::SpanContext::OTR_DELIMITER <<
         _spanId << OpenTracing::SpanContext::OTR_DELIMITER <<
         _parentId << OpenTracing::SpanContext::OTR_DELIMITER <<
         _flags;

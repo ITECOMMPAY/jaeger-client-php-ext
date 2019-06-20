@@ -77,7 +77,6 @@ void Tracer::init(Php::Parameters& params)
             userTracerSettings["reporter_addr"] = settings["reporter"]["options"]["addr"].value().stringValue();
             userTracerSettings["reporter_port"] = settings["reporter"]["options"]["port"].value().stringValue();
         }
-
     }
 
     initInternal(serviceName, settings);
@@ -91,7 +90,7 @@ void OpenTracing::initInternal(const std::string& serviceName, const Php::Value&
 #ifdef EXTENDED_DEBUG
     {
         std::ostringstream ss;
-        ss << global_tracer;
+        ss << Tracer::global_tracer;
         Tracer::file_logger.PrintLine("Tracer::init - delete global_tracer " + ss.str());
     }
 #endif
@@ -148,15 +147,13 @@ Php::Value OpenTracing::startSpanInternal(const std::string& operationName, cons
 #ifdef EXTENDED_DEBUG
         {
             std::ostringstream ss;
-            ss <<
-                "--- tracer " << global_tracer << "\n\t\t\t\t\t\t\t\t\t\t    startSpan returned: " << span;
+            ss << "--- startSpanInternal (tracer " << Tracer::global_tracer << ")\n\t\t\t\t\t\t\t\t\t\t    startSpan returned: " << span;
             if (strcmp(span->_name(), "JaegerSpan") == 0)
             {
-                ss <<
-                    " (SpanContext: " << dynamic_cast<JaegerSpan*>(span)->_context << " )" <<
-                    " total spans: " << dynamic_cast<JaegerTracer*>(global_tracer)->_spans.size() <<
-                    " " << dynamic_cast<JaegerTracer*>(global_tracer)->_process->_serviceName <<
-                    " " << dynamic_cast<JaegerSpan*>(span)->_operationName;
+                ss << " (SpanContext: " << dynamic_cast<JaegerSpan*>(span)->_context << " )"
+                    << " total spans: " << dynamic_cast<JaegerTracer*>(Tracer::global_tracer)->_spans.size()
+                    << " " << dynamic_cast<JaegerTracer*>(Tracer::global_tracer)->_process->_serviceName << " "
+                    << dynamic_cast<JaegerSpan*>(span)->_operationName;
             }
             Tracer::file_logger.PrintLine(ss.str());
             ss.str("");
@@ -164,20 +161,25 @@ Php::Value OpenTracing::startSpanInternal(const std::string& operationName, cons
 
             {
                 std::ostringstream ss;
-                for (auto& iter : dynamic_cast<JaegerTracer*>(global_tracer)->_spans)
+                for (auto& iter : dynamic_cast<JaegerTracer*>(Tracer::global_tracer)->_spans)
                 {
                     JaegerSpan* temp = dynamic_cast<JaegerSpan*>(iter.second);
-                    ss <<
-                        "\n\t\t\t\t\t\t\t\t\t\t\t\tspan id: " << iter.first <<
-                        "\n\t\t\t\t\t\t\t\t\t\t\t\t\t_startTime: " << temp->_startTime <<
-                        "\n\t\t\t\t\t\t\t\t\t\t\t\t\t_endTime  : " << temp->_endTime;
+                    ss << "\t\t\tspan id: " << iter.first
+                        << "\n\t\t\t\t\t\t\t\t\t\t\t\t\t_startTime: " << temp->_startTime
+                        << "\n\t\t\t\t\t\t\t\t\t\t\t\t\t_endTime  : " << temp->_endTime;
                     if (temp->_context != nullptr)
                     {
-                        ss <<
-                            "\n\t\t\t\t\t\t\t\t\t\t\t\t\t_context: " <<
-                            "\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t_traceId: " << temp->_context->_traceId <<
-                            "\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t_spanId: " << temp->_context->_spanId <<
-                            "\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t_parentId: " << temp->_context->_parentId;
+                        ss << "\n\t\t\t\t\t\t\t\t\t\t\t\t\t_context: "
+                            << "\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t_traceIdHigh: " << temp->_context->_traceIdHigh
+                            << "\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t_traceIdLow: " << temp->_context->_traceIdLow
+                            << "\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t_spanId: " << temp->_context->_spanId
+                            << "\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t_parentId: " << temp->_context->_parentId;
+                        if (!temp->_context->_refType.isNull())
+                        {
+                            ss << "\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t_refType: " << temp->_context->_refType.numericValue();
+                        }
+
+                        ss << "\n\n\t\t\t\t\t\t\t\t\t\t";
                     }
                 }
                 Tracer::file_logger.PrintLine(ss.str());
@@ -189,7 +191,7 @@ Php::Value OpenTracing::startSpanInternal(const std::string& operationName, cons
 #ifdef EXTENDED_DEBUG
     {
         std::ostringstream ss;
-        ss << "--- tracer " << global_tracer;
+        ss << "--- startSpanInternal (tracer " << Tracer::global_tracer << ")";
         Tracer::file_logger.PrintLine(ss.str());
     }
 #endif
@@ -210,7 +212,7 @@ Php::Value Tracer::getCurrentSpan()
 
 Php::Value Tracer::getCurrentTraceId()
 {
-    int64_t _traceId = int64_t();
+    std::string _traceId = std::string();
     if (global_tracer != nullptr)
     {
         _traceId = global_tracer->getCurrentTraceId();
@@ -238,12 +240,18 @@ Php::Value Tracer::getCurrentSpanId(Php::Parameters& params)
 
 Php::Value Tracer::getCurrentParentId(Php::Parameters& params)
 {
+    Php::Value _span = params[0];
     int64_t _parentId = int64_t();
-    if (global_tracer != nullptr)
+    if (!_span.isNull())
     {
-        //_parentId = global_tracer->getCurrentParentId(span);
+        if (!_span.instanceOf("ISpan"))
+            throw Php::Exception("Wrong parameter passed, should be ISpan");
+        ISpan* span = (ISpan*)_span.implementation();
+        if (global_tracer != nullptr)
+        {
+            _parentId = global_tracer->getCurrentParentId(span);
+        }
     }
-
     return Php::Value(_parentId);
 }
 
@@ -304,15 +312,14 @@ Php::Value Tracer::inject(Php::Parameters& params)
                     paramContext = nullptr;
             }
 
-            ss <<
-                "\t\t\t\t\t\t\t\t\t\tcontext (SpanContext): " << paramContext << "\n";
+            ss << "\t\t\t\t\t\t\t\t\t\tcontext (SpanContext): " << paramContext << "\n";
             if (paramContext != nullptr)
             {
-                ss <<
-                    "\t\t\t\t\t\t\t\t\t\t\t_traceId: " << paramContext->_traceId << "\n" <<
-                    "\t\t\t\t\t\t\t\t\t\t\t\t_spanId: " << paramContext->_spanId << "\n" <<
-                    "\t\t\t\t\t\t\t\t\t\t\t\t_parentId: " << paramContext->_parentId << "\n" <<
-                    "\t\t\t\t\t\t\t\t\t\t\t\t_flags: " << paramContext->_flags;
+                ss << "\t\t\t\t\t\t\t\t\t\t\t_traceIdHigh: " << paramContext->_traceIdHigh << "\n"
+                    << "\t\t\t\t\t\t\t\t\t\t\t_traceIdLow: " << paramContext->_traceIdLow << "\n"
+                    << "\t\t\t\t\t\t\t\t\t\t\t\t_spanId: " << paramContext->_spanId << "\n"
+                    << "\t\t\t\t\t\t\t\t\t\t\t\t_parentId: " << paramContext->_parentId << "\n"
+                    << "\t\t\t\t\t\t\t\t\t\t\t\t_flags: " << paramContext->_flags;
             }
             Tracer::file_logger.PrintLine(ss.str());
             ss.str("");
@@ -366,11 +373,12 @@ Php::Value Tracer::extract(Php::Parameters& params)
     {
         if (context != nullptr)
         {
-            ss << "\n\t\t\t\t\t\t\t\t\t\t\treturned context: " << context <<
-                "\n\t\t\t\t\t\t\t\t\t\t\t\t_traceId: " << context->_traceId <<
-                "\n\t\t\t\t\t\t\t\t\t\t\t\t_spanId: " << context->_spanId <<
-                "\n\t\t\t\t\t\t\t\t\t\t\t\t_parentId: " << context->_parentId <<
-                "\n\t\t\t\t\t\t\t\t\t\t\t\t_flags: " << context->_flags;
+            ss << "\n\t\t\t\t\t\t\t\t\t\t\treturned context: " << context
+                << "\n\t\t\t\t\t\t\t\t\t\t\t\t_traceIdHigh: " << context->_traceIdHigh
+                << "\n\t\t\t\t\t\t\t\t\t\t\t\t_traceIdLow: " << context->_traceIdLow
+                << "\n\t\t\t\t\t\t\t\t\t\t\t\t_spanId: " << context->_spanId
+                << "\n\t\t\t\t\t\t\t\t\t\t\t\t_parentId: " << context->_parentId
+                << "\n\t\t\t\t\t\t\t\t\t\t\t\t_flags: " << context->_flags;
         }
         else
         {
@@ -387,7 +395,8 @@ Php::Value Tracer::extract(Php::Parameters& params)
         if (carrier.isString())
             ss << "Tracer::extract end   " << global_tracer << ", carrier = " << carrier;
         else
-            ss << "Tracer::extract end   " << global_tracer << ", carrier = [array]" << "\n";
+            ss << "Tracer::extract end   " << global_tracer << ", carrier = [array]"
+            << "\n";
         Tracer::file_logger.PrintLine(ss.str());
     }
 #endif
@@ -511,9 +520,7 @@ Php::Value Tracer::startExternalTracing(Php::Parameters& params)
             }
 
             spanAdded = true;
-
         }
-
     }
     else
     {
@@ -615,7 +622,7 @@ std::vector<std::string> OpenTracing::parseHostsStr(std::string hosts)
     if (!hosts.empty())
     {
         size_t dPos;
-        // read hosts from semicolon separated ini string 
+        // read hosts from semicolon separated ini string
         while ((dPos = hosts.find(';')) != std::string::npos)
         {
             hostsList.emplace_back(hosts.substr(0, dPos));

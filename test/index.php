@@ -1,7 +1,5 @@
 <?php
 
-use \Tracer as Tracer;
-
 function inject($context, &$carrier)
 {
     if (!method_exists('\Tracer', 'inject')) {
@@ -9,16 +7,6 @@ function inject($context, &$carrier)
     }
 
     $carrier = \Tracer::inject($context, $carrier);
-}
-
-
-function Start()
-{
-   //Tracer::getTracer();
-   echo("***\n");
-   $q = getTracer();
-      echo("***\n");
-   $q = getTracer();
 }
 
 $request=[
@@ -34,7 +22,7 @@ $request=[
     'Cookie'=>'XDEBUG_SESSION=PHPSTORM',
     'User-Agent'=>'vscode-restclient',
 ];
-                                    echo("\n***init***\n");
+
 Tracer::init('gate',
     [
         'enabled' => true,
@@ -44,7 +32,7 @@ Tracer::init('gate',
         'reporter' => [
             'type' => 'udp',
             'options' => [
-                'addr' => '192.168.15.15',
+                'addr' => '127.0.0.1',
                 'port' => 6831,
             ],
         ],
@@ -57,80 +45,91 @@ Tracer::init('gate',
     ]
 );
 
-$method = "GET";
-$path = "/";
-$x1 = $method . ' ' . $path;
-$x2=[];
-$x3 = [
-    'http.method' => "GET",
-    'http.url' => '/',
-    'ase' => '/',
-];
-$x4 = [
-    'error' => true,
-    ];
-$x5 = [
-    'event' => "123",
-    'file' => "123",
-    'line' => "123",
-    'log.level' => "123",
-    ];
+$x3 = 
+$x4 = 
+// $x5 = [
+//     'event' => "123",
+//     'file' => "123",
+//     'line' => "123",
+//     'log.level' => "123",
+//     ];
 
-                                    echo("\n***startSpan***\n");
-$span = Tracer::startSpan($x1);
+$span_1 = Tracer::startSpan("span_1");
+echo "getCurrentTraceId:\t\t\t";var_dump(Tracer::getCurrentTraceId());
+echo PHP_EOL;
+
 $span_cur = Tracer::getCurrentSpan();
 
-var_dump($span);
-if($span)
+echo "getCurrentSpanId (span_1):\t\t";var_dump(Tracer::getCurrentSpanId($span_1));
+echo "getCurrentParentId (span_1):\t\t";var_dump(Tracer::getCurrentParentId($span_1));
+echo PHP_EOL;
+
+if($span_1)
 {
-    //var_dump($span1);
-    $publishSpan = Tracer::startSpan('produce', [
-        'childOf' => $span
-            ]);
+    $span_2 = Tracer::startSpan('span_2 - childOf', [
+        'childOf' => $span_1
+    ]);
+    echo "getCurrentSpanId (span_2):\t\t";var_dump(Tracer::getCurrentSpanId($span_2));
+    echo "getCurrentParentId (span_2):\t\t";var_dump(Tracer::getCurrentParentId($span_2));
+    echo PHP_EOL;
+
+    $span_3 = Tracer::startSpan('span_3 - followsFrom', [
+        'followsFrom' => $span_1
+    ]);
+    echo "getCurrentSpanId (span_3):\t\t";var_dump(Tracer::getCurrentSpanId($span_3));
+    echo "getCurrentParentId (span_3):\t\t";var_dump(Tracer::getCurrentParentId($span_3));
+    echo PHP_EOL;
 }
 
-$span->addTags($x3);
-$span->addTags($x4);
-$publishSpan->addTags($x3);
-Tracer::addTags($x3);
+$span_1->addTags([
+    'span_1.tag_1' => "tag_1",
+]);
+$span_1->addTags([
+    'span_1.tag_2' => true,
+]);
+$span_2->addTags([
+    'span_2.tag_1' => "tag_1",
+]);
+Tracer::addTags([
+    'tracer_1.tag_1' => "tag_1",
+]);
 
-                                    echo("\n***addLogs***\n");
-$span->addLogs($x3);
-$span->addLogs($x4);
-$span->addLogs($x5);
-Tracer::addLogs($x3);
-Tracer::addLogs($x4);
-$publishSpan->addLogs($x5);
+$span_1->addLogs([
+    'span_1.log_1' => "log_1",
+]);
+$span_1->addLogs([
+    'span_1.log_2' => "log_2",
+]);
+$span_2->addLogs([
+    'span_2.log_1' => "log_1",
+]);
+Tracer::addLogs([
+    'tracer_1.log_1' => "log_1",
+]);
 
-                                    echo("\n***inject***\n");
 $key = "32adb6254e9f7b89a65b79145cf5d0e0a945e9ba-666c4a71a461eb4f02d3b6788d4ab89944da2d9f";
 var_dump($key);
-//Tracer::inject($publishSpan, $key);
-inject($publishSpan,$key);
+//Tracer::inject($span_2, $key);
+inject($span_2,$key);
 var_dump($key);
-inject($publishSpan,$key);
-//Tracer::inject($publishSpan, $key);
+inject($span_2,$key);
+//Tracer::inject($span_2, $key);
 var_dump($key);
-inject($publishSpan,$key);
-//Tracer::inject($publishSpan, $key);
+inject($span_2,$key);
+//Tracer::inject($span_2, $key);
 var_dump($key);
-inject($publishSpan,$key);
-//Tracer::inject($publishSpan, $key);
+inject($span_2,$key);
+//Tracer::inject($span_2, $key);
 var_dump($key);
-die();
 
 $key_parse = "32adb6254e9f7b89a65b79145cf5d0e0a945e9ba-666c4a71a461eb4f02d3b6788d4ab89944da2d9f|142573106:3223346672:2865357473:1";
 $context = Tracer::extract($request);
 
-echo("\n");
-echo("\nTest_work_with_array\n");
-
 $x_ref = &$x4;
-inject($publishSpan,$x4);
-//$x4=Tracer::inject($publishSpan, $x_ref);
+inject($span_2,$x4);
+//$x4=Tracer::inject($span_2, $x_ref);
 echo("\n");
 
-var_dump($x4);
  //if ($context)
  //{
  //    $span_new = Tracer::startSpan('handle', [
@@ -144,17 +143,13 @@ var_dump($x4);
 
  //}
 
-                                    echo("\n***finishSpan***\n");
-Tracer::finishSpan($span);
-Tracer::finishSpan($publishSpan);
-if (isset($span_new)) {
-    Tracer::finishSpan($span_new);
-}
+
+Tracer::finishSpan($span_1);
+Tracer::finishSpan($span_2);
+Tracer::finishSpan($span_3);
+
 Tracer::flush();
 
-                                    echo("\n***Destruct Tracer***\n");
-//$tra = Tracer::getTracer();
-//Tracer::init('gate',$arr1);
-                                    echo("\n***Destruct finish***\n");
+Tracer::init('gate','');
 
 ?>

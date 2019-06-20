@@ -19,7 +19,7 @@ namespace OpenTracing
         /*Get current opened span*/
         virtual OpenTracing::ISpan* getCurrentSpan() = 0;
         /*Get current trace id*/
-        virtual int64_t getCurrentTraceId() = 0;
+        virtual const std::string getCurrentTraceId() = 0;
         /*Get current span id*/
         virtual int64_t getCurrentSpanId(ISpan* span) = 0;
         /*Get current parent id*/

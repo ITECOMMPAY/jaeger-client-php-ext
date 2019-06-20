@@ -267,3 +267,6 @@ __pycache__/
 *.merged
 
 /cmake-build-debug
+/.idea
+/.vscode
+/nbproject

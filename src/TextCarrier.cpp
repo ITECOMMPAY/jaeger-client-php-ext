@@ -1,4 +1,5 @@
 #include <sstream>
+#include <iomanip>
 #include <algorithm>
 #include "TextCarrier.h"
 #include "Tracer.h"
@@ -10,10 +11,30 @@ void OpenTracing::TextCarrier::inject(const SpanContext* context, Php::Value& ca
 {
     if (carrier.isArray())
     {
-        carrier["X-B3-Traceid"] = std::to_string(context->_traceId);
-        carrier["X-B3-Spanid"] = std::to_string(context->_spanId);
-        carrier["X-B3-Parentspanid"] = std::to_string(context->_parentId);
-        carrier["X-B3-Sampled"] = std::to_string(context->_flags);
+        std::stringstream ss;
+        std::ios::fmtflags ss_flags(ss.flags());
+
+        if (context->_traceIdHigh == 0) {
+            ss << std::hex << (context->_traceIdLow | 0);
+        }
+        else {
+            ss << std::hex << (context->_traceIdHigh | 0) << std::setfill('0') << std::setw(16) << (context->_traceIdLow | 0);
+        }
+        carrier["x-b3-traceid"] = ss.str();
+        ss.flags(ss_flags);
+        ss.str(std::string());
+
+        ss << std::hex << (context->_spanId | 0);
+        carrier["x-b3-spanid"] = ss.str();
+        ss.flags(ss_flags);
+        ss.str(std::string());
+
+        ss << std::hex << (context->_parentId | 0);
+        carrier["x-b3-parentspanid"] = ss.str();
+        ss.flags(ss_flags);
+        ss.str(std::string());
+
+        carrier["x-b3-sampled"] = std::to_string(context->_flags);
     }
     else if (carrier.isString())
     {
@@ -55,11 +76,10 @@ SpanContext* OpenTracing::TextCarrier::extract(const std::map<std::string, std::
 
     try
     {
-        ss <<
-            (carrier_lowercase.count("x-b3-traceid") > 0 ? carrier_lowercase.at("x-b3-traceid") : "") << ":" <<
-            (carrier_lowercase.count("x-b3-spanid") > 0 ? carrier_lowercase.at("x-b3-spanid") : "") << ":" <<
-            (carrier_lowercase.count("x-b3-parentspanid") > 0 ? carrier_lowercase.at("x-b3-parentspanid") : "") << ":" <<
-            (carrier_lowercase.count("x-b3-sampled") > 0 ? carrier_lowercase.at("x-b3-sampled") : "");
+        ss << (carrier_lowercase.count("x-b3-traceid") > 0 ? carrier_lowercase.at("x-b3-traceid") : "") << ":"
+            << (carrier_lowercase.count("x-b3-spanid") > 0 ? carrier_lowercase.at("x-b3-spanid") : "") << ":"
+            << (carrier_lowercase.count("x-b3-parentspanid") > 0 ? carrier_lowercase.at("x-b3-parentspanid") : "") << ":"
+            << (carrier_lowercase.count("x-b3-sampled") > 0 ? carrier_lowercase.at("x-b3-sampled") : "");
         Tracer::header_flag = std::stoul(carrier_lowercase.at("x-b3-sampled"));
     }
     catch (const std::out_of_range& e)

@@ -32,7 +32,7 @@ OpenTracing::Log::~Log()
 
 OpenTracing::Log::operator std::string() const {
     std::stringstream ss("Log: ");
-    for (auto tag : _fields) 
+    for (auto tag : _fields)
     {
         ss << (std::string) * tag << "; ";
     }
