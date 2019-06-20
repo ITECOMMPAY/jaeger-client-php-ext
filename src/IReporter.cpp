@@ -11,4 +11,3 @@ IReporter::~IReporter()
         Tracer::file_logger.PrintLine(ss.str(), true);
     }
 }
-

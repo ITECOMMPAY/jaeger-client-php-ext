@@ -142,7 +142,8 @@ ${OBJECTS}:
 						${COMPILER} ${COMPILER_FLAGS} $@ ${@:%.o=%.cpp}
 
 fetch-php-cpp:
-						git submodule update --init PHP-CPP
+						git submodule update --init --recursive
+						sed -i 's/.*INSTALL_PREFIX.*=.*/  INSTALL_PREFIX		=	\/usr\/local/g' ./PHP-CPP/Makefile
 
 install-php-cpp:
 						cd ./PHP-CPP && sudo make clean

@@ -12,15 +12,19 @@ JaegerSpan::JaegerSpan(SpanContext* context, const std::string& operationName, c
 {
     {
         std::ostringstream ss;
-        ss << "    JaegerSpan::JaegerSpan addr: " << this;
-        Tracer::file_logger.PrintLine(ss.str(), true);
+        ss << this;
+        Tracer::file_logger.PrintLine("\tJaegerSpan " + ss.str() + " constructor", true);
     }
-    if (!startTime.isNull()) {
+    if (!startTime.isNull())
+    {
         _startTime = static_cast<int64_t>(startTime);
-    } else {
+    }
+    else
+    {
         auto ts = Helper::now();
         _startTime = ts.usec;
-        if (!ts.errors.empty()) {
+        if (!ts.errors.empty())
+        {
             Php::Value log;
             log["error"] = "cannot generate starting timestamp for span " + std::to_string(context->_spanId) + ": " + ts.errors;
             this->addLogsInternal(log);
@@ -98,7 +102,7 @@ void JaegerSpan::addTags(Php::Parameters& tags)
 
 void JaegerSpan::addLogsInternal(const Php::Value& logs)
 {
-    if (!Tracer::udp_transport) 
+    if (!Tracer::udp_transport)
     {
         return;
     }
@@ -183,14 +187,16 @@ OpenTracing::JaegerSpan::operator std::string() const {
     ss << ":" << "[" << _startTime << "-" << _endTime << "] ";
 
     ss << "Logs: ";
-    for (auto log : _logs) {
-        ss << (std::string)*log << "; ";
-    }    
+    for (auto log : _logs)
+    {
+        ss << (std::string) * log << "; ";
+    }
     ss << "Tags: ";
-    for (auto tag : _tags) {
-        ss << (std::string)*tag << "; ";
-    }    
-    ss << "Context: " << (std::string)*_context;
+    for (auto tag : _tags)
+    {
+        ss << (std::string) * tag << "; ";
+    }
+    ss << "Context: " << (std::string) * _context;
 
     return ss.str();
 }

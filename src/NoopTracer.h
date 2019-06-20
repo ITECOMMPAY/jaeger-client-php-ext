@@ -14,7 +14,7 @@ namespace OpenTracing
         void init(const std::string& serviceName);
         ISpan* startSpan(const std::string& operationName, const Php::Value& options = nullptr);
         ISpan* getCurrentSpan();
-        int64_t getCurrentTraceId();
+        const std::string getCurrentTraceId();
         int64_t getCurrentSpanId(ISpan* span);
         int64_t getCurrentParentId(ISpan* span);
         void finishSpan(ISpan* span, const Php::Value& endTime = nullptr);
@@ -26,6 +26,4 @@ namespace OpenTracing
     };
 }
 
-
 #endif /* NOOPTRACER_H */
-

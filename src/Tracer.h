@@ -90,5 +90,5 @@ namespace OpenTracing
     /*Start span implementation */
     Php::Value startSpanInternal(const std::string& operationName, const Php::Value& options = nullptr);
 }
-#endif /* TRACER_H */
 
+#endif /* TRACER_H */

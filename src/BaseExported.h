@@ -13,7 +13,7 @@ namespace OpenTracing
         }
 
         Php::Value __toString() {
-            return (std::string)*this;
+            return (std::string) * this;
         }
     };
 

@@ -12,5 +12,5 @@ namespace OpenTracing
         virtual bool isSampled() = 0;
     };
 }
-#endif /* ISAMPLER_H */
 
+#endif /* ISAMPLER_H */

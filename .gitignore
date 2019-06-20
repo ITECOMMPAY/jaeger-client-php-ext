@@ -265,3 +265,8 @@ __pycache__/
 *.so
 *.recipe
 *.merged
+
+/cmake-build-debug
+/.idea
+/.vscode
+/nbproject

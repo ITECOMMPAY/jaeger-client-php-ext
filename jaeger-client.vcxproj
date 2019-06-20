@@ -20,7 +20,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <UseDebugLibraries>true</UseDebugLibraries>
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <RemoteRootDir>~/_work</RemoteRootDir>
+    <RemoteRootDir>~</RemoteRootDir>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings" />
@@ -32,6 +32,7 @@
     <IntDir>$(ProjectDir)src\</IntDir>
     <TargetName>$(ProjectName)</TargetName>
     <RemoteLinkLocalCopyOutput>false</RemoteLinkLocalCopyOutput>
+    <RemoteTargetPath>$(TargetName)$(TargetExt)</RemoteTargetPath>
   </PropertyGroup>
   <ItemGroup>
     <ClCompile Include="src\FileReporter.cpp" />
@@ -63,6 +64,7 @@
     <ClCompile Include="src\UdpReporter.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\BaseExported.h" />
     <ClInclude Include="src\FileReporter.h" />
     <ClInclude Include="src\Helper.h" />
     <ClInclude Include="src\IReporter.h" />
