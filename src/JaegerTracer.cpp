@@ -114,7 +114,7 @@ ISpan* JaegerTracer::startSpan(const std::string& operationName, const Php::Valu
             Tracer::file_logger.PrintLine("-received SpanContext");
             paramContext = (SpanContext*)parent.implementation();
         }
-        else if (parent.instanceOf("ISpan"))
+        else if (parent.instanceOf("NoopSpan") || parent.instanceOf("JaegerSpan"))
         {
             // allow span to be passed as reference, not just SpanContext
             Tracer::file_logger.PrintLine("-received Span");
@@ -292,7 +292,7 @@ void JaegerTracer::inject(const Php::Value& context, Php::Value& carrier)
     {
         paramContext = (SpanContext*)context.implementation();
     }
-    else if (context.instanceOf("ISpan"))
+    else if (context.instanceOf("NoopSpan") || context.instanceOf("JaegerSpan"))
     {
         ISpan* span = (ISpan*)context.implementation();
         paramContext = dynamic_cast<JaegerSpan*>(span)->_context;
