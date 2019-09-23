@@ -24,13 +24,14 @@ extern "C" {
     {
         // static(!) Php::Extension object that should stay in memory
         // for the entire duration of the process (that's why it's static)
-        static Php::Extension extension("jaeger-client", "1.9");
+        static Php::Extension extension("jaeger-client", "1.10");
 
         //extension.onStartup(&onStartup);
         //extension.onRequest(&onRequest);
         extension.onIdle(&onIdle);
         extension.onShutdown(&onShutDown);
 
+        //export Tracer
         Php::Class<Tracer> TracerClass("Tracer");
         TracerClass.method<&Tracer::init>("init", Php::Static, {
             Php::ByVal("serviceName",Php::Type::String,true),
@@ -74,31 +75,28 @@ extern "C" {
             });
         extension.add(std::move(TracerClass));
 
+        //export SpanContext
         Php::Class<SpanContext> SpanContextClass("SpanContext");
         extension.add(std::move(SpanContextClass));
 
-        Php::Interface ITracerInterface("ITracer");
+        //export NoopTracer
         Php::Class<NoopTracer> NoopTracerClass("NoopTracer");
-        NoopTracerClass.implements(ITracerInterface);
-        Php::Class<JaegerTracer> JaegerTracerClass("JaegerTracer");
-        JaegerTracerClass.implements(ITracerInterface);
-        extension.add(std::move(ITracerInterface));
         extension.add(std::move(NoopTracerClass));
+
+        //export JaegerTracer
+        Php::Class<JaegerTracer> JaegerTracerClass("JaegerTracer");
         extension.add(std::move(JaegerTracerClass));
 
-        Php::Interface ISpanInterface("ISpan");
-        ISpanInterface.method("addTags", {});
-        ISpanInterface.method("addLogs", {});
+        //export NoopSpan
         Php::Class<NoopSpan> NoopSpanClass("NoopSpan");
-        NoopSpanClass.implements(ISpanInterface);
         NoopSpanClass.method<&NoopSpan::addTags>("addTags", {});
         NoopSpanClass.method<&NoopSpan::addLogs>("addLogs", {});
+        extension.add(std::move(NoopSpanClass));
+
+        //export JaegerSpan
         Php::Class<JaegerSpan> JaegerSpanClass("JaegerSpan");
-        JaegerSpanClass.implements(ISpanInterface);
         JaegerSpanClass.method<&JaegerSpan::addTags>("addTags", {});
         JaegerSpanClass.method<&JaegerSpan::addLogs>("addLogs", {});
-        extension.add(std::move(ISpanInterface));
-        extension.add(std::move(NoopSpanClass));
         extension.add(std::move(JaegerSpanClass));
 
         // return the extension

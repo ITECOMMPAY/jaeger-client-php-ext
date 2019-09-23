@@ -45,8 +45,6 @@ Tracer::init('gate',
     ]
 );
 
-$x3 = 
-$x4 = 
 // $x5 = [
 //     'event' => "123",
 //     'file' => "123",
@@ -55,6 +53,8 @@ $x4 =
 //     ];
 
 $span_1 = Tracer::startSpan("span_1");
+echo "span_1:\t\t\t";var_dump($span_1);
+
 echo "getCurrentTraceId:\t\t\t";var_dump(Tracer::getCurrentTraceId());
 echo PHP_EOL;
 
