@@ -227,7 +227,7 @@ Php::Value Tracer::getCurrentSpanId(Php::Parameters& params)
     int64_t _spanId = int64_t();
     if (!_span.isNull())
     {
-        if (!_span.instanceOf("ISpan"))
+        if (!_span.instanceOf("NoopSpan") && !_span.instanceOf("JaegerSpan"))
             throw Php::Exception("Wrong parameter passed, should be ISpan");
         ISpan* span = (ISpan*)_span.implementation();
         if (global_tracer != nullptr)
@@ -244,7 +244,7 @@ Php::Value Tracer::getCurrentParentId(Php::Parameters& params)
     int64_t _parentId = int64_t();
     if (!_span.isNull())
     {
-        if (!_span.instanceOf("ISpan"))
+        if (!_span.instanceOf("NoopSpan") && !_span.instanceOf("JaegerSpan"))
             throw Php::Exception("Wrong parameter passed, should be ISpan");
         ISpan* span = (ISpan*)_span.implementation();
         if (global_tracer != nullptr)
@@ -260,7 +260,7 @@ void Tracer::finishSpan(Php::Parameters& params)
     Php::Value param = params[0];
     if (!param.isNull())
     {
-        if (!param.instanceOf("ISpan"))
+        if (!param.instanceOf("NoopSpan") && !param.instanceOf("JaegerSpan"))
             throw Php::Exception("Wrong parameter passed, should be ISpan");
         ISpan* span = (ISpan*)param.implementation();
         if (global_tracer != nullptr)
@@ -303,7 +303,7 @@ Php::Value Tracer::inject(Php::Parameters& params)
             SpanContext* paramContext = nullptr;
             if (context.instanceOf("SpanContext"))
                 paramContext = (SpanContext*)context.implementation();
-            else if (context.instanceOf("ISpan"))
+            else if (context.instanceOf("NoopSpan") && context.instanceOf("JaegerSpan"))
             {
                 ISpan* span = (ISpan*)context.implementation();
                 if (strcmp(span->_name(), "JaegerSpan") == 0)

@@ -166,6 +166,38 @@ Extension tries its best to deliver trace to the agent.
 And if the trace's size overflows UDP package - we split spans into several copies and flush them one by one so that you'll get multiple identical spans with
 a sequential set of logs.
 
+## Building for PHP 7.3
+
+1. clone from master (php-cpp will have tag 2.1.4)
+
+```git clone git@github.com:ITECOMMPAY/jaeger-client-php-ext.git
+cd jaeger-client-php-ext/
+git submodule update --init
+```
+
+2. `PHP-CPP` compile as static lib, do not `make install` 
+
+```cd PHP-CPP/
+sed -i "s/^STATIC_COMPILER_FLAGS.*/STATIC_COMPILER_FLAGS	=	-fpic/" Makefile
+scl enable devtoolset-8 php73 "make clean"
+scl enable devtoolset-8 php73 "make"
+cp -r include/ phpcpp/
+cp libphpcpp.a.2.1.4 libphpcpp.a
+```
+
+3. `jaeger-client` compile
+
+```cd ..
+sed -i "s/^COMPILER_FLAGS.*/COMPILER_FLAGS           = -Wall -c -I\"src\" -I\"PHP-CPP\" -I\"\/opt\/remi\/php73\/root\/usr\/include\" -O2 -std=c++11 -fpic -o/" Makefile
+sed -i "s/^LINKER_FLAGS.*/LINKER_FLAGS               = -shared -L\"PHP-CPP\" -L\"\/opt\/remi\/php73\/root\/usr\/lib64\" -fpic -Wl,--whole-archive/" Makefile
+sed -i "s/^LINKER_DEPENDENCIES.*/LINKER_DEPENDENCIES = -l:libphpcpp.a -Wl,--no-whole-archive/" Makefile
+scl enable devtoolset-8 php73 "make clean"
+scl enable devtoolset-8 php73 "make"
+sudo scl enable devtoolset-8 php73 "make install"
+echo 'extension=jaeger-client.so' | sudo tee /etc/opt/remi/php73/php.d/50-jaeger-client.ini
+sudo systemctl restart php73-php-fpm.service
+```
+
 ## License
 
 [Apache 2.0 License](./LICENSE).
