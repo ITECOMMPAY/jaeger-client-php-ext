@@ -179,23 +179,23 @@ git submodule update --init
 
 ```cd PHP-CPP/
 sed -i "s/^STATIC_COMPILER_FLAGS.*/STATIC_COMPILER_FLAGS	=	-fpic/" Makefile
-scl enable devtoolset-8 php73 "make clean"
-scl enable devtoolset-8 php73 "make"
+scl enable devtoolset-8 php74 "make clean"
+scl enable devtoolset-8 php74 "make"
 cp -r include/ phpcpp/
-cp libphpcpp.a.2.1.4 libphpcpp.a
+cp libphpcpp.a.2.2.0 libphpcpp.a
 ```
 
 3. `jaeger-client` compile
 
 ```cd ..
-sed -i "s/^COMPILER_FLAGS.*/COMPILER_FLAGS           = -Wall -c -I\"src\" -I\"PHP-CPP\" -I\"\/opt\/remi\/php73\/root\/usr\/include\" -O2 -std=c++11 -fpic -o/" Makefile
-sed -i "s/^LINKER_FLAGS.*/LINKER_FLAGS               = -shared -L\"PHP-CPP\" -L\"\/opt\/remi\/php73\/root\/usr\/lib64\" -fpic -Wl,--whole-archive/" Makefile
+sed -i "s/^COMPILER_FLAGS.*/COMPILER_FLAGS           = -Wall -c -I\"src\" -I\"PHP-CPP\" -I\"\/opt\/remi\/php74\/root\/usr\/include\" -O2 -std=c++11 -fpic -o/" Makefile
+sed -i "s/^LINKER_FLAGS.*/LINKER_FLAGS               = -shared -L\"PHP-CPP\" -L\"\/opt\/remi\/php74\/root\/usr\/lib64\" -fpic -Wl,--whole-archive/" Makefile
 sed -i "s/^LINKER_DEPENDENCIES.*/LINKER_DEPENDENCIES = -l:libphpcpp.a -Wl,--no-whole-archive/" Makefile
-scl enable devtoolset-8 php73 "make clean"
-scl enable devtoolset-8 php73 "make"
-sudo scl enable devtoolset-8 php73 "make install"
-echo 'extension=jaeger-client.so' | sudo tee /etc/opt/remi/php73/php.d/50-jaeger-client.ini
-sudo systemctl restart php73-php-fpm.service
+scl enable devtoolset-8 php74 "make clean"
+scl enable devtoolset-8 php74 "make"
+sudo scl enable devtoolset-8 php74 "make install"
+echo 'extension=jaeger-client.so' | sudo tee /etc/opt/remi/php74/php.d/50-jaeger-client.ini
+sudo systemctl restart php74-php-fpm.service
 ```
 
 ## License
