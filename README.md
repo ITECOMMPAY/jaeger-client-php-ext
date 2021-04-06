@@ -166,9 +166,9 @@ Extension tries its best to deliver trace to the agent.
 And if the trace's size overflows UDP package - we split spans into several copies and flush them one by one so that you'll get multiple identical spans with
 a sequential set of logs.
 
-## Building for PHP 7.3
+## Building for PHP 7.4
 
-1. clone from master (php-cpp will have tag 2.1.4)
+1. clone from master (php-cpp will have tag 2.2.0)
 
 ```git clone git@github.com:ITECOMMPAY/jaeger-client-php-ext.git
 cd jaeger-client-php-ext/
