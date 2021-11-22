@@ -168,7 +168,7 @@ a sequential set of logs.
 
 ## Building for PHP 7.4
 
-1. clone from master (php-cpp will have tag 2.2.0)
+1. clone from master (php-cpp will have tag 2.3.0)
 
 ```git clone git@github.com:ITECOMMPAY/jaeger-client-php-ext.git
 cd jaeger-client-php-ext/
@@ -182,7 +182,7 @@ sed -i "s/^STATIC_COMPILER_FLAGS.*/STATIC_COMPILER_FLAGS	=	-fpic/" Makefile
 scl enable devtoolset-8 php74 "make clean"
 scl enable devtoolset-8 php74 "make"
 cp -r include/ phpcpp/
-cp libphpcpp.a.2.2.0 libphpcpp.a
+cp libphpcpp.a.2.3.0 libphpcpp.a
 ```
 
 3. `jaeger-client` compile
