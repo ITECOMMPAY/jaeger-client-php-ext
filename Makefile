@@ -76,9 +76,9 @@ LINKER				=	g++
 #	one: the PHP-CPP library), you should update the LINKER_DEPENDENCIES variable
 #	with a list of all flags that should be passed to the linker.
 #
-COMPILER_FLAGS		=	-Wall -c -Isrc -O2 -std=c++11 -fpic -o
-LINKER_FLAGS		=	-shared
-LINKER_DEPENDENCIES	=	-lphpcpp
+COMPILER_FLAGS		=	-Wall -c -I"src" -I"PHP-CPP" -I"/opt/remi/php74/root/usr/include" -O2 -std=c++11 -fpic -o
+LINKER_FLAGS		=	-shared -L"PHP-CPP" -L"/opt/remi/php74/root/usr/lib64" -fpic -Wl,--whole-archive
+LINKER_DEPENDENCIES	=	-l:libphpcpp.a -Wl,--no-whole-archive
 
 #
 #	Command to remove files, copy files and create directories.
