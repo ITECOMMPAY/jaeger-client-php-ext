@@ -5,6 +5,11 @@
 #include <limits.h>
 #include <stdlib.h>
 #include <time.h>
+#include <string.h>
+#include <ifaddrs.h>
+#include <sys/socket.h>
+#include <netdb.h>
+#include <errno.h>
 #include "Helper.h"
 #include "NoopTracer.h"
 #include "JaegerTracer.h"
@@ -62,35 +67,10 @@ const int OpenTracing::Helper::genPercentage()
     return dist(re);
 }
 
-#define IPVer2
-const std::string OpenTracing::Helper::getCurrentIp()
+/* V2: slow fallback - forks shell */
+const std::string OpenTracing::Helper::getCurrentIpFallback()
 {
     std::string retVal{};
-
-#ifdef IPVer1
-    const char* cmd = R"($(which ip) addr show | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*' | grep -Ev '127.0.0.1|10.0.2.15')";
-
-    FILE* ptr = popen(cmd, "r");
-    if (ptr != NULL)
-    {
-        char buf[BUFSIZ];
-        memset(buf, '\0', BUFSIZ);
-
-        std::vector<std::string> ip;
-        while (fgets(buf, BUFSIZ, ptr) != NULL)
-        {
-            ip.push_back(std::string(buf, strlen(buf) - 1));
-            Php::out << ip.back() << std::endl;
-        }
-
-        // some logic to get ip
-        // currently only last found
-        retVal = ip.back();
-    }
-    pclose(ptr);
-#endif
-
-#ifdef IPVer2
     const char* cmd = R"(hostname -I)";
 
     FILE* ptr = popen(cmd, "r");
@@ -127,18 +107,54 @@ const std::string OpenTracing::Helper::getCurrentIp()
     }
 
     pclose(ptr);
+
+    return retVal;
+}
+
+#define IPVer3
+
+const std::string OpenTracing::Helper::getCurrentIp()
+{
+    std::string retVal{};
+
+#ifdef IPVer1
+    //lot of forks
+    const char* cmd = R"($(which ip) addr show | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*' | grep -Ev '127.0.0.1|10.0.2.15')";
+
+    FILE* ptr = popen(cmd, "r");
+    if (ptr != NULL)
+    {
+        char buf[BUFSIZ];
+        memset(buf, '\0', BUFSIZ);
+
+        std::vector<std::string> ip;
+        while (fgets(buf, BUFSIZ, ptr) != NULL)
+        {
+            ip.push_back(std::string(buf, strlen(buf) - 1));
+            Php::out << ip.back() << std::endl;
+        }
+
+        // some logic to get ip
+        // currently only last found
+        retVal = ip.back();
+    }
+    pclose(ptr);
+#endif
+
+#ifdef IPVer2
+    return OpenTracing::Helper::getCurrentIpFallback();
 #endif
 
 #ifdef IPVer3
+    //no forks here
     struct ifaddrs* ifaddr, * ifa;
-    int family, s;
+    int name_status;
     char host[NI_MAXHOST];
+    char port[NI_MAXSERV];
 
     if (getifaddrs(&ifaddr) == -1)
     {
-        //perror("getifaddrs");
-        //exit(EXIT_FAILURE);
-        //Php::out << "getifaddrs problem" << std::endl;
+        return OpenTracing::Helper::getCurrentIpFallback();
     }
 
     std::vector<std::string> ip;
@@ -147,24 +163,26 @@ const std::string OpenTracing::Helper::getCurrentIp()
         if (ifa->ifa_addr == NULL)
             continue;
 
-        s = getnameinfo(ifa->ifa_addr, sizeof(struct sockaddr_in), host, NI_MAXHOST, NULL, 0, NI_NUMERICHOST);
+        int addrsz = 0;
 
-        if ( /*(strcmp(ifa->ifa_name,"wlan0")==0)&&( */ ifa->ifa_addr->sa_family == AF_INET) // )
+        if (ifa->ifa_addr->sa_family == AF_INET) {
+          addrsz = sizeof(struct sockaddr_in);
+        } else if (ifa->ifa_addr->sa_family == AF_INET6) {
+          addrsz = sizeof(struct sockaddr_in6);
+        } else {
+          continue;
+        }
+
+        name_status = getnameinfo(ifa->ifa_addr, addrsz, host, NI_MAXHOST, port, NI_MAXSERV, NI_NUMERICHOST | NI_NUMERICSERV);
+
+        if ( (ifa->ifa_addr->sa_family == AF_INET) && (name_status == 0) )
         {
-            if (s != 0)
-            {
-                //printf("getnameinfo() failed: %s\n", gai_strerror(s));
-                //exit(EXIT_FAILURE);
-                //Php::out << "getnameinfo() failed: " << gai_strerror(s) << std::endl;
-                continue;
+            if ( (strcmp(host, "10.0.2.5") == 0) || (strcmp(host, "127.0.0.1") == 0) ) {
+                 continue;
             }
-            ip.push_back(std::string(host, strlen(host) - 1));
-            Tracer::file_logger.PrintLine(ip.back());
-            //printf("\tInterface : <%s>\n", ifa->ifa_name);
-            //printf("\t  Address : <%s>\n", host);
 
-            // some logic to get ip
-            // currently only last found
+            ip.push_back(std::string(host));
+
             retVal = ip.back();
         }
     }
@@ -173,6 +191,7 @@ const std::string OpenTracing::Helper::getCurrentIp()
 #endif
 
 #ifdef IPVer4
+    //external network dep
     const char* google_dns_server = "8.8.8.8";
     int dns_port = 53;
 

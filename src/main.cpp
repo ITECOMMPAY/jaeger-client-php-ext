@@ -24,12 +24,14 @@ extern "C" {
     {
         // static(!) Php::Extension object that should stay in memory
         // for the entire duration of the process (that's why it's static)
-        static Php::Extension extension("jaeger-client", "1.11");
+        static Php::Extension extension("jaeger-client", "1.12");
 
         //extension.onStartup(&onStartup);
         //extension.onRequest(&onRequest);
         extension.onIdle(&onIdle);
         extension.onShutdown(&onShutDown);
+
+        extension.add(Php::Ini("jaeger-client.ip_revalidate_freq", 0));
 
         //export Tracer
         Php::Class<Tracer> TracerClass("Tracer");

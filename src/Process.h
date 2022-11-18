@@ -16,6 +16,10 @@ namespace OpenTracing
         Process(const std::string& serviceName);
         Process(const Process&) = delete;
         ~Process();
+    private:
+        static int ip_timestamp;
+        static std::string ip;
+        static std::string hostname;
     };
 }
 

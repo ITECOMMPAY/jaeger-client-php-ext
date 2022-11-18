@@ -29,6 +29,8 @@ namespace OpenTracing
         static const int timeOfDayMicroSec(int64_t& microsec);
         /*Get current unix timestamp in microseconds based on clock_gettime() output*/
         static const int clockGetTimeMicroSec(int64_t& microsec);
+        /*Get current ip fallback*/
+        static const std::string getCurrentIpFallback();
     public:
         /*Get current unix timestamp in microseconds*/
         static const TimeStamp now();
