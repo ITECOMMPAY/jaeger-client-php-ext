@@ -166,6 +166,14 @@ Extension tries its best to deliver trace to the agent.
 And if the trace's size overflows UDP package - we split spans into several copies and flush them one by one so that you'll get multiple identical spans with
 a sequential set of logs.
 
+
+## php.ini settings
+
+jaeger-client.ip_revalidate_freq = seconds (default 0)
+
+Caches ip address and hostname values for specified interval to reduce calls
+to detect them.
+
 ## Building for PHP 7.4
 
 1. clone from master (php-cpp will have tag 2.3.0)
